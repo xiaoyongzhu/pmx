@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Generate Hybrid Topology &mdash; pmx  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pmx  documentation" href="../index.html"/>
+        <link rel="up" title="Examples" href="index.html"/>
+        <link rel="next" title="Analyse Results" href="analysis.html"/>
+        <link rel="prev" title="Create Mutant Structure" href="mutate.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mutate.html">Create Mutant Structure</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Generate Hybrid Topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html">Analyse Results</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/webserver.html">Protein webserver</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/dna_webserver.html">DNA webserver</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pmx</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Examples</a> &raquo;</li>
+        
+      <li>Generate Hybrid Topology</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/examples/hybrid_topology.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="generate-hybrid-topology">
+<h1>Generate Hybrid Topology<a class="headerlink" href="#generate-hybrid-topology" title="Permalink to this headline">¶</a></h1>
+<p>Example on the use of <strong>pmx</strong> to prepare an hybrid topology. This is after running
+pdb2gmx on the mutant structure and obtaining a topology file from Gromacs.</p>
+<p>The simplest case is the following (<a class="reference download internal" href="../_downloads/topol.top" download=""><code class="xref download docutils literal notranslate"><span class="pre">topol.top</span></code></a>), where
+there are no itp files of other molecules included in the topology.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.forcefield</span> <span class="k">import</span> <span class="n">Topology</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.alchemy</span> <span class="k">import</span> <span class="n">gen_hybrid_top</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># load the topology file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="s1">&#39;topol.top&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># fill B states for hybrid residues present</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pmxtop</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">gen_hybrid_top</span><span class="p">(</span><span class="n">topol</span><span class="o">=</span><span class="n">top</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># write topology to a new file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pmxtop</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;pmxtop.top&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the topology file includes different itp files (<a class="reference download internal" href="../_downloads/topol2.top" download=""><code class="xref download docutils literal notranslate"><span class="pre">topol2.top</span></code></a>,
+<a class="reference download internal" href="../_downloads/topol2.itp" download=""><code class="xref download docutils literal notranslate"><span class="pre">topol2.itp</span></code></a>),
+these too can be modified and returned by setting the <code class="docutils literal notranslate"><span class="pre">recursive</span></code> argument to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># load the topology file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="s1">&#39;topol2.top&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># fill B states for hybrid residues present in topol2.itp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pmxtop</span><span class="p">,</span> <span class="n">pmxitps</span> <span class="o">=</span> <span class="n">gen_hybrid_top</span><span class="p">(</span><span class="n">topol</span><span class="o">=</span><span class="n">top</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># write topology and itps to a new file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pmxtop</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;pmxtop.top&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">itp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pmxitps</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">itp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;pmxitp_</span><span class="si">%s</span><span class="s1">.itp&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you like getting lots of screen output, you can set the <code class="docutils literal notranslate"><span class="pre">verbose</span></code> argument
+to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pmxtop</span><span class="p">,</span> <span class="n">pmxitps</span> <span class="o">=</span> <span class="n">gen_hybrid_top</span><span class="p">(</span><span class="n">topol</span><span class="o">=</span><span class="n">top</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">log_&gt; Reading input top file &quot;topol2.top&quot;</span>
+<span class="go">log_&gt; Making bonds for state B -&gt; 0 bonds with perturbed atoms</span>
+<span class="go">log_&gt; Making angles for state B -&gt; 0 angles with perturbed atoms</span>
+<span class="go">log_&gt; Making dihedrals for state B -&gt; 0 dihedrals with perturbed atoms</span>
+<span class="go">log_&gt; Removed 0 fake dihedrals</span>
+<span class="go">log_&gt; Total charge of state A = 0</span>
+<span class="go">log_&gt; Total charge of state B = 0</span>
+
+<span class="go">log_&gt; Reading input itp file &quot;topol2.itp&quot;&quot;</span>
+<span class="go">log_&gt; Scanning database for D2A</span>
+<span class="go">log_&gt; Scanning database for G2R</span>
+<span class="go">log_&gt; Scanning database for P2A</span>
+<span class="go">log_&gt; Hybrid Residue -&gt; 9 | D2A</span>
+<span class="go">log_&gt; Hybrid Residue -&gt; 10 | G2R</span>
+<span class="go">log_&gt; Hybrid Residue -&gt; 12 | P2A</span>
+<span class="go">log_&gt; Making bonds for state B -&gt; 61 bonds with perturbed atoms</span>
+<span class="go">log_&gt; Making angles for state B -&gt; 127 angles with perturbed atoms</span>
+<span class="go">log_&gt; Making dihedrals for state B -&gt; 190 dihedrals with perturbed atoms</span>
+<span class="go">log_&gt; Removed 19 fake dihedrals</span>
+<span class="go">log_&gt; Total charge of state A = 1</span>
+<span class="go">log_&gt; Total charge of state B = 3</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="analysis.html" class="btn btn-neutral float-right" title="Analyse Results" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="mutate.html" class="btn btn-neutral" title="Create Mutant Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, The Authors.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = ''
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="../_static/js/versions.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,2093 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Modules &mdash; pmx  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pmx  documentation" href="../index.html"/>
+        <link rel="prev" title="IndexFile" href="../classes/indexfile.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.alchemy">pmx.alchemy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.analysis">pmx.analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.estimators">pmx.estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.gmx">pmx.gmx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.builder">pmx.builder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.utils">pmx.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.atomselection">pmx.atomselection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.ffparser">pmx.ffparser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.geometry">pmx.geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.library">pmx.library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.mutdb">pmx.mutdb</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.parser">pmx.parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.rotamer">pmx.rotamer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pmx.xdrfile">pmx.xdrfile</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Other Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/webserver.html">Protein webserver</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/dna_webserver.html">DNA webserver</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pmx</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Modules</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/modules.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="modules">
+<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
+<p><strong>pmx</strong> is a essentially a collection of classes and functions that allow the
+manipulation of molecular structure and topology files. It has been thought to
+be mainly used in conjunction with the Gromacs simulation package. In fact,
+pmx makes use of some Gromacs functions to read/write trajectory data and to
+allow fast neighborsearching from a python script. With time, <strong>pmx</strong> has also
+become a library for alchemical free energy  calculations.
+Here below are the main Modules that the user might
+want to use to facilitate the setup and analysis of alchemical free energy
+calculations in Gromacs.</p>
+<div class="section" id="module-pmx.alchemy">
+<span id="pmx-alchemy"></span><h2>pmx.alchemy<a class="headerlink" href="#module-pmx.alchemy" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions that can be used to setup the hybrid
+structures and topologies needed for alchemical free energy calculations.</p>
+<dl class="function">
+<dt id="pmx.alchemy.mutate">
+<code class="descclassname">pmx.alchemy.</code><code class="descname">mutate</code><span class="sig-paren">(</span><em>m</em>, <em>mut_resid</em>, <em>mut_resname</em>, <em>ff</em>, <em>refB=None</em>, <em>inplace=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.mutate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an hybrid structure file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>m</strong> (<a class="reference internal" href="../classes/model.html#pmx.model.Model" title="pmx.model.Model"><em>Model</em></a>) – the model to be mutated. See <a class="reference internal" href="../classes/model.html#pmx.model.Model" title="pmx.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">pmx.model.Model</span></code></a>.</li>
+<li><strong>mut_resid</strong> (<em>int</em>) – the ID of the residue to be mutated.</li>
+<li><strong>mut_resname</strong> (<em>str</em>) – the target residue.</li>
+<li><strong>ff</strong> (<em>str</em>) – the forcefield to use.</li>
+<li><strong>refB</strong> (<em>str</em><em>, </em><em>optional</em>) – reference structure file of the B state in PDB or GRO format. If it is
+provided, the dummy atoms will be built based on the position of the
+atoms in this structure. This option is available only for Protein
+mutations.</li>
+<li><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to modify the input Model in place. Default is False.</li>
+<li><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to print info. Defaul is False.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>m2</strong> – model with mutated residues. If argument ‘inplace’ is True, nothing is
+returned.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="../classes/model.html#pmx.model.Model" title="pmx.model.Model">Model</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.alchemy.gen_hybrid_top">
+<code class="descclassname">pmx.alchemy.</code><code class="descname">gen_hybrid_top</code><span class="sig-paren">(</span><em>topol</em>, <em>recursive=True</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.gen_hybrid_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills the bstate of a topology file containing pmx hybrid residues. This
+can be either a top or itp file. If the file contains other itp files via
+include statements, the function can iterate through them if the recursive
+flag is set to True.</p>
+<p>It returns a Topology instance with b states filled for the input topol
+instance, and optionally a list of additional Topology instances for the
+included itp files. If there are no itp files, or if recursive is set to
+False, then an empty list is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>topol</strong> (<em>Topology</em>) – input Topology instance</li>
+<li><strong>recursive</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to fill b states also for all itp files included in the
+topology file. Default is True.</li>
+<li><strong>verbose</strong> (<em>bool</em>) – whether to print out info. Default is False.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>top, itps</strong> – output Topology instance with b states assigned (top), and
+list of Topology instances for the additional itp files (itps)
+included in the input topology.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj, list of obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.alchemy.write_split_top">
+<code class="descclassname">pmx.alchemy.</code><code class="descname">write_split_top</code><span class="sig-paren">(</span><em>pmxtop</em>, <em>outfile='pmxtop.top'</em>, <em>scale_mass=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.write_split_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>WARNING: Appears to be currently broken</p>
+<p>Write three topology files to be used for three separate free energy
+calculations: charges off, vdw on, changes on. This can be useful when one
+wants to avoid using a soft-core for the electrostatic interactions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pmxtop</strong> (<em>Topology</em>) – Topology object with B states defined.</li>
+<li><strong>outfile</strong> (<em>str</em>) – name of output topology file.</li>
+<li><strong>scale_mass</strong> (<em>bool</em>) – whether to scale the masses of morphing atoms</li>
+<li><strong>verbose</strong> (<em>bool</em>) – whether to print information or not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pmx.analysis">
+<span id="pmx-analysis"></span><h2>pmx.analysis<a class="headerlink" href="#module-pmx.analysis" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pmx.analysis.read_dgdl_files">
+<code class="descclassname">pmx.analysis.</code><code class="descname">read_dgdl_files</code><span class="sig-paren">(</span><em>lst</em>, <em>lambda0=0</em>, <em>invert_values=False</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.analysis.read_dgdl_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list of dgdl.xvg files and returns the integrated work values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lst</strong> (<em>list</em>) – list containing the paths to the dgdl.xvg files.</li>
+<li><strong>lambda0</strong> (<em>[</em><em>0</em><em>,</em><em>1</em><em>]</em>) – whether the simulations started from lambda 0 or 1. Default is 0.</li>
+<li><strong>invert_values</strong> (<em>bool</em>) – whether to invert the sign of the returned work value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>w</strong> (<em>array</em>) – array of work values.</li>
+<li><strong>lst</strong> (<em>list</em>) – sorted list of input dgdl.avg files corresponding to the work values
+in w.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.analysis.integrate_dgdl">
+<code class="descclassname">pmx.analysis.</code><code class="descname">integrate_dgdl</code><span class="sig-paren">(</span><em>fn</em>, <em>ndata=-1</em>, <em>lambda0=0</em>, <em>invert_values=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.analysis.integrate_dgdl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrates the data in a dgdl.xvg file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn</strong> (<em>str</em>) – the inpur dgdl.xvg file from Gromacs.</li>
+<li><strong>ndata</strong> (<em>int</em><em>, </em><em>optional</em>) – number of datapoints in file. If -1, then ??? default is -1.</li>
+<li><strong>lambda0</strong> (<em>[</em><em>0</em><em>,</em><em>1</em><em>]</em>) – whether the simulations started from lambda 0 or 1. Default is 0.</li>
+<li><strong>invert_values</strong> (<em>bool</em>) – whether to invert the sign of the returned work value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>integr</strong> (<em>float</em>) – result of the integration performed using Simpson’s rule.</li>
+<li><strong>ndata</strong> (<em>int</em>) – number of data points in the input file.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.analysis.ks_norm_test">
+<code class="descclassname">pmx.analysis.</code><code class="descname">ks_norm_test</code><span class="sig-paren">(</span><em>data</em>, <em>alpha=0.05</em>, <em>refks=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.analysis.ks_norm_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a Kolmogorov-Smirnov test of normality.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>array_like</em>) – a one-dimensional array of values. This is the distribution tested
+for normality.</li>
+<li><strong>alpha</strong> (<em>float</em>) – significance level of the statistics. Default if 0.05.</li>
+<li><strong>refks</strong> – <p>???</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>Q</strong> (<em>float</em>)</li>
+<li><strong>lam0</strong> (<em>float</em>)</li>
+<li><strong>check</strong> (<em>float</em>)</li>
+<li><strong>bOk</strong> (<em>bool</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.analysis.plot_work_dist">
+<code class="descclassname">pmx.analysis.</code><code class="descname">plot_work_dist</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>fname='Wdist.png'</em>, <em>nbins=20</em>, <em>dG=None</em>, <em>dGerr=None</em>, <em>units='kJ/mol'</em>, <em>dpi=300</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.analysis.plot_work_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots forward and reverse work distributions. Optionally, it adds the
+estimate of the free energy change and its uncertainty on the plot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>wf</strong> (<em>list</em>) – list of forward work values.</li>
+<li><strong>wr</strong> (<em>list</em>) – list of reverse work values.</li>
+<li><strong>fname</strong> (<em>str</em><em>, </em><em>optional</em>) – filename of the saved image. Default is ‘Wdist.png’.</li>
+<li><strong>nbins</strong> (<em>int</em><em>, </em><em>optional</em>) – number of bins to use for the histogram. Default is 20.</li>
+<li><strong>dG</strong> (<em>float</em><em>, </em><em>optional</em>) – free energy estimate.</li>
+<li><strong>dGerr</strong> (<em>float</em><em>, </em><em>optional</em>) – uncertainty of the free energy estimate.</li>
+<li><strong>units</strong> (<em>str</em><em>, </em><em>optional</em>) – the units of dG and dGerr. Default is ‘kJ/mol’.</li>
+<li><strong>dpi</strong> (<em>int</em>) – resolution of the saved image file.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pmx.estimators">
+<span id="pmx-estimators"></span><h2>pmx.estimators<a class="headerlink" href="#module-pmx.estimators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pmx.estimators.Jarz">
+<em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">Jarz</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Jarzynski estimator.</p>
+<p>Description…</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+<li><strong>T</strong> (<em>float</em><em> or </em><em>int</em>) – </li>
+<li><strong>nboots</strong> (<em>int</em>) – number of bootstrap samples to use for error estimation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<dl class="staticmethod">
+<dt id="pmx.estimators.Jarz.calc_dg">
+<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>T</em>, <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_dg" title="Permalink to this definition">¶</a></dt>
+<dd><p>to be filled</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.Jarz.calc_err_blocks">
+<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>T</em>, <em>c</em>, <em>nblocks</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the standard error based on a number of blocks the
+work values are divided into. It is useful when you run independent
+equilibrium simulations, so that you can then use their respective
+work values to compute the standard error based on the repeats.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>w</strong> (<em>array_like</em>) – array of work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature.</li>
+<li><strong>c</strong> (<em>[</em><em>0</em><em>,</em><em>1</em><em>]</em>) – <p>???</p>
+</li>
+<li><strong>nblocks</strong> (<em>int</em>) – number of blocks to divide the data into. This can be for
+instance the number of independent equilibrium simulations
+you ran.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.Jarz.calc_err_boot">
+<em class="property">static </em><code class="descname">calc_err_boot</code><span class="sig-paren">(</span><em>T</em>, <em>c</em>, <em>nboots</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_err_boot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the standard error via bootstrap. The work values are
+resampled randomly with replacement multiple (nboots) times,
+and the Jarzinski free energy recalculated for each bootstrap samples.
+The standard error of the estimate is returned as the standard d
+eviation of the bootstrapped free energies.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>w</strong> (<em>array_like</em>) – work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature.</li>
+<li><strong>c</strong> (<em>[</em><em>0</em><em>,</em><em>1</em><em>]</em>) – <p>???</p>
+</li>
+<li><strong>nboots</strong> (<em>int</em>) – number of bootstrap samples to use for the error estimate.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>err</strong> – standard error of the mean.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pmx.estimators.Crooks">
+<em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">Crooks</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Crooks Gaussian Intersection (CGI) estimator. The forward and reverse work
+values are fitted to Gaussian functions and their intersection is taken
+as the free energy estimate. In some cases, when the two Gaussians are very
+close to each other, the intersection cannot be taken and the average of
+the two Gaussian means is taken as the free energy estimate insted. The
+standard error is by default calculated via bootstrap using 1000 samples.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Crooks</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cgi_dg</span> <span class="o">=</span> <span class="n">Crooks</span><span class="o">.</span><span class="n">dg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cgi_err</span> <span class="o">=</span> <span class="n">Crooks</span><span class="o">.</span><span class="n">err_boot</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="pmx.estimators.Crooks.dg">
+<code class="descname">dg</code><a class="headerlink" href="#pmx.estimators.Crooks.dg" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – the free energy estimate.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.Crooks.err_boot">
+<code class="descname">err_boot</code><a class="headerlink" href="#pmx.estimators.Crooks.err_boot" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – standard error of the free energy estimate calculated via bootstrap.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.Crooks.inters_bool">
+<code class="descname">inters_bool</code><a class="headerlink" href="#pmx.estimators.Crooks.inters_bool" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>bool</em> – whether the interection could be taken. If False, the free energy
+estimate is the average of the two Gaussian means.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.Crooks.Af">
+<code class="descname">Af</code><a class="headerlink" href="#pmx.estimators.Crooks.Af" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – height of the forward Gaussian.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.Crooks.mf">
+<code class="descname">mf</code><a class="headerlink" href="#pmx.estimators.Crooks.mf" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – mean of the forward Gaussian.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.Crooks.devf">
+<code class="descname">devf</code><a class="headerlink" href="#pmx.estimators.Crooks.devf" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – standard deviation of the forward Gaussian.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.Crooks.Ar">
+<code class="descname">Ar</code><a class="headerlink" href="#pmx.estimators.Crooks.Ar" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – height of the reverse Gaussian.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.Crooks.mr">
+<code class="descname">mr</code><a class="headerlink" href="#pmx.estimators.Crooks.mr" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – mean of the reverse Gaussian.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.Crooks.devr">
+<code class="descname">devr</code><a class="headerlink" href="#pmx.estimators.Crooks.devr" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – standard deviation of the reverse Gaussian.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.Crooks.calc_dg">
+<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>wr</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_dg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the free energy difference using the Crooks Gaussian
+Intersection method. It finds the intersection of two Gaussian
+functions. If the intersection cannot be computed, the average of
+the two Gaussian locations is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>float</em> – location of the intersection.</li>
+<li><em>bool</em> – whether the intersection could be calculated. If the intersection
+was calculated as expected a True value is returned.
+If the Gaussians are too close to each other, the intersection
+cannot be calculated and a False value is returned; in this case,
+the first float value retured is the average of the Gaussian means.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.Crooks.calc_err_blocks">
+<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>wr</em>, <em>nblocks</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the standard error based on a number of blocks the
+work values are divided into. It is useful when you run independent
+equilibrium simulations, so that you can then use their respective
+work values to compute the standard error based on the repeats.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+<li><strong>nblocks</strong> (<em>int</em>) – number of blocks to divide the data into. This can be for
+instance the number of independent equilibrium simulations
+you ran.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.Crooks.calc_err_boot1">
+<em class="property">static </em><code class="descname">calc_err_boot1</code><span class="sig-paren">(</span><em>s1</em>, <em>n1</em>, <em>m2</em>, <em>s2</em>, <em>n2</em>, <em>nboots</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_err_boot1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the standard error of the Crooks Gaussian Intersection
+via parametric bootstrap. Given the parameters of the forward and
+reverse Gaussian distributions, multiple (nboots) bootstrap samples
+are built by random sampling from these two Gaussian distributions.
+The CGI free energy is then calculated for each bootstrap sample
+(forward and reverse Gaussians). The standard error of the estimate
+is returned as the standard deviation of the bootstrapped free
+energies.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>m1</strong> (<em>float</em>) – mean of the forward Gaussian.</li>
+<li><strong>s1</strong> (<em>float</em>) – standard deviation of the forward Gaussian.</li>
+<li><strong>n1</strong> (<em>int</em>) – number of work values to which the first Gaussian was fit.</li>
+<li><strong>m2</strong> (<em>float</em>) – mean of the reverse Gaussian.</li>
+<li><strong>s2</strong> (<em>float</em>) – standard deviation of the reverse Gaussian.</li>
+<li><strong>n2</strong> (<em>int</em>) – number of work values to which the second Gaussian was fit.</li>
+<li><strong>nboots</strong> (<em>int</em>) – number of bootstrap samples to use for the error estimate.
+Parametric bootstrap is used where work values are resampled from
+two Gaussians.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">standard error of the mean.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.Crooks.calc_err_boot2">
+<em class="property">static </em><code class="descname">calc_err_boot2</code><span class="sig-paren">(</span><em>wr</em>, <em>nboots</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_err_boot2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the standard error of the Crooks Gaussian Intersection
+via non-parametric bootstrap. The work values are resampled randomly
+with replacement multiple (nboots) times, and the CGI free energy
+recalculated for each bootstrap samples. The standard error of
+the estimate is returned as the standard deviation of the bootstrapped
+free energies.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+<li><strong>nboots</strong> (<em>int</em>) – number of bootstrap samples to use for the error estimate.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>err</strong> – standard error of the mean.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pmx.estimators.BAR">
+<em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">BAR</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Bennett acceptance ratio (BAR).</p>
+<p>Description…</p>
+<p class="rubric">Examples</p>
+<dl class="staticmethod">
+<dt id="pmx.estimators.BAR.calc_conv">
+<em class="property">static </em><code class="descname">calc_conv</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_conv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates BAR convergence as described in Hahn &amp; Then, Phys Rev E
+(2010), 81, 041117. Returns a value between -1 and 1: the closer this
+value to zero the better the BAR convergence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dg</strong> (<em>float</em>) – the BAR free energy estimate</li>
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.BAR.calc_conv_err_boot">
+<em class="property">static </em><code class="descname">calc_conv_err_boot</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>nboots</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_conv_err_boot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.BAR.calc_dg">
+<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_dg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates and returns the free energy difference.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dg</strong> – the BAR free energy estimate.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.BAR.calc_err">
+<em class="property">static </em><code class="descname">calc_err</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the analytical error estimate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dg</strong> (<em>float</em>) – the BAR free energy estimate</li>
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.BAR.calc_err_blocks">
+<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>wr</em>, <em>nblocks</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the standard error based on a number of blocks the
+work values are divided into. It is useful when you run independent
+equilibrium simulations, so that you can then use their respective
+work values to compute the standard error based on the repeats.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature</li>
+<li><strong>nblocks</strong> (<em>int</em>) – number of blocks to divide the data into. This can be for
+instance the number of independent equilibrium simulations
+you ran.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.BAR.calc_err_boot">
+<em class="property">static </em><code class="descname">calc_err_boot</code><span class="sig-paren">(</span><em>wr</em>, <em>nboots</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_err_boot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the error by bootstrapping.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature</li>
+<li><strong>nboots</strong> (<em>int</em>) – number of bootstrap samples.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pmx.gmx">
+<span id="pmx-gmx"></span><h2>pmx.gmx<a class="headerlink" href="#module-pmx.gmx" title="Permalink to this headline">¶</a></h2>
+<p>This module contains wrapper functions for some of the most used Gromacs
+tools.</p>
+<dl class="function">
+<dt id="pmx.gmx.editconf">
+<code class="descclassname">pmx.gmx.</code><code class="descname">editconf</code><span class="sig-paren">(</span><em>f</em>, <em>o='editconf.gro'</em>, <em>bt='cubic'</em>, <em>d=1.2</em>, <em>other_flags=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.gmx.editconf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">editconf</span></code> wrapper.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> (<em>str</em>) – input structure file</li>
+<li><strong>o</strong> (<em>str</em><em>, </em><em>optional</em>) – name of output structure file. Default is “solvate.gro”</li>
+<li><strong>bt</strong> (<em>str</em>) – box type:triclinic, cubic, dodecahedron, or octahedron</li>
+<li><strong>d</strong> (<em>float</em>) – distance between the solute and the box (nm)</li>
+<li><strong>other_flags</strong> (<em>str</em><em>, </em><em>optional</em>) – additional flags to pass as you would type them in the shell</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.gmx.genion">
+<code class="descclassname">pmx.gmx.</code><code class="descname">genion</code><span class="sig-paren">(</span><em>s</em>, <em>p</em>, <em>o='genion.gro'</em>, <em>np=0</em>, <em>nn=0</em>, <em>conc=0.15</em>, <em>neutral=True</em>, <em>other_flags=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.gmx.genion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">genion</span></code> wrapper. By default, group ‘SOL’ will be replaced
+by ions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>s</strong> (<em>str</em>) – input tpr file</li>
+<li><strong>p</strong> (<em>str</em>) – input topology file.</li>
+<li><strong>o</strong> (<em>str</em><em>, </em><em>optional</em>) – name of output structure file. Default is “genion.gro”</li>
+<li><strong>np</strong> (<em>int</em><em>, </em><em>optional</em>) – number of positive ions. Default is 0.</li>
+<li><strong>nn</strong> (<em>int</em><em>, </em><em>optional.</em>) – number of negative ions. Default is 0.</li>
+<li><strong>conc</strong> (<em>float</em><em>, </em><em>optional</em>) – specify salt concentration (mol/liter). Default is 0.15 M.</li>
+<li><strong>neutral</strong> (<em>bool</em>) – whether to add enough ions to neutralise the system. These
+ions are added on top of those specified with -np/-nn or -conc.
+Default is True.</li>
+<li><strong>other_flags</strong> (<em>str</em><em>, </em><em>optional</em>) – additional flags to pass as you would type them in the shell</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.gmx.get_gmx">
+<code class="descclassname">pmx.gmx.</code><code class="descname">get_gmx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.gmx.get_gmx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets path to gmx executable, and throws error if not found.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.gmx.grompp">
+<code class="descclassname">pmx.gmx.</code><code class="descname">grompp</code><span class="sig-paren">(</span><em>f</em>, <em>c</em>, <em>p</em>, <em>o='grompp.tpr'</em>, <em>maxwarn=0</em>, <em>other_flags=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.gmx.grompp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">grompp</span></code> wrapper.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> (<em>str</em>) – input mdp file</li>
+<li><strong>c</strong> (<em>str</em>) – input structure file</li>
+<li><strong>p</strong> (<em>str</em>) – input topology file. Default is “topol.top”</li>
+<li><strong>o</strong> (<em>str</em><em>, </em><em>optional</em>) – output tpr file. Default is “grompp.tpr”</li>
+<li><strong>maxwarn</strong> (<em>int</em><em>, </em><em>optional</em>) – number of allowed warnings. Default is 0.</li>
+<li><strong>other_flags</strong> (<em>str</em><em>, </em><em>optional</em>) – additional flags to pass as you would type them in the shell</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.gmx.mdrun">
+<code class="descclassname">pmx.gmx.</code><code class="descname">mdrun</code><span class="sig-paren">(</span><em>s</em>, <em>deffnm='md'</em>, <em>verbose=False</em>, <em>other_flags=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.gmx.mdrun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">mdrun</span></code> wrapper.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>s</strong> (<em>str</em>) – input tpr file</li>
+<li><strong>deffnm</strong> (<em>str</em><em>, </em><em>optional</em>) – set the default filename for all file options. Default is ‘md’.</li>
+<li><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to activate verbose flag in Gromacs mdrun. Default is False.</li>
+<li><strong>other_flags</strong> (<em>str</em><em>, </em><em>optional</em>) – additional flags to pass as you would type them in the shell.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.gmx.pdb2gmx">
+<code class="descclassname">pmx.gmx.</code><code class="descname">pdb2gmx</code><span class="sig-paren">(</span><em>f</em>, <em>o='pdb2gmx.gro'</em>, <em>p='topol.top'</em>, <em>ff='amber99sb-star-ildn-mut'</em>, <em>water='tip3p'</em>, <em>other_flags=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.gmx.pdb2gmx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">pdb2gmx</span></code> wrapper.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> (<em>str</em>) – input structure file</li>
+<li><strong>o</strong> (<em>str</em><em>, </em><em>optional</em>) – output structure file. Default is “pdb2gmx.gro”.</li>
+<li><strong>p</strong> (<em>str</em><em>, </em><em>optional</em>) – name of topology file. Default is “topol.top”.</li>
+<li><strong>ff</strong> (<em>str</em><em>, </em><em>optional</em>) – forcefield. Default is “amber99sb-star-ildn-mut”.</li>
+<li><strong>water</strong> (<em>str</em><em>, </em><em>optional</em>) – water model. Default is “tip3p”.</li>
+<li><strong>other_flags</strong> (<em>str</em><em>, </em><em>optional</em>) – additional flags to pass as you would type them in the shell</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.gmx.solvate">
+<code class="descclassname">pmx.gmx.</code><code class="descname">solvate</code><span class="sig-paren">(</span><em>cp</em>, <em>cs='spc216.gro'</em>, <em>p='topol.top'</em>, <em>o='solvate.gro'</em>, <em>other_flags=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.gmx.solvate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">solvate</span></code> wrapper.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cp</strong> (<em>str</em>) – input structure file</li>
+<li><strong>cs</strong> (<em>str</em><em>, </em><em>optional</em>) – structure file of the solvent. Default is “spc216.gro”.</li>
+<li><strong>p</strong> (<em>str</em><em>, </em><em>optional</em>) – name of topology file. Default is “topol.top”</li>
+<li><strong>o</strong> (<em>str</em><em>, </em><em>optional</em>) – name of output structure file. Default is “solvate.gro”</li>
+<li><strong>other_flags</strong> (<em>str</em><em>, </em><em>optional</em>) – additional flags to pass as you would type them in the shell</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.gmx.trjconv">
+<code class="descclassname">pmx.gmx.</code><code class="descname">trjconv</code><span class="sig-paren">(</span><em>f</em>, <em>s</em>, <em>o='trjconv.xtc'</em>, <em>ur='rect'</em>, <em>pbc='none'</em>, <em>fit='none'</em>, <em>out_grp='System'</em>, <em>fit_grp='C-alpha'</em>, <em>sep=False</em>, <em>other_flags=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.gmx.trjconv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">trjconv</span></code> wrapper.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> (<em>str</em>) – input structure of trajectory file</li>
+<li><strong>s</strong> (<em>str</em>) – input tpr file</li>
+<li><strong>o</strong> (<em>str</em><em>, </em><em>optional</em>) – output trajectory/structure file. Default is “trjconv.xtc”</li>
+<li><strong>ur</strong> (<em>str</em><em>, </em><em>optional</em>) – unit-cell representation: rect, tric, compact. Default is ‘rect’.</li>
+<li><strong>pbc</strong> (<em>str</em><em>, </em><em>optional</em>) – PBC treatment: none, mol, res, atom, nojump, cluster, whole.
+Default is ‘none’.</li>
+<li><strong>fit</strong> (<em>str</em><em>, </em><em>optional</em>) – fit molecule to ref structure in the structure file: none, rot+trans,
+rotxy+transxy, translation, transxy, progressive.
+Default is ‘none’.</li>
+<li><strong>out_grp</strong> (<em>str</em><em>, </em><em>optional</em>) – output group. Defauls is ‘System’.</li>
+<li><strong>fit_grp</strong> (<em>str</em><em>, </em><em>optional</em>) – group to use for the fitting if ‘fit’ is not none.
+Default is ‘C-alpha’.</li>
+<li><strong>sep</strong> (<em>bool</em><em>, </em><em>optional</em>) – write each frame to a separate .gro, .g96 or .pdb file.
+Default is False.</li>
+<li><strong>other_flags</strong> (<em>str</em><em>, </em><em>optional</em>) – additional flags to pass as you would type them in the shell</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pmx.builder">
+<span id="pmx-builder"></span><h2>pmx.builder<a class="headerlink" href="#module-pmx.builder" title="Permalink to this headline">¶</a></h2>
+<p>This module comtains some functions to build protein
+structures from scratch.</p>
+<p>Most important:
+- build_chain</p>
+<dl class="docutils">
+<dt>Usage:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.builder</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span> <span class="o">=</span> <span class="n">build_chain</span><span class="p">(</span><span class="s1">&#39;AAAAAA&#39;</span><span class="p">)</span>    <span class="c1"># builds an ordinary polyalanine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;polyala.pdb&#39;</span><span class="p">)</span>       <span class="c1"># store file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span> <span class="o">=</span> <span class="n">build_chain</span><span class="p">(</span><span class="s1">&#39;FGHRTCV&#39;</span><span class="p">,</span><span class="n">hydrogens</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="c1"># build chain without H</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span> <span class="o">=</span> <span class="n">build_chain</span><span class="p">(</span><span class="s1">&#39;FGHRTCV&#39;</span><span class="p">,</span><span class="n">ss</span><span class="o">=</span><span class="s1">&#39;HHHHHHH&#39;</span><span class="p">)</span> <span class="n">build</span> <span class="k">as</span> <span class="n">helix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span> <span class="o">=</span> <span class="n">build_chain</span><span class="p">(</span><span class="s1">&#39;FGHRTCV&#39;</span><span class="p">,</span><span class="n">dihedrals</span> <span class="o">=</span> <span class="p">((</span><span class="n">phi1</span><span class="p">,</span><span class="n">psi1</span><span class="p">,</span><span class="n">omega1</span><span class="p">),(</span><span class="o">...</span><span class="p">)))</span>
+<span class="go">build chain with defined dihedral angles</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="function">
+<dt id="pmx.builder.add_bp">
+<code class="descclassname">pmx.builder.</code><code class="descname">add_bp</code><span class="sig-paren">(</span><em>m</em>, <em>strand=None</em>, <em>bRNA=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.add_bp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.attach_aminoacid">
+<code class="descclassname">pmx.builder.</code><code class="descname">attach_aminoacid</code><span class="sig-paren">(</span><em>mol</em>, <em>resname</em>, <em>hydrogens=True</em>, <em>omega=180.0</em>, <em>phi=-139.0</em>, <em>psi=135.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.attach_aminoacid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.attach_group">
+<code class="descclassname">pmx.builder.</code><code class="descname">attach_group</code><span class="sig-paren">(</span><em>atom</em>, <em>mol</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.attach_group" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.build_chain">
+<code class="descclassname">pmx.builder.</code><code class="descname">build_chain</code><span class="sig-paren">(</span><em>sequence</em>, <em>dihedrals=None</em>, <em>hydrogens=True</em>, <em>ss=None</em>, <em>chain_id='X'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.build_chain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.build_dna_strand">
+<code class="descclassname">pmx.builder.</code><code class="descname">build_dna_strand</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.build_dna_strand" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.build_rna_strand">
+<code class="descclassname">pmx.builder.</code><code class="descname">build_rna_strand</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.build_rna_strand" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.get_fragments">
+<code class="descclassname">pmx.builder.</code><code class="descname">get_fragments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.get_fragments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.make_3ter">
+<code class="descclassname">pmx.builder.</code><code class="descname">make_3ter</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.make_3ter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.make_5ter">
+<code class="descclassname">pmx.builder.</code><code class="descname">make_5ter</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.make_5ter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.make_residue">
+<code class="descclassname">pmx.builder.</code><code class="descname">make_residue</code><span class="sig-paren">(</span><em>key</em>, <em>hydrogens=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.make_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a molecule object with
+default geometry</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.read_pdb_with_connect">
+<code class="descclassname">pmx.builder.</code><code class="descname">read_pdb_with_connect</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.read_pdb_with_connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.set_omega">
+<code class="descclassname">pmx.builder.</code><code class="descname">set_omega</code><span class="sig-paren">(</span><em>mol1</em>, <em>mol2</em>, <em>phi</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.set_omega" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.set_phi">
+<code class="descclassname">pmx.builder.</code><code class="descname">set_phi</code><span class="sig-paren">(</span><em>mol1</em>, <em>mol2</em>, <em>phi</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.set_phi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.set_psi">
+<code class="descclassname">pmx.builder.</code><code class="descname">set_psi</code><span class="sig-paren">(</span><em>mol</em>, <em>phi</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.set_psi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.builder.write_pdb_with_connect">
+<code class="descclassname">pmx.builder.</code><code class="descname">write_pdb_with_connect</code><span class="sig-paren">(</span><em>mol</em>, <em>f</em>, <em>n=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.builder.write_pdb_with_connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pmx.utils">
+<span id="pmx-utils"></span><h2>pmx.utils<a class="headerlink" href="#module-pmx.utils" title="Permalink to this headline">¶</a></h2>
+<p>Various utility functions and classes</p>
+<dl class="exception">
+<dt id="pmx.utils.MissingTopolParamError">
+<em class="property">exception </em><code class="descclassname">pmx.utils.</code><code class="descname">MissingTopolParamError</code><span class="sig-paren">(</span><em>s</em>, <em>atoms</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.MissingTopolParamError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Raised when certain parameters for terms defined in the topology cannot
+ba found.</p>
+<dl class="attribute">
+<dt id="pmx.utils.MissingTopolParamError.args">
+<code class="descname">args</code><a class="headerlink" href="#pmx.utils.MissingTopolParamError.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.utils.MissingTopolParamError.with_traceback">
+<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.MissingTopolParamError.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="pmx.utils.RangeCheckError">
+<em class="property">exception </em><code class="descclassname">pmx.utils.</code><code class="descname">RangeCheckError</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.RangeCheckError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exceptions class for …</p>
+<dl class="attribute">
+<dt id="pmx.utils.RangeCheckError.args">
+<code class="descname">args</code><a class="headerlink" href="#pmx.utils.RangeCheckError.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.utils.RangeCheckError.with_traceback">
+<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.RangeCheckError.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="pmx.utils.UnknownResidueError">
+<em class="property">exception </em><code class="descclassname">pmx.utils.</code><code class="descname">UnknownResidueError</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.UnknownResidueError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Class for unknown residue Exceptions.</p>
+<dl class="attribute">
+<dt id="pmx.utils.UnknownResidueError.args">
+<code class="descname">args</code><a class="headerlink" href="#pmx.utils.UnknownResidueError.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.utils.UnknownResidueError.with_traceback">
+<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.UnknownResidueError.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.data2gauss">
+<code class="descclassname">pmx.utils.</code><code class="descname">data2gauss</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.data2gauss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a one dimensional array and fits a Gaussian.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>list</em>) – 1D array of values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><em>float</em> – mean of the distribution.</li>
+<li><em>float</em> – standard deviation of the distribution.</li>
+<li><em>float</em> – height of the curve’s peak.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.ff_selection">
+<code class="descclassname">pmx.utils.</code><code class="descname">ff_selection</code><span class="sig-paren">(</span><em>gmxlib=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.ff_selection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.ffopen">
+<code class="descclassname">pmx.utils.</code><code class="descname">ffopen</code><span class="sig-paren">(</span><em>filename</em>, <em>mode='r'</em>, <em>backup=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.ffopen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.gauss_func">
+<code class="descclassname">pmx.utils.</code><code class="descname">gauss_func</code><span class="sig-paren">(</span><em>A</em>, <em>mean</em>, <em>dev</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.gauss_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the parameters of a Gaussian and a range of the x-values, returns
+the y-values of the Gaussian function</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.get_ff_path">
+<code class="descclassname">pmx.utils.</code><code class="descname">get_ff_path</code><span class="sig-paren">(</span><em>ff</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.get_ff_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get path of force field.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ff</strong> (<em>str</em>) – force field name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>ff_path</strong> – absolute path to the force field</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.get_mtp_file">
+<code class="descclassname">pmx.utils.</code><code class="descname">get_mtp_file</code><span class="sig-paren">(</span><em>residue</em>, <em>ff</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.get_mtp_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the correct mutres mtp file depending on the nature of the
+residue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>residue</strong> (<em>Molecule instance</em>) – the residue that will be mutated</li>
+<li><strong>ff</strong> (<em>str</em>) – the force field to use</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mtp_file</strong> – path to the mtp file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.get_pmxdata">
+<code class="descclassname">pmx.utils.</code><code class="descname">get_pmxdata</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.get_pmxdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the absolute path for the file with ‘fname’ inside the pmx
+data folder.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.initialise_logger">
+<code class="descclassname">pmx.utils.</code><code class="descname">initialise_logger</code><span class="sig-paren">(</span><em>logname</em>, <em>logfile</em>, <em>level='INFO'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.initialise_logger" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.killBackups">
+<code class="descclassname">pmx.utils.</code><code class="descname">killBackups</code><span class="sig-paren">(</span><em>arg</em>, <em>dirname</em>, <em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.killBackups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.list2file">
+<code class="descclassname">pmx.utils.</code><code class="descname">list2file</code><span class="sig-paren">(</span><em>lst</em>, <em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.list2file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a list of strings to a file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.listDirs">
+<code class="descclassname">pmx.utils.</code><code class="descname">listDirs</code><span class="sig-paren">(</span><em>dir='./'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.listDirs" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a list of directrories in
+directory dir</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.listFiles">
+<code class="descclassname">pmx.utils.</code><code class="descname">listFiles</code><span class="sig-paren">(</span><em>dir='./'</em>, <em>ext=None</em>, <em>abs=True</em>, <em>backups=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.listFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a list of files in
+directory dir, optionally only
+certain file types</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pmx.utils.mtpError">
+<em class="property">exception </em><code class="descclassname">pmx.utils.</code><code class="descname">mtpError</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.mtpError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exceptions class for …</p>
+<dl class="attribute">
+<dt id="pmx.utils.mtpError.args">
+<code class="descname">args</code><a class="headerlink" href="#pmx.utils.mtpError.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.utils.mtpError.with_traceback">
+<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.mtpError.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.multiple_replace">
+<code class="descclassname">pmx.utils.</code><code class="descname">multiple_replace</code><span class="sig-paren">(</span><em>text</em>, <em>word_dic</em>, <em>isfile=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.multiple_replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a text and replace words that match a key in a dictionary with
+the associated value, returning the modified text.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> (<em>str</em>) – input text</li>
+<li><strong>word_dic</strong> (<em>dict</em>) – dictionary where keys strings are replaced by their value strings</li>
+<li><strong>isfile</strong> (<em>bool</em><em>, </em><em>optional</em>) – if isfile is True, the input ‘text’ will be considered a textfile,
+which will be opened, the patterns replaced, and written again.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newtext</strong> – output text with strings replaced</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;hello, John&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multiple_replace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;hello&#39;</span><span class="p">:</span><span class="s1">&#39;goodbye&#39;</span><span class="p">,</span> <span class="s1">&#39;John&#39;</span><span class="p">:</span><span class="s1">&#39;Mark&#39;</span><span class="p">})</span>
+<span class="go">&#39;goodbye, Mark&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.natural_sort">
+<code class="descclassname">pmx.utils.</code><code class="descname">natural_sort</code><span class="sig-paren">(</span><em>l</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.natural_sort" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.removeBackups">
+<code class="descclassname">pmx.utils.</code><code class="descname">removeBackups</code><span class="sig-paren">(</span><em>dir</em>, <em>check=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.removeBackups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.show_ff">
+<code class="descclassname">pmx.utils.</code><code class="descname">show_ff</code><span class="sig-paren">(</span><em>gmxlib=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.show_ff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the list of forcefields available in GMXLIB.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gmxlib</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to force field library. If not set explicitly, it is taken from
+the enviroment variable GMXLIB.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.utils.which">
+<code class="descclassname">pmx.utils.</code><code class="descname">which</code><span class="sig-paren">(</span><em>program</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.which" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equivalent of UNIX which command. Returns the path of the executable
+if it is found, otherwise returns None.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>program</strong> (<em>str</em>) – name of executable you are looking for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>path</strong> – string of path if found, otherwise None.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pmx.atomselection">
+<span id="pmx-atomselection"></span><h2>pmx.atomselection<a class="headerlink" href="#module-pmx.atomselection" title="Permalink to this headline">¶</a></h2>
+<p>This module contains the Atomselection class. It contains methods
+that are inherited to the Molecule, Chain and Model classes.
+Take a look there for details…</p>
+<dl class="class">
+<dt id="pmx.atomselection.Atomselection">
+<em class="property">class </em><code class="descclassname">pmx.atomselection.</code><code class="descname">Atomselection</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Basic class to handle sets of atoms. Atoms are stored
+in a list &lt;atoms&gt;</p>
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.a2nm">
+<code class="descname">a2nm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.a2nm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.atomlistFromTop">
+<code class="descname">atomlistFromTop</code><span class="sig-paren">(</span><em>topDic</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.atomlistFromTop" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of atom objects
+found in topDic</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.com">
+<code class="descname">com</code><span class="sig-paren">(</span><em>vector_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.com" title="Permalink to this definition">¶</a></dt>
+<dd><p>move atoms to center of mass or return vector only</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.coords">
+<code class="descname">coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.coords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.fetch_atoms">
+<code class="descname">fetch_atoms</code><span class="sig-paren">(</span><em>key</em>, <em>how='byname'</em>, <em>wildcard=False</em>, <em>inv=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.fetch_atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.get_b13">
+<code class="descname">get_b13</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.get_b13" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.get_b14">
+<code class="descname">get_b14</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.get_b14" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.get_by_id">
+<code class="descname">get_by_id</code><span class="sig-paren">(</span><em>lst</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.get_by_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.get_long_name">
+<code class="descname">get_long_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.get_long_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.get_order">
+<code class="descname">get_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.get_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.get_symbol">
+<code class="descname">get_symbol</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.get_symbol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.make_mol2_bondlist">
+<code class="descname">make_mol2_bondlist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.make_mol2_bondlist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.max_crd">
+<code class="descname">max_crd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.max_crd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.nm2a">
+<code class="descname">nm2a</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.nm2a" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.random_rotation">
+<code class="descname">random_rotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.random_rotation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.rename_atoms_to_gmx">
+<code class="descname">rename_atoms_to_gmx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.rename_atoms_to_gmx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename atoms to comply with Gromacs syntax: if the name starts with
+a digit, the digit is moved at the end of the name. E.g. “1CA” becomes
+“CA1”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.renumber_atoms">
+<code class="descname">renumber_atoms</code><span class="sig-paren">(</span><em>start=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.renumber_atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.search_neighbors">
+<code class="descname">search_neighbors</code><span class="sig-paren">(</span><em>cutoff=8.0</em>, <em>build_bonds=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.search_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.translate">
+<code class="descname">translate</code><span class="sig-paren">(</span><em>vec</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>fn</em>, <em>title=''</em>, <em>nr=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.writeGRO">
+<code class="descname">writeGRO</code><span class="sig-paren">(</span><em>filename</em>, <em>title=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.writeGRO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.atomselection.Atomselection.writePDB">
+<code class="descname">writePDB</code><span class="sig-paren">(</span><em>fname</em>, <em>title=''</em>, <em>nr=1</em>, <em>bPDBTER=False</em>, <em>bAssignChainIDs=False</em>, <em>resnrlist=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.writePDB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pmx.ffparser">
+<span id="pmx-ffparser"></span><h2>pmx.ffparser<a class="headerlink" href="#module-pmx.ffparser" title="Permalink to this headline">¶</a></h2>
+<p>docs to be added</p>
+<dl class="class">
+<dt id="pmx.ffparser.ATPParser">
+<em class="property">class </em><code class="descclassname">pmx.ffparser.</code><code class="descname">ATPParser</code><span class="sig-paren">(</span><em>fn='ffamber99sb.atp'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.ATPParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pmx.ffparser.ATPParser.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.ATPParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pmx.ffparser.BondedParser">
+<em class="property">class </em><code class="descclassname">pmx.ffparser.</code><code class="descname">BondedParser</code><span class="sig-paren">(</span><em>filename=None</em>, <em>version='old'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.BondedParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pmx.ffparser.BondedParser.assign_params">
+<code class="descname">assign_params</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.BondedParser.assign_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.ffparser.BondedParser.get_angle_param">
+<code class="descname">get_angle_param</code><span class="sig-paren">(</span><em>type1</em>, <em>type2</em>, <em>type3</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.BondedParser.get_angle_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.ffparser.BondedParser.get_bond_param">
+<code class="descname">get_bond_param</code><span class="sig-paren">(</span><em>type1</em>, <em>type2</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.BondedParser.get_bond_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.ffparser.BondedParser.get_dihedral_param">
+<code class="descname">get_dihedral_param</code><span class="sig-paren">(</span><em>type1</em>, <em>type2</em>, <em>type3</em>, <em>type4</em>, <em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.BondedParser.get_dihedral_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.ffparser.BondedParser.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.BondedParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pmx.ffparser.NBParser">
+<em class="property">class </em><code class="descclassname">pmx.ffparser.</code><code class="descname">NBParser</code><span class="sig-paren">(</span><em>filename=None</em>, <em>version='new'</em>, <em>ff='amber'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.NBParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pmx.ffparser.NBParser.assign_params">
+<code class="descname">assign_params</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.NBParser.assign_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.ffparser.NBParser.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>filename</em>, <em>version</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.NBParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pmx.ffparser.RTPParser">
+<em class="property">class </em><code class="descclassname">pmx.ffparser.</code><code class="descname">RTPParser</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.RTPParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pmx.ffparser.RTPParser.add_entry">
+<code class="descname">add_entry</code><span class="sig-paren">(</span><em>name</em>, <em>rtp_dic</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.RTPParser.add_entry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.ffparser.RTPParser.assign_dihedral_params">
+<code class="descname">assign_dihedral_params</code><span class="sig-paren">(</span><em>model</em>, <em>directives</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.RTPParser.assign_dihedral_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.ffparser.RTPParser.assign_params">
+<code class="descname">assign_params</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.RTPParser.assign_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.ffparser.RTPParser.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.RTPParser.next" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.ffparser.RTPParser.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.RTPParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.ffparser.RTPParser.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>out_file</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ffparser.RTPParser.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pmx.geometry">
+<span id="pmx-geometry"></span><h2>pmx.geometry<a class="headerlink" href="#module-pmx.geometry" title="Permalink to this headline">¶</a></h2>
+<p>This file contains the Rotation class.
+A Rotation instance is built with two vectors.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Rotation</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>  <span class="c1"># create rotation object around v2-v1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v3</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v3</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">v3</span><span class="p">)</span>     <span class="c1"># rotate v3 around v2-v1</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="pmx.geometry.Rotation">
+<em class="property">class </em><code class="descclassname">pmx.geometry.</code><code class="descname">Rotation</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.Rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pmx.geometry.Rotation.apply">
+<code class="descname">apply</code><span class="sig-paren">(</span><em>v</em>, <em>phi</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.Rotation.apply" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.geometry.apply_fit_R">
+<code class="descclassname">pmx.geometry.</code><code class="descname">apply_fit_R</code><span class="sig-paren">(</span><em>atoms</em>, <em>R</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.apply_fit_R" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.geometry.bb_super">
+<code class="descclassname">pmx.geometry.</code><code class="descname">bb_super</code><span class="sig-paren">(</span><em>mol1</em>, <em>mol2</em>, <em>use_orig_mc_coords=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.bb_super" title="Permalink to this definition">¶</a></dt>
+<dd><p>superpose mol2 on mol1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.geometry.fit">
+<code class="descclassname">pmx.geometry.</code><code class="descname">fit</code><span class="sig-paren">(</span><em>model1</em>, <em>model2</em>, <em>atom_names=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.geometry.fit_atoms">
+<code class="descclassname">pmx.geometry.</code><code class="descname">fit_atoms</code><span class="sig-paren">(</span><em>fit_atoms1</em>, <em>fit_atoms2</em>, <em>rot_atoms2</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.fit_atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.geometry.fit_by_ndx">
+<code class="descclassname">pmx.geometry.</code><code class="descname">fit_by_ndx</code><span class="sig-paren">(</span><em>ref</em>, <em>model</em>, <em>ndx1</em>, <em>ndx2</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.fit_by_ndx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.geometry.nuc_super">
+<code class="descclassname">pmx.geometry.</code><code class="descname">nuc_super</code><span class="sig-paren">(</span><em>mol1</em>, <em>mol2</em>, <em>name1=None</em>, <em>name2=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.nuc_super" title="Permalink to this definition">¶</a></dt>
+<dd><p>superpose mol2 on mol1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.geometry.planarity">
+<code class="descclassname">pmx.geometry.</code><code class="descname">planarity</code><span class="sig-paren">(</span><em>atom_list</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.planarity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.geometry.translate_by_ndx">
+<code class="descclassname">pmx.geometry.</code><code class="descname">translate_by_ndx</code><span class="sig-paren">(</span><em>struct</em>, <em>ndx</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.translate_by_ndx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.geometry.vec_ang">
+<code class="descclassname">pmx.geometry.</code><code class="descname">vec_ang</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.geometry.vec_ang" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pmx.library">
+<span id="pmx-library"></span><h2>pmx.library<a class="headerlink" href="#module-pmx.library" title="Permalink to this headline">¶</a></h2>
+<p>Library for useful and less useful things needed by the pmx packages.</p>
+<dl class="function">
+<dt id="pmx.library.pmx_data_file">
+<code class="descclassname">pmx.library.</code><code class="descname">pmx_data_file</code><span class="sig-paren">(</span><em>filename</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.library.pmx_data_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pmx.mutdb">
+<span id="pmx-mutdb"></span><h2>pmx.mutdb<a class="headerlink" href="#module-pmx.mutdb" title="Permalink to this headline">¶</a></h2>
+<p>Functions to read the mutation database</p>
+<dl class="function">
+<dt id="pmx.mutdb.read_mtp">
+<code class="descclassname">pmx.mutdb.</code><code class="descname">read_mtp</code><span class="sig-paren">(</span><em>filename='ffoplsaa.mtp'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.mutdb.read_mtp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.mutdb.read_mtp_entry">
+<code class="descclassname">pmx.mutdb.</code><code class="descname">read_mtp_entry</code><span class="sig-paren">(</span><em>entry</em>, <em>filename='ffamber99sb.mtp'</em>, <em>version='old'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.mutdb.read_mtp_entry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.mutdb.read_mutpdb">
+<code class="descclassname">pmx.mutdb.</code><code class="descname">read_mutpdb</code><span class="sig-paren">(</span><em>filename='mutations_oplsaa.pdb'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.mutdb.read_mutpdb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.mutdb.read_new_mtp_entry">
+<code class="descclassname">pmx.mutdb.</code><code class="descname">read_new_mtp_entry</code><span class="sig-paren">(</span><em>entry</em>, <em>filename='mutres.mtp'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.mutdb.read_new_mtp_entry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pmx.parser">
+<span id="pmx-parser"></span><h2>pmx.parser<a class="headerlink" href="#module-pmx.parser" title="Permalink to this headline">¶</a></h2>
+<p>Some functions to write parsers for different data formats.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lst</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>     <span class="c1"># read file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lst</span> <span class="o">=</span> <span class="n">kickOutComments</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>       <span class="c1"># remove comments with # or ;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lst</span> <span class="o">=</span> <span class="n">parseList</span><span class="p">(</span><span class="s1">&#39;ifs&#39;</span><span class="p">,</span><span class="n">lst</span><span class="p">)</span>            <span class="c1"># parse each line and return</span>
+<span class="go">[integer, float, string] triples</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">subl</span> <span class="o">=</span> <span class="n">readSection</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span><span class="s1">&#39;[ begin ]&#39;</span><span class="p">,</span><span class="s1">&#39;[ end ]&#39;</span><span class="p">)</span> <span class="c1"># get all lines between</span>
+<span class="go">[ begin ] and [ end ]</span>
+</pre></div>
+</div>
+<dl class="exception">
+<dt id="pmx.parser.ParserError">
+<em class="property">exception </em><code class="descclassname">pmx.parser.</code><code class="descname">ParserError</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.parser.ParserError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="attribute">
+<dt id="pmx.parser.ParserError.args">
+<code class="descname">args</code><a class="headerlink" href="#pmx.parser.ParserError.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.parser.ParserError.with_traceback">
+<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.parser.ParserError.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.parser.kickOutComments">
+<code class="descclassname">pmx.parser.</code><code class="descname">kickOutComments</code><span class="sig-paren">(</span><em>lines</em>, <em>comment='#'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.parser.kickOutComments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.parser.parseList">
+<code class="descclassname">pmx.parser.</code><code class="descname">parseList</code><span class="sig-paren">(</span><em>format_string</em>, <em>lst</em>, <em>ignore_missing=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.parser.parseList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.parser.readSection">
+<code class="descclassname">pmx.parser.</code><code class="descname">readSection</code><span class="sig-paren">(</span><em>lines</em>, <em>begin</em>, <em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.parser.readSection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.parser.read_and_format">
+<code class="descclassname">pmx.parser.</code><code class="descname">read_and_format</code><span class="sig-paren">(</span><em>filename</em>, <em>format_string</em>, <em>comment='#'</em>, <em>ignore_missing=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.parser.read_and_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.parser.read_fasta">
+<code class="descclassname">pmx.parser.</code><code class="descname">read_fasta</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.parser.read_fasta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.parser.read_xvg">
+<code class="descclassname">pmx.parser.</code><code class="descname">read_xvg</code><span class="sig-paren">(</span><em>fn</em>, <em>style='xy'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.parser.read_xvg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pmx.rotamer">
+<span id="pmx-rotamer"></span><h2>pmx.rotamer<a class="headerlink" href="#module-pmx.rotamer" title="Permalink to this headline">¶</a></h2>
+<p>This file contains stuff to deal with the Dunbrack rotamer
+library</p>
+<dl class="function">
+<dt id="pmx.rotamer.check_overlaps">
+<code class="descclassname">pmx.rotamer.</code><code class="descname">check_overlaps</code><span class="sig-paren">(</span><em>model</em>, <em>mol</em>, <em>nb_list</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.rotamer.check_overlaps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.rotamer.get_rotamers">
+<code class="descclassname">pmx.rotamer.</code><code class="descname">get_rotamers</code><span class="sig-paren">(</span><em>bbdep</em>, <em>resname</em>, <em>phi</em>, <em>psi</em>, <em>residue=False</em>, <em>hydrogens=True</em>, <em>full=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.rotamer.get_rotamers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.rotamer.load_bbdep">
+<code class="descclassname">pmx.rotamer.</code><code class="descname">load_bbdep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.rotamer.load_bbdep" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.rotamer.make_bbdep">
+<code class="descclassname">pmx.rotamer.</code><code class="descname">make_bbdep</code><span class="sig-paren">(</span><em>min_val=0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.rotamer.make_bbdep" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.rotamer.mini_nb">
+<code class="descclassname">pmx.rotamer.</code><code class="descname">mini_nb</code><span class="sig-paren">(</span><em>model</em>, <em>mol</em>, <em>cutoff</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.rotamer.mini_nb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.rotamer.mutate">
+<code class="descclassname">pmx.rotamer.</code><code class="descname">mutate</code><span class="sig-paren">(</span><em>residue</em>, <em>new_aa</em>, <em>bbdep</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.rotamer.mutate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.rotamer.real_resname">
+<code class="descclassname">pmx.rotamer.</code><code class="descname">real_resname</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.rotamer.real_resname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pmx.rotamer.select_best_rotamer">
+<code class="descclassname">pmx.rotamer.</code><code class="descname">select_best_rotamer</code><span class="sig-paren">(</span><em>model</em>, <em>rotamers</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.rotamer.select_best_rotamer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pmx.xdrfile">
+<span id="pmx-xdrfile"></span><h2>pmx.xdrfile<a class="headerlink" href="#module-pmx.xdrfile" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pmx.xdrfile.Frame">
+<em class="property">class </em><code class="descclassname">pmx.xdrfile.</code><code class="descname">Frame</code><span class="sig-paren">(</span><em>n</em>, <em>mode</em>, <em>x=None</em>, <em>box=None</em>, <em>units=None</em>, <em>v=None</em>, <em>f=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.Frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pmx.xdrfile.Frame.get_box">
+<code class="descname">get_box</code><span class="sig-paren">(</span><em>mode='std'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.Frame.get_box" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.xdrfile.Frame.get_natoms">
+<code class="descname">get_natoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.Frame.get_natoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.xdrfile.Frame.get_prec">
+<code class="descname">get_prec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.Frame.get_prec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.xdrfile.Frame.get_step">
+<code class="descname">get_step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.Frame.get_step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.xdrfile.Frame.get_time">
+<code class="descname">get_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.Frame.get_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.xdrfile.Frame.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>atom_sel</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.Frame.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.xdrfile.Frame.update_atoms">
+<code class="descname">update_atoms</code><span class="sig-paren">(</span><em>atom_sel</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.Frame.update_atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.xdrfile.Frame.update_box">
+<code class="descname">update_box</code><span class="sig-paren">(</span><em>box</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.Frame.update_box" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pmx.xdrfile.XDRFile">
+<em class="property">class </em><code class="descclassname">pmx.xdrfile.</code><code class="descname">XDRFile</code><span class="sig-paren">(</span><em>fn</em>, <em>mode='Auto'</em>, <em>ft='Auto'</em>, <em>atomNum=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.XDRFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdr3DX">
+<code class="descname">exdr3DX</code><em class="property"> = 7</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdr3DX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrCLOSE">
+<code class="descname">exdrCLOSE</code><em class="property"> = 8</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrCLOSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrDOUBLE">
+<code class="descname">exdrDOUBLE</code><em class="property"> = 3</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrDOUBLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrENDOFFILE">
+<code class="descname">exdrENDOFFILE</code><em class="property"> = 11</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrENDOFFILE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrFLOAT">
+<code class="descname">exdrFLOAT</code><em class="property"> = 5</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrFLOAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrHEADER">
+<code class="descname">exdrHEADER</code><em class="property"> = 1</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrHEADER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrINT">
+<code class="descname">exdrINT</code><em class="property"> = 4</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrINT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrMAGIC">
+<code class="descname">exdrMAGIC</code><em class="property"> = 9</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrMAGIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrNOMEM">
+<code class="descname">exdrNOMEM</code><em class="property"> = 10</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrNOMEM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrNR">
+<code class="descname">exdrNR</code><em class="property"> = 12</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrNR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrOK">
+<code class="descname">exdrOK</code><em class="property"> = 0</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrOK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrSTRING">
+<code class="descname">exdrSTRING</code><em class="property"> = 2</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrSTRING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.xdrfile.XDRFile.exdrUINT">
+<code class="descname">exdrUINT</code><em class="property"> = 6</em><a class="headerlink" href="#pmx.xdrfile.XDRFile.exdrUINT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pmx.xdrfile.XDRFile.write_xtc_frame">
+<code class="descname">write_xtc_frame</code><span class="sig-paren">(</span><em>step=0</em>, <em>time=0.0</em>, <em>prec=1000.0</em>, <em>lam=0.0</em>, <em>box=False</em>, <em>x=False</em>, <em>units='A'</em>, <em>bTrr=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xdrfile.XDRFile.write_xtc_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../classes/indexfile.html" class="btn btn-neutral" title="IndexFile" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, The Authors.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = ''
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="../_static/js/versions.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

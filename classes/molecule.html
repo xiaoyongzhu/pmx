@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Molecule &mdash; pmx  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pmx  documentation" href="../index.html"/>
+        <link rel="up" title="Classes" href="index.html"/>
+        <link rel="next" title="Chain" href="chain.html"/>
+        <link rel="prev" title="Atom" href="atom.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="atom.html">Atom</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Molecule</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">Chain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trajectory.html">Trajectory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology.html">Topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="indexfile.html">IndexFile</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/webserver.html">Protein webserver</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/dna_webserver.html">DNA webserver</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pmx</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Classes</a> &raquo;</li>
+        
+      <li>Molecule</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/classes/molecule.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="molecule">
+<h1>Molecule<a class="headerlink" href="#molecule" title="Permalink to this headline">¶</a></h1>
+<p>This class stores arrays of atoms. It is also used for residues within
+polymers, such as amino acids within a protein. As such, a <code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code>
+instance has <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">resname</span></code>, and <code class="xref py py-attr docutils literal notranslate"><span class="pre">atoms</span></code> attributes.</p>
+<div class="section" id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pmx.molecule.Molecule">
+<em class="property">class </em><code class="descclassname">pmx.molecule.</code><code class="descname">Molecule</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Storage class for a Molecule/residue</p>
+<dl class="method">
+<dt id="pmx.molecule.Molecule.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>atom</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>attach atom at the end</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.assign_moltype">
+<code class="descname">assign_moltype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.assign_moltype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identifies what type of molecule/residue the molecule is:
+- protein (residue)
+- dna (residue)
+- rna (residue)
+- water
+- ion
+- unknown.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.atomlistFromTop">
+<code class="descname">atomlistFromTop</code><span class="sig-paren">(</span><em>topDic</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.atomlistFromTop" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of atom objects
+found in topDic</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.com">
+<code class="descname">com</code><span class="sig-paren">(</span><em>vector_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.com" title="Permalink to this definition">¶</a></dt>
+<dd><p>move atoms to center of mass or return vector only</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy molecule</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.fetch">
+<code class="descname">fetch</code><span class="sig-paren">(</span><em>key</em>, <em>how='byname'</em>, <em>wildcard=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.fetch" title="Permalink to this definition">¶</a></dt>
+<dd><p>select atoms by name or by element</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.fetchm">
+<code class="descname">fetchm</code><span class="sig-paren">(</span><em>keys</em>, <em>how='byname'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.fetchm" title="Permalink to this definition">¶</a></dt>
+<dd><p>select list of atom by name or element</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.get_phi">
+<code class="descname">get_phi</code><span class="sig-paren">(</span><em>degree=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.get_phi" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate phi angle (C-1)-N-CA-C</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.get_real_resname">
+<code class="descname">get_real_resname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.get_real_resname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets instance attribute ‘real_resname’. The residue names used
+are those independent of the protonation state. E.g. for residue ‘HSE’,
+‘HIS’ is set as the ‘real_resname’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.insert_atom">
+<code class="descname">insert_atom</code><span class="sig-paren">(</span><em>pos</em>, <em>atom</em>, <em>id=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.insert_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert atom at a certain position</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.is_hybrid">
+<code class="descname">is_hybrid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.is_hybrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether the molecule/residue is a pmx hybrid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>is_hybrid</strong> – whether the molecule/residue is a pmx hybrid</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.remove_atom">
+<code class="descname">remove_atom</code><span class="sig-paren">(</span><em>atom</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.remove_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete atom from molecule</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.rename_atoms_to_gmx">
+<code class="descname">rename_atoms_to_gmx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.rename_atoms_to_gmx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename atoms to comply with Gromacs syntax: if the name starts with
+a digit, the digit is moved at the end of the name. E.g. “1CA” becomes
+“CA1”.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="chain.html" class="btn btn-neutral float-right" title="Chain" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="atom.html" class="btn btn-neutral" title="Atom" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, The Authors.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = ''
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="../_static/js/versions.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Analyse Results &mdash; pmx  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pmx  documentation" href="../index.html"/>
+        <link rel="up" title="Examples" href="index.html"/>
+        <link rel="next" title="Scripts" href="../scripts/index.html"/>
+        <link rel="prev" title="Generate Hybrid Topology" href="hybrid_topology.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mutate.html">Create Mutant Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_topology.html">Generate Hybrid Topology</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Analyse Results</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/webserver.html">Protein webserver</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/dna_webserver.html">DNA webserver</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pmx</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Examples</a> &raquo;</li>
+        
+      <li>Analyse Results</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/examples/analysis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="analyse-results">
+<span id="example-analysis"></span><h1>Analyse Results<a class="headerlink" href="#analyse-results" title="Permalink to this headline">¶</a></h1>
+<p>Example on how to analyse Gromacs results of non-equilibrium free energy
+calculations. For equilibrium results, you can analyse the data with the Gromacs
+<code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">bar</span></code> command, or with the <a class="reference external" href="https://alchemlyb.readthedocs.io/en/latest/">alchemlyb</a> library.</p>
+<p>The data you need for estimating free energy differences is contained in the
+<a class="reference download internal" href="../_downloads/dgdl.tar.gz" download=""><code class="xref download docutils literal notranslate"><span class="pre">dgdl.xvg</span></code></a> files that Gromacs outputs during a non-equilibrium simulation.
+The free energy difference can then be estimated using the estimators available in
+<strong>pmx</strong>:</p>
+<ul class="simple">
+<li><a class="reference internal" href="../api/modules.html#pmx.estimators.BAR" title="pmx.estimators.BAR"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bennet</span> <span class="pre">Acceptance</span> <span class="pre">Ratio</span></code></a> (BAR)</li>
+<li><a class="reference internal" href="../api/modules.html#pmx.estimators.Crooks" title="pmx.estimators.Crooks"><code class="xref py py-class docutils literal notranslate"><span class="pre">Crooks</span> <span class="pre">Gaussian</span> <span class="pre">Intersection</span></code></a> (CGI)</li>
+<li><a class="reference internal" href="../api/modules.html#pmx.estimators.Jarz" title="pmx.estimators.Jarz"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jarzynski</span> <span class="pre">equality</span></code></a> (Jarz)</li>
+</ul>
+<p>In practice, we would recommend to either use BAR or CGI as they are more robust.
+Furthermore, an advantage of BAR over CGI is that it does not rely on the
+Gaussian assumption for the distribution of the work values.</p>
+<p>To get the free energy estimate, you first need to recover the work values by
+integrating the data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">glob</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.analysis</span> <span class="k">import</span> <span class="n">read_dgdl_files</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.estimators</span> <span class="k">import</span> <span class="n">BAR</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># get dgdl.xvg files for the forward and reverse transitions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ff</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="s1">&#39;for*.xvg&#39;</span><span class="p">)</span>  <span class="c1"># forward</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fr</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="s1">&#39;rev*.xvg&#39;</span><span class="p">)</span>  <span class="c1"># reverse</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># now get integrated work values from them</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wf</span> <span class="o">=</span> <span class="n">read_dgdl_files</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wr</span> <span class="o">=</span> <span class="n">read_dgdl_files</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, you can use the integrated work values for the estimation of the free energy
+difference. E.g. for BAR:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># use BAR to estimate the free energy difference</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bar</span> <span class="o">=</span> <span class="n">BAR</span><span class="p">(</span><span class="n">wf</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">298</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># print estimated dG and its uncertainty</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1"> +/- </span><span class="si">%.2f</span><span class="s1"> kJ/mol&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">bar</span><span class="o">.</span><span class="n">dg</span><span class="p">,</span> <span class="n">bar</span><span class="o">.</span><span class="n">err</span><span class="p">))</span>
+<span class="go">0.85 +/- 0.56 kJ/mol</span>
+</pre></div>
+</div>
+<p>Similarly, for the CGI estimator:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cgi</span> <span class="o">=</span> <span class="n">Crooks</span><span class="p">(</span><span class="n">wf</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="o">=</span><span class="n">wr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jarz</span> <span class="o">=</span> <span class="n">Jarz</span><span class="p">(</span><span class="n">wf</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">298</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># print Crooks estimate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1"> kJ/mol&#39;</span> <span class="o">%</span> <span class="n">cgi</span><span class="o">.</span><span class="n">dg</span><span class="p">)</span>
+<span class="go">0.93 kJ/mol</span>
+</pre></div>
+</div>
+<p>Numerical uncertainty estimates can be obtain by bootstrap, by setting the
+number of bootstrap samples with the <code class="docutils literal notranslate"><span class="pre">nboots</span></code> argument.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bar</span> <span class="o">=</span> <span class="n">BAR</span><span class="p">(</span><span class="n">wf</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">298</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1"> kJ/mol&#39;</span> <span class="o">%</span> <span class="n">bar</span><span class="o">.</span><span class="n">err_boot</span><span class="p">)</span>
+<span class="go">0.66 kJ/mol</span>
+</pre></div>
+</div>
+<p>The CGI estimator has two types of bootstrapped uncertainties: attributes <code class="docutils literal notranslate"><span class="pre">err_boot1</span></code>
+and <code class="docutils literal notranslate"><span class="pre">err_boot2</span></code>. The first uses parametric boostrap by resampling a Gaussian fitted to the
+distribution of work values, while the second uses non-parametric bootstrap by
+resampling directly the set of work values. Typically, they return similar estimates of
+the uncertainty.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cgi</span> <span class="o">=</span> <span class="n">Crooks</span><span class="p">(</span><span class="n">wf</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="o">=</span><span class="n">wr</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1"> kJ/mol&#39;</span> <span class="o">%</span> <span class="n">cgi</span><span class="o">.</span><span class="n">err_boot1</span><span class="p">)</span>
+<span class="go">0.77 kJ/mol</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1"> kJ/mol&#39;</span> <span class="o">%</span> <span class="n">cgi</span><span class="o">.</span><span class="n">err_boot2</span><span class="p">)</span>
+<span class="go">0.82 kJ/mol</span>
+</pre></div>
+</div>
+<p>A simple way to inspect the results and identify potential issues with the reliability
+of the calculations is to plot the distribution of forward and reverse work values.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.analysis</span> <span class="k">import</span> <span class="n">plot_work_dist</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># write distribution plot to &#39;Wdist.png&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_work_dist</span><span class="p">(</span><span class="n">wf</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="o">=</span><span class="n">wr</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dG</span><span class="o">=</span><span class="n">cgi</span><span class="o">.</span><span class="n">dg</span><span class="p">,</span> <span class="n">dGerr</span><span class="o">=</span><span class="n">cgi</span><span class="o">.</span><span class="n">err_boot1</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/Wdist.png" src="../_images/Wdist.png" />
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../scripts/index.html" class="btn btn-neutral float-right" title="Scripts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hybrid_topology.html" class="btn btn-neutral" title="Generate Hybrid Topology" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, The Authors.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = ''
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="../_static/js/versions.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,342 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Genlib &mdash; pmx  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pmx  documentation" href="../index.html"/>
+        <link rel="up" title="Scripts" href="index.html"/>
+        <link rel="next" title="Tutorials" href="../tutorials/index.html"/>
+        <link rel="prev" title="Analyse" href="analysis.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Scripts</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mutate.html">Mutate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gentop.html">Gentop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html">Analyse</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Genlib</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/webserver.html">Protein webserver</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/dna_webserver.html">DNA webserver</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pmx</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Scripts</a> &raquo;</li>
+        
+      <li>Genlib</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/scripts/genlib.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="genlib">
+<span id="script-genlib"></span><h1>Genlib<a class="headerlink" href="#genlib" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">pmx</span> <span class="pre">genlib</span></code> script helps in the generation of the <strong>pmx</strong> alchemical
+force field libraries. It automates the steps needed to create and/or extend the
+<em>rtp</em>, <em>mtp</em>, <em>atp</em>, and <em>itp</em> files used by Gromacs. Because every force field has its own
+peculiarities, which the script might not always take into account, this command is not
+recommended to the average user. Expert users who use it should remember
+to always check manually that the files generated are correct, and ideally
+to verify the correctness of the library via single point energy calculations
+of the end states for all hybrid residues.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pmx genlib -h
+usage: pmx [-h] [-f1 ipdb1] [-f2 ipdb2] [-o1 opdb1] [-o2 opdb2]
+       [--ffpath ffpath] [--fatp fatp] [--fnb fnb] [--moltype moltype]
+       [--noalign] [--cbeta] [--noH2H] [--log log]
+
+The script creates hybrid structure and topology database entries (mtp and rtp)
+in order to generate a pmx alchemical force field library.
+
+The easiest way to generate the library is to call this script from within
+the folder of the force field you are interested in.
+
+If two pdb files (aligned on the backbone) are provided, the hybrid pdb, mtp,
+and rtp files are written to file. If no pdb input file is provided,
+the script uses pregenerated residues in order to build hybrid pdb, mtp, and
+rtp files for all possible residue pairs, thus preparing the whole pmx ff
+library.
+
+In addition, atomtype (-fatp) and non-bonded parameter (-fnm) files for the
+introduced dummy atoms are generated. By default, these point towards the
+files already present in the forcefield. In this way, the additional parameters
+for the dummies are appended to the existing ff file, rather than being
+written to new files.
+
+optional arguments:
+    -h, --help         show this help message and exit
+    -f1 ipdb1          First input PDB file. Default is none provided.
+    -f2 ipdb2          Second input PDB file. Default is none provided.
+    -o1 opdb1          First output PDB file. Default is none provided.
+    -o2 opdb2          Second output PDB file. Default is none provided.
+    --ffpath ffpath    Path to mutation forcefield. Default is current folder.
+    --fatp fatp        Atom types (atp) file. If the file is
+                       present, data is appended to it, otherwise a new
+                       file is created. Default is &quot;atomtypes.atp&quot;.
+    --fnb fnb          Non-bonded (nb) types file. If the file is
+                       present, data is appended to it, otherwise a new
+                       file is created. Default is &quot;ffnonbonded.itp&quot;.
+    --moltype moltype  The type of molecule for which the library is
+                       being built. Available options are &quot;protein&quot;, &quot;dna&quot;,
+                       or &quot;rna&quot;. Default is &quot;protein&quot;.
+    --noalign          Whether to align the sidechains of the two
+                       input PDB files provided. Default it True; this flag
+                       sets it to False.
+    --cbeta            Whether to morph sidechain between the two
+                       residues or to use dummy atoms to (de)couple the
+                       whole sidechain. By default, sidechain atoms are
+                       morphed so to minimise the size of the perturbation.
+                       With this flag set, whole sidechains are (de)coupled
+                       instead; i.e. all atoms after C-beta are not mapped
+                       between the two residues.
+    --noH2H            Whether to allow hydrogen to/from heavy atoms
+                       morphing. Default is True, this flag sets it to False.
+    --log log          Logging level. Either &quot;info&quot; or &quot;debug&quot;. Default is &quot;info&quot;.
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../tutorials/index.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="analysis.html" class="btn btn-neutral" title="Analyse" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, The Authors.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = ''
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="../_static/js/versions.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

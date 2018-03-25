@@ -1,0 +1,419 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Atom &mdash; pmx  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pmx  documentation" href="../index.html"/>
+        <link rel="up" title="Classes" href="index.html"/>
+        <link rel="next" title="Molecule" href="molecule.html"/>
+        <link rel="prev" title="Classes" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Classes</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Atom</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html">Molecule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">Chain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trajectory.html">Trajectory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology.html">Topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="indexfile.html">IndexFile</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/webserver.html">Protein webserver</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/dna_webserver.html">DNA webserver</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pmx</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Classes</a> &raquo;</li>
+        
+      <li>Atom</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/classes/atom.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="atom">
+<h1>Atom<a class="headerlink" href="#atom" title="Permalink to this headline">¶</a></h1>
+<p>This class stores all properties (attributes) related to an atom.
+When <strong>pmx</strong> reads a PDB file, each line starting with “ATOM” or “HETATM”
+is converted to an <code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code> instance. In addition, the atom class also has a number
+of methods that can be used to calculate distances, angles and dihedrals.</p>
+<div class="section" id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pmx.atom.Atom">
+<em class="property">class </em><code class="descclassname">pmx.atom.</code><code class="descname">Atom</code><span class="sig-paren">(</span><em>line=None</em>, <em>mol2line=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>class for storage of atom properties and methods</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>line</strong> (<em>str</em>) – </li>
+<li><strong>mol2line</strong> (<em>str</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pmx.atom.Atom.id">
+<code class="descname">id</code><a class="headerlink" href="#pmx.atom.Atom.id" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> – atom id</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.atom.Atom.name">
+<code class="descname">name</code><a class="headerlink" href="#pmx.atom.Atom.name" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> – atom name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.atom.Atom.resname">
+<code class="descname">resname</code><a class="headerlink" href="#pmx.atom.Atom.resname" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> – name of residue atom is part of</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#pmx.atom.Atom.readPDBString" title="pmx.atom.Atom.readPDBString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">readPDBString</span></code></a>(line[,&nbsp;origID])</td>
+<td>PDB String to Atom</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pmx.atom.Atom.dist" title="pmx.atom.Atom.dist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dist</span></code></a>(other)</td>
+<td>returns the distance between two atoms Usage: dist=atom1.dist(atom2) This function is also called by typing d=atom1-atom2</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pmx.atom.Atom.dist2" title="pmx.atom.Atom.dist2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dist2</span></code></a>(other)</td>
+<td>returns the squared distance between two atoms Usage: dist=atom1.dist2(atom2)</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pmx.atom.Atom.angle">
+<code class="descname">angle</code><span class="sig-paren">(</span><em>other1</em>, <em>other2</em>, <em>degree=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calcluates the angle between 3 atoms
+Usage: atom1.angle(atom2,atom3)
+The degree flag causes the function to return the angle
+in degrees.
+(Note: atom1 must be between 2 and 3)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atom.Atom.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy atom</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atom.Atom.dihedral">
+<code class="descname">dihedral</code><span class="sig-paren">(</span><em>other1</em>, <em>other2</em>, <em>other3</em>, <em>degree=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.dihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the dihedral between four atoms.
+Usage: atom1.dihedral(atom2,atom3,atom4)
+The degree flag causes the function to return the dihedral
+in degrees.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atom.Atom.dist">
+<code class="descname">dist</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the distance between two atoms
+Usage: dist=atom1.dist(atom2)
+This function is also called by typing
+d=atom1-atom2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atom.Atom.dist2">
+<code class="descname">dist2</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.dist2" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the squared distance between two atoms
+Usage: dist=atom1.dist2(atom2)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atom.Atom.get_order">
+<code class="descname">get_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.get_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the order (number of bonds to mainchain)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atom.Atom.get_symbol">
+<code class="descname">get_symbol</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.get_symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>get element</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atom.Atom.make_long_name">
+<code class="descname">make_long_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.make_long_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>make extended name to determine element
+and order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atom.Atom.readPDBString">
+<code class="descname">readPDBString</code><span class="sig-paren">(</span><em>line</em>, <em>origID=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.readPDBString" title="Permalink to this definition">¶</a></dt>
+<dd><p>PDB String to Atom</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.atom.Atom.set_chain_id">
+<code class="descname">set_chain_id</code><span class="sig-paren">(</span><em>chain_id</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.set_chain_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>change chain identifier</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="molecule.html" class="btn btn-neutral float-right" title="Molecule" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, The Authors.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = ''
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="../_static/js/versions.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
