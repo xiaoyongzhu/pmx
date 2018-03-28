@@ -39,7 +39,7 @@ Then, you can use the integrated work values for the estimation of the free ener
 difference. E.g. for BAR: ::
 
     >>> # use BAR to estimate the free energy difference
-    >>> bar = BAR(wf=wf, wr=wf, T=298)
+    >>> bar = BAR(wf=wf, wr=wr, T=298)
     >>> # print estimated dG and its uncertainty
     >>> print('%.2f +/- %.2f kJ/mol' % (bar.dg, bar.err))
     0.85 +/- 0.56 kJ/mol
@@ -47,7 +47,7 @@ difference. E.g. for BAR: ::
 Similarly, for the CGI estimator: ::
 
     >>> cgi = Crooks(wf=wf, wr=wr)
-    >>> jarz = Jarz(wf=wf, wr=wf, T=298)
+    >>> jarz = Jarz(wf=wf, wr=wr, T=298)
 
     >>> # print Crooks estimate
     >>> print('%.2f kJ/mol' % cgi.dg)
@@ -56,7 +56,7 @@ Similarly, for the CGI estimator: ::
 Numerical uncertainty estimates can be obtain by bootstrap, by setting the
 number of bootstrap samples with the ``nboots`` argument. ::
 
-    >>> bar = BAR(wf=wf, wr=wf, T=298, nboots=100)
+    >>> bar = BAR(wf=wf, wr=wr, T=298, nboots=100)
     >>> print('%.2f kJ/mol' % bar.err_boot)
     0.66 kJ/mol
 

@@ -13,7 +13,6 @@ a step-by-step guide on how to perform alchemical free energy calculations using
    protein_mut
    ligand_mut
    nucleic_mut
-   protein_mut_ligand
    large_scale_scans
    analysis
 

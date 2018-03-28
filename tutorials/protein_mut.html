@@ -113,7 +113,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ligand_mut.html">Ligand mutation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nucleic_mut.html">DNA/RNA mutation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="protein_mut_ligand.html">Ligand affinity change upon protein mutation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="large_scale_scans.html">Large-scale scans</a></li>
 <li class="toctree-l2"><a class="reference internal" href="analysis.html">Analysis</a></li>
 </ul>
@@ -197,7 +196,7 @@
 <h1>Protein mutation<a class="headerlink" href="#protein-mutation" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial we will show how <strong>pmx</strong> can be used to predict changes in
 protein stability, similarly to what was done in <a class="reference external" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.201510054">Gapsys et al</a>.
-All input files needed for this tutorial can be downloaded here: [link2input].</p>
+All input files needed for this tutorial can be downloaded here: <a class="reference download internal" href="../_downloads/protein_mut_input.tar.gz" download=""><code class="xref download docutils literal notranslate"><span class="pre">input</span> <span class="pre">files</span></code></a>.</p>
 <p>In order to calculate how a mutation affects the folding free energy of a protein
 (<span class="math notranslate">\(\Delta \Delta G_{Folding}^{Mutation}\)</span>),
 we need to calculate the free energy difference of
@@ -335,7 +334,7 @@ $ gmx mdrun -s npt.tpr -deffnm npt -v
 $ gmx mdrun -s equil.tpr -deffnm equil -v
 </pre></div>
 </div>
-<p>Now we have the equilibrium sampling needed for <em>the forward</em> transformation. For the
+<p>Now we have the equilibrium sampling needed for the <em>forward</em> transformation. For the
 reverse one, we do exactly the same from the <code class="docutils literal notranslate"><span class="pre">reverse/equil_md</span></code> folder and using
 the <em>reverse</em> mdp files (<code class="docutils literal notranslate"><span class="pre">r_*.mdp</span></code>) you find in it. Note that the only difference
 in the <em>forward</em> and <em>reverse</em> mdp files is whether we choose to be in state <em>A</em>
@@ -426,40 +425,39 @@ which is stored in the <code class="docutils literal notranslate"><span class="p
 <p>The simplest way to estimate the free energy difference is to use the <code class="docutils literal notranslate"><span class="pre">pmx</span> <span class="pre">analyse</span></code>
 tool. For instance, here we use it to estimate <span class="math notranslate">\(\Delta G_{Folded}^{Mutation}\)</span>
 with BAR:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pmx analyse
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pmx analyse -fA forward/nonequil_md/frame*/dgdl.xvg -fB reverse/nonequil_md/frame*/dgdl.xvg -t 298.15 -m bar
 </pre></div>
 </div>
 <p>For a more detailed discussion about free energy estimation and data analysis you
 can have a look at the <a class="reference internal" href="analysis.html#tutorial-analysis"><span class="std std-ref">analysis tutorial</span></a>. In brief,
 for this calculation, this is the distribution of work values and the BAR
-<span class="math notranslate">\(\Delta G\)</span> estimate we obtained.</p>
-<blockquote>
-<div>here image</div></blockquote>
+<span class="math notranslate">\(\Delta G\)</span> estimate we obtained:</p>
+<img alt="../_images/protein_mut_wdist.png" src="../_images/protein_mut_wdist.png" />
 <p>Often, the easiest way to get reliable error estimates is to just repeat the
 whole calculation multiple times to obtain a standard error. For this example,
 we repeated the above steps 5 times, and obtained the following mean and standard error:</p>
 <div class="math notranslate">
-\[\Delta G_{Folded}^{Mutation} = 10 \pm 1\ kJ/mol\]</div>
+\[\Delta G_{Folded}^{Mutation} = 9.75 \pm 1.48\ kJ/mol\]</div>
 </div>
 <div class="section" id="final-results">
 <h2>Final results<a class="headerlink" href="#final-results" title="Permalink to this headline">¶</a></h2>
 <p>At this point, if you still remember, the number we were interested in was <span class="math notranslate">\(\Delta \Delta G_{Folding}^{Mutation}\)</span>,
 that is, the change in the folding free energy upon introducing the W6F mutation.
-This values is recovered from <span class="math notranslate">\(\Delta G_{Folded}^{Mutation}\)</span>, which we just
+This value is recovered from <span class="math notranslate">\(\Delta G_{Folded}^{Mutation}\)</span>, which we just
 calculated, and <span class="math notranslate">\(\Delta G_{Unfolded}^{Mutation}\)</span>, which you can obtain by running
-the calculations starting from <code class="docutils literal notranslate"><span class="pre">tripeptide.pdb</span></code> file rather than <code class="docutils literal notranslate"><span class="pre">protein.pdb</span></code>.
+the calculations starting from <code class="docutils literal notranslate"><span class="pre">tripeptide.pdb</span></code> rather than <code class="docutils literal notranslate"><span class="pre">protein.pdb</span></code>.
 Using 5 repeats, we obtained the following mean and standard error for the latter
 free energy difference:</p>
 <div class="math notranslate">
-\[\Delta G_{Unfolded}^{Mutation} = 10 \pm 1\ kJ/mol\]</div>
+\[\Delta G_{Unfolded}^{Mutation} = -4.82 \pm 0.19\ kJ/mol\]</div>
 <p>Thus, our final result of interest is the following:</p>
 <div class="math notranslate">
 \[\begin{split}\Delta \Delta G_{Folding}^{Mutation} &amp;= \Delta G_{Folded}^{Mutation} - \Delta G_{Unfolded}^{Mutation} = \\
-                                     &amp;= 10 \pm 1\ - 10 \pm 1 =  \\
-                                     &amp;= 10 \pm 1\ kJ/mol\end{split}\]</div>
+                                     &amp;= 9.75 \pm 1.48\ - (-4.82 \pm 0.19) =  \\
+                                     &amp;= 14.57 \pm 1.49\ kJ/mol\end{split}\]</div>
 <p>This suggests that the W6F mutation has a destabilising effect on the fold of
-Trp-cage of about XXX kJ/mol, in agreement with the experimentally determined
-value of YYYY kJ/mol.</p>
+Trp-cage of about <span class="math notranslate">\(14.6 \pm 1.5\ kJ/mol\)</span>, which is not far from the
+experimentally determined value of <span class="math notranslate">\(12.5 \pm 0.6\ kJ/mol\)</span>.</p>
 </div>
 </div>
 

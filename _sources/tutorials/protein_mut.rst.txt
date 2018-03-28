@@ -3,7 +3,7 @@ Protein mutation
 
 In this tutorial we will show how **pmx** can be used to predict changes in
 protein stability, similarly to what was done in `Gapsys et al <https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.201510054>`_.
-All input files needed for this tutorial can be downloaded here: [link2input].
+All input files needed for this tutorial can be downloaded here: :download:`input files <protein_mut_input.tar.gz>`.
 
 In order to calculate how a mutation affects the folding free energy of a protein
 (:math:`\Delta \Delta G_{Folding}^{Mutation}`),
@@ -153,7 +153,7 @@ And finally the actual equilibrium MD run::
     $ gmx grompp -f f_equil.mdp -c npt.gro -p ../../newtop.top -o equil.tpr -maxwarn 1
     $ gmx mdrun -s equil.tpr -deffnm equil -v
 
-Now we have the equilibrium sampling needed for *the forward* transformation. For the
+Now we have the equilibrium sampling needed for the *forward* transformation. For the
 reverse one, we do exactly the same from the ``reverse/equil_md`` folder and using
 the *reverse* mdp files (``r_*.mdp``) you find in it. Note that the only difference
 in the *forward* and *reverse* mdp files is whether we choose to be in state *A*
@@ -250,20 +250,20 @@ The simplest way to estimate the free energy difference is to use the ``pmx anal
 tool. For instance, here we use it to estimate :math:`\Delta G_{Folded}^{Mutation}`
 with BAR::
 
-    $ pmx analyse
+    $ pmx analyse -fA forward/nonequil_md/frame*/dgdl.xvg -fB reverse/nonequil_md/frame*/dgdl.xvg -t 298.15 -m bar
 
 For a more detailed discussion about free energy estimation and data analysis you
 can have a look at the :ref:`analysis tutorial <tutorial_analysis>`. In brief,
 for this calculation, this is the distribution of work values and the BAR
-:math:`\Delta G` estimate we obtained.
+:math:`\Delta G` estimate we obtained:
 
-    here image
+.. image:: protein_mut_wdist.png
 
 Often, the easiest way to get reliable error estimates is to just repeat the
 whole calculation multiple times to obtain a standard error. For this example,
 we repeated the above steps 5 times, and obtained the following mean and standard error:
 
-.. math:: \Delta G_{Folded}^{Mutation} = 10 \pm 1\ kJ/mol
+.. math:: \Delta G_{Folded}^{Mutation} = 9.75 \pm 1.48\ kJ/mol
 
 
 Final results
@@ -271,22 +271,22 @@ Final results
 
 At this point, if you still remember, the number we were interested in was :math:`\Delta \Delta G_{Folding}^{Mutation}`,
 that is, the change in the folding free energy upon introducing the W6F mutation.
-This values is recovered from :math:`\Delta G_{Folded}^{Mutation}`, which we just
+This value is recovered from :math:`\Delta G_{Folded}^{Mutation}`, which we just
 calculated, and :math:`\Delta G_{Unfolded}^{Mutation}`, which you can obtain by running
-the calculations starting from ``tripeptide.pdb`` file rather than ``protein.pdb``.
+the calculations starting from ``tripeptide.pdb`` rather than ``protein.pdb``.
 Using 5 repeats, we obtained the following mean and standard error for the latter
 free energy difference:
 
-.. math:: \Delta G_{Unfolded}^{Mutation} = 10 \pm 1\ kJ/mol
+.. math:: \Delta G_{Unfolded}^{Mutation} = -4.82 \pm 0.19\ kJ/mol
 
 Thus, our final result of interest is the following:
 
 .. math::
 
     \Delta \Delta G_{Folding}^{Mutation} &= \Delta G_{Folded}^{Mutation} - \Delta G_{Unfolded}^{Mutation} = \\
-                                         &= 10 \pm 1\ - 10 \pm 1 =  \\
-                                         &= 10 \pm 1\ kJ/mol
+                                         &= 9.75 \pm 1.48\ - (-4.82 \pm 0.19) =  \\
+                                         &= 14.57 \pm 1.49\ kJ/mol
 
 This suggests that the W6F mutation has a destabilising effect on the fold of
-Trp-cage of about XXX kJ/mol, in agreement with the experimentally determined
-value of YYYY kJ/mol.
+Trp-cage of about :math:`14.6 \pm 1.5\ kJ/mol`, which is not far from the
+experimentally determined value of :math:`12.5 \pm 0.6\ kJ/mol`.

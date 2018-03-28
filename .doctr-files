@@ -1,11 +1,13 @@
 ./_downloads/dgdl.tar.gz
 ./_downloads/dna.pdb
 ./_downloads/peptide.pdb
+./_downloads/protein_mut_input.tar.gz
 ./_downloads/topol.top
 ./_downloads/topol2.itp
 ./_downloads/topol2.top
 ./_images/Wdist.png
 ./_images/cycle.png
+./_images/protein_mut_wdist.png
 ./_sources/api/modules.rst.txt
 ./_sources/classes/atom.rst.txt
 ./_sources/classes/chain.rst.txt
@@ -32,7 +34,6 @@
 ./_sources/tutorials/ligand_mut.rst.txt
 ./_sources/tutorials/nucleic_mut.rst.txt
 ./_sources/tutorials/protein_mut.rst.txt
-./_sources/tutorials/protein_mut_ligand.rst.txt
 ./_static/ajax-loader.gif
 ./_static/basic.css
 ./_static/comment-bright.png
@@ -104,4 +105,3 @@
 ./tutorials/ligand_mut.html
 ./tutorials/nucleic_mut.html
 ./tutorials/protein_mut.html
-./tutorials/protein_mut_ligand.html
