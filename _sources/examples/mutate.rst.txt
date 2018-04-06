@@ -38,3 +38,17 @@ With the ``verbose`` option you can get additional info printed to screen. ::
     log_> Mutation to apply: A->T
     log_> Hybrid residue name: DAT
     log_> Inserted hybrid residue DAT at position 2 (chain A)
+
+Note that, by default, :class:`pmx.model.Model` renumbers all residues from 1.
+If you want to keep the original residue IDs, you can do this by using the
+``renumber_residues`` argument when loading the ``Model``::
+
+    >>> # load the PDB file
+    >>> m = Model('peptide.pdb', for_gmx=True, renumber_residues=False)
+
+In this case, however, your residue IDs might not be unique anymore. If **pmx**
+finds that your residue ID selection is not unique, it will raise an error.
+Thus, in this scenario it is safer to also provide the chain ID
+to :func:`pmx.alchemy.mutate`, e.g.::
+
+    >>> m2 = mutate(m=m, mut_chain='A', mut_resid=9, mut_resname='R', ff='amber99sb-star-ildn-mut')

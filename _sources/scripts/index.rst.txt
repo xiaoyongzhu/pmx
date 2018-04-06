@@ -20,7 +20,7 @@ The ``pmx`` help will show the scripts available. ::
 
     Available commands are:
         mutate     Mutate protein or DNA/RNA
-        gentop    Fill hybrid topology with B states
+        gentop     Fill hybrid topology with B states
         analyse    Estimate free energy from Gromacs xvg files
 
         genlib     Generate pmx ff library

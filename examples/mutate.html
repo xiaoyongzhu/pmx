@@ -210,6 +210,20 @@ protein, DNA, and RNA residues.</p>
 <span class="go">log_&gt; Inserted hybrid residue DAT at position 2 (chain A)</span>
 </pre></div>
 </div>
+<p>Note that, by default, <a class="reference internal" href="../classes/model.html#pmx.model.Model" title="pmx.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">pmx.model.Model</span></code></a> renumbers all residues from 1.
+If you want to keep the original residue IDs, you can do this by using the
+<code class="docutils literal notranslate"><span class="pre">renumber_residues</span></code> argument when loading the <code class="docutils literal notranslate"><span class="pre">Model</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># load the PDB file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;peptide.pdb&#39;</span><span class="p">,</span> <span class="n">for_gmx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">renumber_residues</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this case, however, your residue IDs might not be unique anymore. If <strong>pmx</strong>
+finds that your residue ID selection is not unique, it will raise an error.
+Thus, in this scenario it is safer to also provide the chain ID
+to <a class="reference internal" href="../api/modules.html#pmx.alchemy.mutate" title="pmx.alchemy.mutate"><code class="xref py py-func docutils literal notranslate"><span class="pre">pmx.alchemy.mutate()</span></code></a>, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">mutate</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">mut_chain</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">mut_resid</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">mut_resname</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">ff</span><span class="o">=</span><span class="s1">&#39;amber99sb-star-ildn-mut&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 
 
