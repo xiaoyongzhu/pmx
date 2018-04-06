@@ -25,29 +25,20 @@
   
 
   
-  
     <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-        <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pmx  documentation" href="../index.html"/>
-        <link rel="up" title="Classes" href="index.html"/>
-        <link rel="next" title="Trajectory" href="trajectory.html"/>
-        <link rel="prev" title="Chain" href="chain.html"/> 
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Trajectory" href="trajectory.html" />
+    <link rel="prev" title="Chain" href="chain.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -64,7 +55,7 @@
 
           
             
-            <img src="../_static/logo.png" class="logo" />
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -135,7 +126,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">pmx</a>
@@ -143,9 +134,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -204,11 +196,12 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> (<em>str</em>) – filename of input structure</li>
-<li><strong>pdbline</strong> – …describe - what is pdbline?</li>
-<li><strong>renumber_atoms</strong> (<em>bool</em>) – …describe</li>
-<li><strong>renumber_residues</strong> (<em>bool</em>) – …describe</li>
-<li><strong>bPDBTER</strong> (<em>bool</em>) – flag indicating input PDB file has TER lines(?). Default is True.</li>
-<li><strong>bNoNewID</strong> (<em>bool</em>) – …describe</li>
+<li><strong>pdbline</strong> (<em>bool</em><em>(</em><em>?</em><em>)</em>) – …describe - what is pdbline?</li>
+<li><strong>renumber_atoms</strong> (<em>bool</em>) – renumber all atoms from 1. Default is True.</li>
+<li><strong>renumber_residues</strong> (<em>bool</em>) – renumber all residues from 1. In this way, each residue will have a
+unique ID, also across chains. Default is True.</li>
+<li><strong>bPDBTER</strong> (<em>bool</em><em>(</em><em>?</em><em>)</em>) – flag indicating input PDB file has TER lines(?). Default is True.</li>
+<li><strong>bNoNewID</strong> (<em>bool</em><em>(</em><em>?</em><em>)</em>) – …describe - what does this do?</li>
 <li><strong>for_gmx</strong> (<em>bool</em>) – rename atoms and scale coordinates. Set this to True
 if the Model is then written to file and used as input for Gromacs
 (pdb2gmx). Default is False.</li>
@@ -226,7 +219,13 @@ if the Model is then written to file and used as input for Gromacs
 <dl class="attribute">
 <dt id="pmx.model.Model.chains">
 <code class="descname">chains</code><a class="headerlink" href="#pmx.model.Model.chains" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of chains</p>
+<dd><p><em>list</em> – list of Chain instances</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.model.Model.chdic">
+<code class="descname">chdic</code><a class="headerlink" href="#pmx.model.Model.chdic" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict</em> – dict with chain IDs as keys and Chain instances as values</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -283,6 +282,56 @@ found in topDic</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pmx.model.Model.fetch_residue">
+<code class="descname">fetch_residue</code><span class="sig-paren">(</span><em>idx</em>, <em>chain=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.fetch_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a residue based on its index, or index and chain.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>idx</strong> (<em>int</em>) – ID of the residue to fetch.</li>
+<li><strong>chain</strong> (<em>str</em><em>, </em><em>optional</em>) – chain ID of the residue. This is needed when you have multiple
+chains and you have not renumbered the residues.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>residue</strong> – Molecule instance of the residue found.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule">Molecule</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.model.Model.fetch_residues">
+<code class="descname">fetch_residues</code><span class="sig-paren">(</span><em>key</em>, <em>inv=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.fetch_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get residues by resnames.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em><em> or </em><em>list</em>) – resname</li>
+<li><strong>inv</strong> (<em>bool</em>) – invert selection. Default is False. If True, it finds all residues
+with resnames different from those in key.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>residues</strong> – list of Molecule instances with the residues</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pmx.model.Model.rename_atoms_to_gmx">
 <code class="descname">rename_atoms_to_gmx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.rename_atoms_to_gmx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rename atoms to comply with Gromacs syntax: if the name starts with
@@ -297,9 +346,7 @@ a digit, the digit is moved at the end of the name. E.g. “1CA” becomes
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -356,6 +403,7 @@ a digit, the digit is moved at the end of the name. E.g. “1CA” becomes
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
             VERSION:'',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -375,14 +423,13 @@ a digit, the digit is moved at the end of the name. E.g. “1CA” becomes
     <script type="text/javascript" src="../_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

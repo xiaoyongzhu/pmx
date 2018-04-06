@@ -26,26 +26,18 @@
   
 
   
-  
     <link rel="stylesheet" href="_static/css/msmb.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="#"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="pmx  documentation" href="index.html"/> 
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -62,7 +54,7 @@
 
           
             
-            <img src="_static/logo.png" class="logo" />
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -121,7 +113,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">pmx</a>
@@ -129,9 +121,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -228,17 +221,15 @@
       <ul>
         <li><a href="api/modules.html#pmx.utils.MissingTopolParamError.args">(pmx.utils.MissingTopolParamError attribute)</a>
 </li>
-        <li><a href="api/modules.html#pmx.utils.RangeCheckError.args">(pmx.utils.RangeCheckError attribute)</a>
-</li>
         <li><a href="api/modules.html#pmx.utils.UnknownResidueError.args">(pmx.utils.UnknownResidueError attribute)</a>
 </li>
         <li><a href="api/modules.html#pmx.utils.mtpError.args">(pmx.utils.mtpError attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/modules.html#pmx.ffparser.RTPParser.assign_dihedral_params">assign_dihedral_params() (pmx.ffparser.RTPParser method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="classes/model.html#pmx.model.Model.assign_moltype">assign_moltype() (pmx.model.Model method)</a>
 
       <ul>
@@ -335,13 +326,15 @@
       </ul></li>
       <li><a href="api/modules.html#pmx.estimators.Crooks.calc_err_boot1">calc_err_boot1() (pmx.estimators.Crooks static method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/modules.html#pmx.estimators.Crooks.calc_err_boot2">calc_err_boot2() (pmx.estimators.Crooks static method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="classes/chain.html#pmx.chain.Chain">Chain (class in pmx.chain)</a>
 </li>
       <li><a href="classes/model.html#pmx.model.Model.chains">chains (pmx.model.Model attribute)</a>
+</li>
+      <li><a href="classes/model.html#pmx.model.Model.chdic">chdic (pmx.model.Model attribute)</a>
 </li>
       <li><a href="api/modules.html#pmx.rotamer.check_overlaps">check_overlaps() (in module pmx.rotamer)</a>
 </li>
@@ -437,12 +430,16 @@
 </li>
       <li><a href="api/modules.html#pmx.atomselection.Atomselection.fetch_atoms">fetch_atoms() (pmx.atomselection.Atomselection method)</a>
 </li>
-      <li><a href="classes/molecule.html#pmx.molecule.Molecule.fetchm">fetchm() (pmx.molecule.Molecule method)</a>
+      <li><a href="classes/model.html#pmx.model.Model.fetch_residue">fetch_residue() (pmx.model.Model method)</a>
 </li>
-      <li><a href="api/modules.html#pmx.utils.ff_selection">ff_selection() (in module pmx.utils)</a>
+      <li><a href="classes/model.html#pmx.model.Model.fetch_residues">fetch_residues() (pmx.model.Model method)</a>
+</li>
+      <li><a href="classes/molecule.html#pmx.molecule.Molecule.fetchm">fetchm() (pmx.molecule.Molecule method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/modules.html#pmx.utils.ff_selection">ff_selection() (in module pmx.utils)</a>
+</li>
       <li><a href="api/modules.html#pmx.utils.ffopen">ffopen() (in module pmx.utils)</a>
 </li>
       <li><a href="api/modules.html#pmx.geometry.fit">fit() (in module pmx.geometry)</a>
@@ -717,8 +714,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/modules.html#pmx.atomselection.Atomselection.random_rotation">random_rotation() (pmx.atomselection.Atomselection method)</a>
 </li>
-      <li><a href="api/modules.html#pmx.utils.RangeCheckError">RangeCheckError</a>
-</li>
       <li><a href="api/modules.html#pmx.parser.read_and_format">read_and_format() (in module pmx.parser)</a>
 </li>
       <li><a href="api/modules.html#pmx.analysis.read_dgdl_files">read_dgdl_files() (in module pmx.analysis)</a>
@@ -854,21 +849,19 @@
       <ul>
         <li><a href="api/modules.html#pmx.utils.MissingTopolParamError.with_traceback">(pmx.utils.MissingTopolParamError method)</a>
 </li>
-        <li><a href="api/modules.html#pmx.utils.RangeCheckError.with_traceback">(pmx.utils.RangeCheckError method)</a>
-</li>
         <li><a href="api/modules.html#pmx.utils.UnknownResidueError.with_traceback">(pmx.utils.UnknownResidueError method)</a>
 </li>
         <li><a href="api/modules.html#pmx.utils.mtpError.with_traceback">(pmx.utils.mtpError method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/modules.html#pmx.atomselection.Atomselection.write">write() (pmx.atomselection.Atomselection method)</a>
 
       <ul>
         <li><a href="api/modules.html#pmx.ffparser.RTPParser.write">(pmx.ffparser.RTPParser method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/modules.html#pmx.builder.write_pdb_with_connect">write_pdb_with_connect() (in module pmx.builder)</a>
 </li>
       <li><a href="api/modules.html#pmx.alchemy.write_split_top">write_split_top() (in module pmx.alchemy)</a>
@@ -893,9 +886,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -943,6 +934,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -962,14 +954,13 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

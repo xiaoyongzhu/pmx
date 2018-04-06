@@ -25,27 +25,19 @@
   
 
   
-  
     <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-        <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pmx  documentation" href="../index.html"/>
-        <link rel="prev" title="IndexFile" href="../classes/indexfile.html"/> 
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="IndexFile" href="../classes/indexfile.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -62,7 +54,7 @@
 
           
             
-            <img src="../_static/logo.png" class="logo" />
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -137,7 +129,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">pmx</a>
@@ -145,9 +137,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -206,7 +199,7 @@ calculations in Gromacs.</p>
 structures and topologies needed for alchemical free energy calculations.</p>
 <dl class="function">
 <dt id="pmx.alchemy.mutate">
-<code class="descclassname">pmx.alchemy.</code><code class="descname">mutate</code><span class="sig-paren">(</span><em>m</em>, <em>mut_resid</em>, <em>mut_resname</em>, <em>ff</em>, <em>refB=None</em>, <em>inplace=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.mutate" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pmx.alchemy.</code><code class="descname">mutate</code><span class="sig-paren">(</span><em>m</em>, <em>mut_resid</em>, <em>mut_resname</em>, <em>ff</em>, <em>mut_chain=None</em>, <em>refB=None</em>, <em>inplace=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.mutate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an hybrid structure file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -215,14 +208,17 @@ structures and topologies needed for alchemical free energy calculations.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>m</strong> (<a class="reference internal" href="../classes/model.html#pmx.model.Model" title="pmx.model.Model"><em>Model</em></a>) – the model to be mutated. See <a class="reference internal" href="../classes/model.html#pmx.model.Model" title="pmx.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">pmx.model.Model</span></code></a>.</li>
 <li><strong>mut_resid</strong> (<em>int</em>) – the ID of the residue to be mutated.</li>
-<li><strong>mut_resname</strong> (<em>str</em>) – the target residue.</li>
+<li><strong>mut_resname</strong> (<em>str</em>) – the name of the target residue.</li>
 <li><strong>ff</strong> (<em>str</em>) – the forcefield to use.</li>
+<li><strong>mut_chain</strong> (<em>str</em><em>, </em><em>optional</em>) – the chain ID for the residue you want to mutate. This is needed if you
+have multiple chains and are providing a Model that did not have its
+residues renumbered.</li>
 <li><strong>refB</strong> (<em>str</em><em>, </em><em>optional</em>) – reference structure file of the B state in PDB or GRO format. If it is
 provided, the dummy atoms will be built based on the position of the
 atoms in this structure. This option is available only for Protein
 mutations.</li>
 <li><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to modify the input Model in place. Default is False.</li>
-<li><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to print info. Defaul is False.</li>
+<li><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to print info. Default is False.</li>
 </ul>
 </td>
 </tr>
@@ -275,8 +271,7 @@ included in the input topology.</p>
 <dl class="function">
 <dt id="pmx.alchemy.write_split_top">
 <code class="descclassname">pmx.alchemy.</code><code class="descname">write_split_top</code><span class="sig-paren">(</span><em>pmxtop</em>, <em>outfile='pmxtop.top'</em>, <em>scale_mass=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.write_split_top" title="Permalink to this definition">¶</a></dt>
-<dd><p>WARNING: Appears to be currently broken</p>
-<p>Write three topology files to be used for three separate free energy
+<dd><p>Write three topology files to be used for three separate free energy
 calculations: charges off, vdw on, changes on. This can be useful when one
 wants to avoid using a soft-core for the electrostatic interactions.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1182,25 +1177,6 @@ set self.__traceback__ to tb and return self.</p>
 </dd></dl>
 
 <dl class="exception">
-<dt id="pmx.utils.RangeCheckError">
-<em class="property">exception </em><code class="descclassname">pmx.utils.</code><code class="descname">RangeCheckError</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.RangeCheckError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Exceptions class for …</p>
-<dl class="attribute">
-<dt id="pmx.utils.RangeCheckError.args">
-<code class="descname">args</code><a class="headerlink" href="#pmx.utils.RangeCheckError.args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pmx.utils.RangeCheckError.with_traceback">
-<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.RangeCheckError.with_traceback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exception.with_traceback(tb) –
-set self.__traceback__ to tb and return self.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="exception">
 <dt id="pmx.utils.UnknownResidueError">
 <em class="property">exception </em><code class="descclassname">pmx.utils.</code><code class="descname">UnknownResidueError</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.utils.UnknownResidueError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
@@ -2004,9 +1980,7 @@ library</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -2061,6 +2035,7 @@ library</p>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
             VERSION:'',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -2080,14 +2055,13 @@ library</p>
     <script type="text/javascript" src="../_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
