@@ -183,37 +183,278 @@
             
   <div class="section" id="chain">
 <h1>Chain<a class="headerlink" href="#chain" title="Permalink to this headline">¶</a></h1>
-<p>chain bla bla bla</p>
+<p>This class stores arrays of residues/molecules. Thus, a <code class="xref py py-class docutils literal notranslate"><span class="pre">Chain</span></code>
+instance has <code class="xref py py-attr docutils literal notranslate"><span class="pre">residues</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">atoms</span></code> attributes.</p>
 <div class="section" id="api-reference">
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pmx.chain.Chain">
 <em class="property">class </em><code class="descclassname">pmx.chain.</code><code class="descname">Chain</code><span class="sig-paren">(</span><em>seq=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pmx.chain.Chain.atomlistFromTop">
-<code class="descname">atomlistFromTop</code><span class="sig-paren">(</span><em>topDic</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.atomlistFromTop" title="Permalink to this definition">¶</a></dt>
-<dd><p>return a list of atom objects
-found in topDic</p>
+<dd><p>Chain Class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>seq</strong> (<em>str</em><em>, </em><em>optional</em>) – amino acid sequence. If Chain is initialised with a sequence, a peptide
+is built. By default seq=None.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pmx.chain.Chain.residues">
+<code class="descname">residues</code><a class="headerlink" href="#pmx.chain.Chain.residues" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em> – list of residues in Chain</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.chain.Chain.nres">
+<code class="descname">nres</code><a class="headerlink" href="#pmx.chain.Chain.nres" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> – number of residues in Chain</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.chain.Chain.atoms">
+<code class="descname">atoms</code><a class="headerlink" href="#pmx.chain.Chain.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em> – list of atoms in Chain</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.chain.Chain.natoms">
+<code class="descname">natoms</code><a class="headerlink" href="#pmx.chain.Chain.natoms" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> – number of atoms in Chain</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.chain.Chain.id">
+<code class="descname">id</code><a class="headerlink" href="#pmx.chain.Chain.id" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> – atom id</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#pmx.chain.Chain.set_chain_id" title="pmx.chain.Chain.set_chain_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_chain_id</span></code></a>(chain_id)</td>
+<td>Sets the chain ID.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pmx.chain.Chain.get_sequence" title="pmx.chain.Chain.get_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequence</span></code></a>()</td>
+<td>Returns the sequence of residues in FASTA format.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pmx.chain.Chain.append" title="pmx.chain.Chain.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(mol)</td>
+<td>Appends a residue to the Chain.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pmx.chain.Chain.insert_residue" title="pmx.chain.Chain.insert_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_residue</span></code></a>(pos,&nbsp;mol[,&nbsp;newResNum])</td>
+<td>Inserts a residue at a specified position.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pmx.chain.Chain.remove_residue" title="pmx.chain.Chain.remove_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_residue</span></code></a>(residue[,&nbsp;bKeepResNum])</td>
+<td>Removes a residue.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pmx.chain.Chain.replace_residue" title="pmx.chain.Chain.replace_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_residue</span></code></a>(residue,&nbsp;new[,&nbsp;bKeepResNum])</td>
+<td>Replaces a residue.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pmx.chain.Chain.nbuild" title="pmx.chain.Chain.nbuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nbuild</span></code></a>(resn[,&nbsp;phi,&nbsp;psi])</td>
+<td>Extend Chain at N-terminus.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pmx.chain.Chain.cbuild" title="pmx.chain.Chain.cbuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cbuild</span></code></a>(resn[,&nbsp;next_phi,&nbsp;psi])</td>
+<td>Extend Chain at C-terminus.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pmx.chain.Chain.add_nterm_cap" title="pmx.chain.Chain.add_nterm_cap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_nterm_cap</span></code></a>()</td>
+<td>Adds N-terminal cap (ACE).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pmx.chain.Chain.add_cterm_cap" title="pmx.chain.Chain.add_cterm_cap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_cterm_cap</span></code></a>()</td>
+<td>Adds C-terminal cap (NME).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pmx.chain.Chain.fetch_residues" title="pmx.chain.Chain.fetch_residues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_residues</span></code></a>(key[,&nbsp;inv])</td>
+<td>Fetch residues by residue names.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pmx.chain.Chain.rename_atoms_to_gmx" title="pmx.chain.Chain.rename_atoms_to_gmx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rename_atoms_to_gmx</span></code></a>()</td>
+<td>Renames atoms to comply with Gromacs syntax.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pmx.chain.Chain.add_cterm_cap">
+<code class="descname">add_cterm_cap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.add_cterm_cap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds C-terminal cap (NME).</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pmx.chain.Chain.com">
-<code class="descname">com</code><span class="sig-paren">(</span><em>vector_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.com" title="Permalink to this definition">¶</a></dt>
-<dd><p>move atoms to center of mass or return vector only</p>
+<dt id="pmx.chain.Chain.add_nterm_cap">
+<code class="descname">add_nterm_cap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.add_nterm_cap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds N-terminal cap (ACE).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.chain.Chain.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>mol</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends a residue to the Chain.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mol</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – Molecule instance to append</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.chain.Chain.cbuild">
+<code class="descname">cbuild</code><span class="sig-paren">(</span><em>resn</em>, <em>next_phi=-139.0</em>, <em>psi=135.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.cbuild" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend Chain at C-terminus.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resn</strong> (<em>str</em>) – residue name using 1- or 3-letter code</li>
+<li><strong>next_phi</strong> (<em>float</em><em>, </em><em>optional</em>) – phi angle. Default is -139.</li>
+<li><strong>next_psi</strong> (<em>float</em><em>, </em><em>optional</em>) – psi angle. Default is 135.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.chain.Chain.fetch_residues">
+<code class="descname">fetch_residues</code><span class="sig-paren">(</span><em>key</em>, <em>inv=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.fetch_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch residues by residue names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>list</em>) – list of residue names</li>
+<li><strong>inv</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to invert the selection, i.e. select all residues with
+names not in <em>key</em>. Default is False.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> – list of residues</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="pmx.chain.Chain.get_sequence">
 <code class="descname">get_sequence</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.get_sequence" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the sequence as string (for fasta format)</p>
+<dd><p>Returns the sequence of residues in FASTA format.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.chain.Chain.insert_residue">
+<code class="descname">insert_residue</code><span class="sig-paren">(</span><em>pos</em>, <em>mol</em>, <em>newResNum=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.insert_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts a residue at a specified position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pos</strong> (<em>int</em>) – index of the residue to be inserted</li>
+<li><strong>mol</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – Molecule instance to insert</li>
+<li><strong>newResNum</strong> (<em>int</em><em>, </em><em>optional</em>) – assigns a specific residue number that differs from the
+ID in pos</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.chain.Chain.nbuild">
+<code class="descname">nbuild</code><span class="sig-paren">(</span><em>resn</em>, <em>phi=-139.0</em>, <em>psi=135.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.nbuild" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend Chain at N-terminus.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resn</strong> (<em>str</em>) – residue name using 1- or 3-letter code</li>
+<li><strong>phi</strong> (<em>float</em><em>, </em><em>optional</em>) – phi angle. Default is -139.</li>
+<li><strong>psi</strong> (<em>float</em><em>, </em><em>optional</em>) – psi angle. Default is 135.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.chain.Chain.remove_residue">
+<code class="descname">remove_residue</code><span class="sig-paren">(</span><em>residue</em>, <em>bKeepResNum=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.remove_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a residue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>residue</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – Molecule instance to remove</li>
+<li><strong>bKeepResNum</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to keep the original residue IDs. Default is False (i.e.
+renumber all residues from 1).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="pmx.chain.Chain.rename_atoms_to_gmx">
 <code class="descname">rename_atoms_to_gmx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.rename_atoms_to_gmx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rename atoms to comply with Gromacs syntax: if the name starts with
+<dd><p>Renames atoms to comply with Gromacs syntax. If the name starts with
 a digit, the digit is moved at the end of the name. E.g. “1CA” becomes
 “CA1”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.chain.Chain.renumber_residues">
+<code class="descname">renumber_residues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.renumber_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renumbers residues from 1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.chain.Chain.replace_residue">
+<code class="descname">replace_residue</code><span class="sig-paren">(</span><em>residue</em>, <em>new</em>, <em>bKeepResNum=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.replace_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces a residue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>residue</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – residue to replace</li>
+<li><strong>new</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – residue to insert</li>
+<li><strong>bKeepResNum</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to keep residue ID of the residue that is inserted.
+Default is False</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.chain.Chain.set_chain_id">
+<code class="descname">set_chain_id</code><span class="sig-paren">(</span><em>chain_id</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.set_chain_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the chain ID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>chain_id</strong> (<em>int</em>) – the chain ID</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

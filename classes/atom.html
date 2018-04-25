@@ -198,8 +198,8 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>line</strong> (<em>str</em>) – input line in PDB format</li>
-<li><strong>mol2line</strong> (<em>str</em>) – input line in MOL2 format</li>
+<li><strong>line</strong> (<em>str</em><em>, </em><em>optional</em>) – input line in PDB format. Default is None.</li>
+<li><strong>mol2line</strong> (<em>str</em><em>, </em><em>optional</em>) – input line in MOL2 format.  Default is None.</li>
 </ul>
 </td>
 </tr>
@@ -286,12 +286,6 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pmx.atom.Atom.a2nm" title="pmx.atom.Atom.a2nm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2nm</span></code></a>()</td>
 <td>Converts the Atom coordinates from Angstrom (A) to nanometers (nm).</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#pmx.atom.Atom.set_resname" title="pmx.atom.Atom.set_resname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_resname</span></code></a>(resname)</td>
-<td>Change the residue name.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pmx.atom.Atom.set_chain_id" title="pmx.atom.Atom.set_chain_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_chain_id</span></code></a>(chain_id)</td>
-<td>Change the chain identifier.</td>
 </tr>
 </tbody>
 </table>
@@ -429,18 +423,6 @@ subtracting two atom instances, as in the example.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pmx.atom.Atom.set_chain_id">
-<code class="descname">set_chain_id</code><span class="sig-paren">(</span><em>chain_id</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.set_chain_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the chain identifier.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.atom.Atom.set_resname">
-<code class="descname">set_resname</code><span class="sig-paren">(</span><em>resname</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.set_resname" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the residue name.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="pmx.atom.Atom.translate">
 <code class="descname">translate</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.translate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Translates the position of the atom.</p>
@@ -450,10 +432,6 @@ subtracting two atom instances, as in the example.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>array</em>) – vector of length 3 containing the values by which to translate the
 atom in the x, y, and z dimensions.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
 </tr>
 </tbody>
 </table>

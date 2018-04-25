@@ -12,7 +12,7 @@ API Reference
 .. currentmodule:: pmx.atom
 
 .. autoclass:: Atom
-   :exclude-members: readPDBString, read_mol2_line, make_long_name, copy, get_symbol, get_order
+   :exclude-members: readPDBString, read_mol2_line, make_long_name, copy, get_symbol, get_order, set_resname, set_chain_id
 
    .. rubric:: Methods
 
@@ -24,5 +24,3 @@ API Reference
       dihedral
       nm2a
       a2nm
-      set_resname
-      set_chain_id
