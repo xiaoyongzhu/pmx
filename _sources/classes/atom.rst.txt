@@ -12,10 +12,17 @@ API Reference
 .. currentmodule:: pmx.atom
 
 .. autoclass:: Atom
+   :exclude-members: readPDBString, read_mol2_line, make_long_name, copy, get_symbol, get_order
 
    .. rubric:: Methods
 
    .. autosummary::
-      readPDBString
       dist
       dist2
+      translate
+      angle
+      dihedral
+      nm2a
+      a2nm
+      set_resname
+      set_chain_id

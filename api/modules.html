@@ -440,13 +440,13 @@ estimate of the free energy change and its uncertainty on the plot.</p>
 <p class="rubric">Examples</p>
 <dl class="staticmethod">
 <dt id="pmx.estimators.Jarz.calc_dg">
-<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>T</em>, <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_dg" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_dg" title="Permalink to this definition">¶</a></dt>
 <dd><p>to be filled</p>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.Jarz.calc_err_blocks">
-<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>T</em>, <em>c</em>, <em>nblocks</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>c</em>, <em>nblocks</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the standard error based on a number of blocks the
 work values are divided into. It is useful when you run independent
 equilibrium simulations, so that you can then use their respective
@@ -472,7 +472,7 @@ you ran.</li>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.Jarz.calc_err_boot">
-<em class="property">static </em><code class="descname">calc_err_boot</code><span class="sig-paren">(</span><em>T</em>, <em>c</em>, <em>nboots</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_err_boot" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_err_boot</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>c</em>, <em>nboots</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_err_boot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the standard error via bootstrap. The work values are
 resampled randomly with replacement multiple (nboots) times,
 and the Jarzinski free energy recalculated for each bootstrap samples.
@@ -588,7 +588,7 @@ estimate is the average of the two Gaussian means.</p>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.Crooks.calc_dg">
-<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>wr</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_dg" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_dg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the free energy difference using the Crooks Gaussian
 Intersection method. It finds the intersection of two Gaussian
 functions. If the intersection cannot be computed, the average of
@@ -620,7 +620,7 @@ the first float value retured is the average of the Gaussian means.</li>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.Crooks.calc_err_blocks">
-<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>wr</em>, <em>nblocks</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>nblocks</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the standard error based on a number of blocks the
 work values are divided into. It is useful when you run independent
 equilibrium simulations, so that you can then use their respective
@@ -644,7 +644,7 @@ you ran.</li>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.Crooks.calc_err_boot1">
-<em class="property">static </em><code class="descname">calc_err_boot1</code><span class="sig-paren">(</span><em>s1</em>, <em>n1</em>, <em>m2</em>, <em>s2</em>, <em>n2</em>, <em>nboots</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_err_boot1" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_err_boot1</code><span class="sig-paren">(</span><em>m1</em>, <em>s1</em>, <em>n1</em>, <em>m2</em>, <em>s2</em>, <em>n2</em>, <em>nboots</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_err_boot1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the standard error of the Crooks Gaussian Intersection
 via parametric bootstrap. Given the parameters of the forward and
 reverse Gaussian distributions, multiple (nboots) bootstrap samples
@@ -682,7 +682,7 @@ two Gaussians.</li>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.Crooks.calc_err_boot2">
-<em class="property">static </em><code class="descname">calc_err_boot2</code><span class="sig-paren">(</span><em>wr</em>, <em>nboots</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_err_boot2" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_err_boot2</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>nboots</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks.calc_err_boot2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the standard error of the Crooks Gaussian Intersection
 via non-parametric bootstrap. The work values are resampled randomly
 with replacement multiple (nboots) times, and the CGI free energy
@@ -721,7 +721,7 @@ free energies.</p>
 <p class="rubric">Examples</p>
 <dl class="staticmethod">
 <dt id="pmx.estimators.BAR.calc_conv">
-<em class="property">static </em><code class="descname">calc_conv</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_conv" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_conv</code><span class="sig-paren">(</span><em>dg</em>, <em>wf</em>, <em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_conv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluates BAR convergence as described in Hahn &amp; Then, Phys Rev E
 (2010), 81, 041117. Returns a value between -1 and 1: the closer this
 value to zero the better the BAR convergence.</p>
@@ -743,12 +743,12 @@ value to zero the better the BAR convergence.</p>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.BAR.calc_conv_err_boot">
-<em class="property">static </em><code class="descname">calc_conv_err_boot</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>nboots</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_conv_err_boot" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_conv_err_boot</code><span class="sig-paren">(</span><em>dg</em>, <em>wf</em>, <em>wr</em>, <em>nboots</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_conv_err_boot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.BAR.calc_dg">
-<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_dg" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_dg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates and returns the free energy difference.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -773,7 +773,7 @@ value to zero the better the BAR convergence.</p>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.BAR.calc_err">
-<em class="property">static </em><code class="descname">calc_err</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_err" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_err</code><span class="sig-paren">(</span><em>dg</em>, <em>wf</em>, <em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the analytical error estimate.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -793,7 +793,7 @@ value to zero the better the BAR convergence.</p>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.BAR.calc_err_blocks">
-<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>wr</em>, <em>nblocks</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>nblocks</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the standard error based on a number of blocks the
 work values are divided into. It is useful when you run independent
 equilibrium simulations, so that you can then use their respective
@@ -818,7 +818,7 @@ you ran.</li>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.BAR.calc_err_boot">
-<em class="property">static </em><code class="descname">calc_err_boot</code><span class="sig-paren">(</span><em>wr</em>, <em>nboots</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_err_boot" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_err_boot</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>nboots</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_err_boot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the error by bootstrapping.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

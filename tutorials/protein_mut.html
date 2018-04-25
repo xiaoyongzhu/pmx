@@ -190,14 +190,14 @@
 protein stability, similarly to what was done in <a class="reference external" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.201510054">Gapsys et al</a>.
 All input files needed for this tutorial can be downloaded here: <a class="reference download internal" href="../_downloads/protein_mut_input.tar.gz" download=""><code class="xref download docutils literal notranslate"><span class="pre">input</span> <span class="pre">files</span></code></a>.</p>
 <p>In order to calculate how a mutation affects the folding free energy of a protein
-(<span class="math notranslate">\(\Delta \Delta G_{Folding}^{Mutation}\)</span>),
+(<span class="math notranslate nohighlight">\(\Delta \Delta G_{Folding}^{Mutation}\)</span>),
 we need to calculate the free energy difference of
-<em>alchemically</em> mutating both the folded and unfolded state of the protein (<span class="math notranslate">\(\Delta G_{Folded}^{Mutation} - \Delta G_{Unfolded}^{Mutation}\)</span>).
-Effectively, we use the following thermodynamic cycle to recover <span class="math notranslate">\(\Delta \Delta G\)</span>
+<em>alchemically</em> mutating both the folded and unfolded state of the protein (<span class="math notranslate nohighlight">\(\Delta G_{Folded}^{Mutation} - \Delta G_{Unfolded}^{Mutation}\)</span>).
+Effectively, we use the following thermodynamic cycle to recover <span class="math notranslate nohighlight">\(\Delta \Delta G\)</span>
 via the non-physical transformations shown as the horizontal legs of the cycle.</p>
 <a class="reference internal image-reference" href="../_images/cycle.png"><img alt="../_images/cycle.png" class="align-center" src="../_images/cycle.png" style="width: 400px;" /></a>
-<p>Here, we will go through the steps for the calculation of <span class="math notranslate">\(\Delta G_{Folded}^{Mutation}\)</span>,
-using the <code class="docutils literal notranslate"><span class="pre">protein.pdb</span></code> file provided. <span class="math notranslate">\(\Delta G_{Unfolded}^{Mutation}\)</span> can be
+<p>Here, we will go through the steps for the calculation of <span class="math notranslate nohighlight">\(\Delta G_{Folded}^{Mutation}\)</span>,
+using the <code class="docutils literal notranslate"><span class="pre">protein.pdb</span></code> file provided. <span class="math notranslate nohighlight">\(\Delta G_{Unfolded}^{Mutation}\)</span> can be
 obtained by following exactly the same steps, but using the file <code class="docutils literal notranslate"><span class="pre">tripeptide.pdb</span></code>
 as the starting structure. These input <code class="docutils literal notranslate"><span class="pre">pdb</span></code> files have already been processed
 so to contain hydrogen atoms and <em>amber</em> atom names.</p>
@@ -299,9 +299,9 @@ at the top of this page.</p>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">pwd</span></code> is the current working directory where you have setup the system,
 <code class="docutils literal notranslate"><span class="pre">forward</span></code> is the folder that will contain the equilibrium and non-equilibrium
-data concerning the forward transformation (<span class="math notranslate">\(T6 \to F6\)</span>), and
+data concerning the forward transformation (<span class="math notranslate nohighlight">\(T6 \to F6\)</span>), and
 <code class="docutils literal notranslate"><span class="pre">reverse</span></code> the folder with the data concerning the reverse transformation
-(<span class="math notranslate">\(F6 \to T6\)</span>).</p>
+(<span class="math notranslate nohighlight">\(F6 \to T6\)</span>).</p>
 <p>These are not very intensive simulations, so you might be able to run them on
 your workstation if you have a GPU. However, they might still take some time (e.g. 2-3 hours), so
 you might want to go get a coffee or submit them to a cluster and work on something else
@@ -384,8 +384,8 @@ is the following:</p>
 <span class="n">nstdhdl</span>           <span class="o">=</span> <span class="mi">1</span>     <span class="p">;</span> <span class="n">write</span> <span class="n">to</span> <span class="n">dhdl</span> <span class="n">at</span> <span class="n">each</span> <span class="n">step</span>
 </pre></div>
 </div>
-<p>which effectively says to use the free energy code, to go from state <span class="math notranslate">\(0\)</span> to <span class="math notranslate">\(1\)</span> in
-<span class="math notranslate">\(40,000\)</span> steps of size <span class="math notranslate">\(2.5 \times 10^{-5}\)</span>, and to use a
+<p>which effectively says to use the free energy code, to go from state <span class="math notranslate nohighlight">\(0\)</span> to <span class="math notranslate nohighlight">\(1\)</span> in
+<span class="math notranslate nohighlight">\(40,000\)</span> steps of size <span class="math notranslate nohighlight">\(2.5 \times 10^{-5}\)</span>, and to use a
 soft-core potential for both Lennard-Jones and Coulombic interactions.</p>
 <p>Depending on your computing setup/situation, you can run these simulations in parallel or one after
 the other one. Here, we run them locally and in series in this way:</p>
@@ -406,16 +406,16 @@ file, apart from the two following lines:</p>
 <span class="n">delta</span><span class="o">-</span><span class="k">lambda</span>      <span class="o">=</span> <span class="o">-</span><span class="mf">2.5e-05</span> <span class="p">;</span> <span class="n">complete</span> <span class="n">transition</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">number</span> <span class="n">of</span> <span class="n">steps</span>
 </pre></div>
 </div>
-<p>Since in the reverse case we need to start from state <span class="math notranslate">\(1\)</span> (i.e. B, F6) and
-go to state <span class="math notranslate">\(0\)</span> (i.e. A, W6).</p>
+<p>Since in the reverse case we need to start from state <span class="math notranslate nohighlight">\(1\)</span> (i.e. B, F6) and
+go to state <span class="math notranslate nohighlight">\(0\)</span> (i.e. A, W6).</p>
 </div>
 <div class="section" id="free-energy-estimation">
 <h2>Free energy estimation<a class="headerlink" href="#free-energy-estimation" title="Permalink to this headline">¶</a></h2>
-<p>Great! Now we have all the data needed for estimating <span class="math notranslate">\(\Delta G_{Folded}^{Mutation}\)</span>,
+<p>Great! Now we have all the data needed for estimating <span class="math notranslate nohighlight">\(\Delta G_{Folded}^{Mutation}\)</span>,
 which is stored in the <code class="docutils literal notranslate"><span class="pre">forward/nonequil_md/frame*/dgdl.xvg</span></code> and
 <code class="docutils literal notranslate"><span class="pre">reverse/nonequil_md/frame*/dgdl.xvg</span></code> files.</p>
 <p>The simplest way to estimate the free energy difference is to use the <code class="docutils literal notranslate"><span class="pre">pmx</span> <span class="pre">analyse</span></code>
-tool. For instance, here we use it to estimate <span class="math notranslate">\(\Delta G_{Folded}^{Mutation}\)</span>
+tool. For instance, here we use it to estimate <span class="math notranslate nohighlight">\(\Delta G_{Folded}^{Mutation}\)</span>
 with BAR:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pmx analyse -fA forward/nonequil_md/frame*/dgdl.xvg -fB reverse/nonequil_md/frame*/dgdl.xvg -t 298.15 -m bar
 </pre></div>
@@ -423,33 +423,33 @@ with BAR:</p>
 <p>For a more detailed discussion about free energy estimation and data analysis you
 can have a look at the <a class="reference internal" href="analysis.html#tutorial-analysis"><span class="std std-ref">analysis tutorial</span></a>. In brief,
 for this calculation, this is the distribution of work values and the BAR
-<span class="math notranslate">\(\Delta G\)</span> estimate we obtained:</p>
+<span class="math notranslate nohighlight">\(\Delta G\)</span> estimate we obtained:</p>
 <img alt="../_images/protein_mut_wdist.png" src="../_images/protein_mut_wdist.png" />
 <p>Often, the easiest way to get reliable error estimates is to just repeat the
 whole calculation multiple times to obtain a standard error. For this example,
 we repeated the above steps 5 times, and obtained the following mean and standard error:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\Delta G_{Folded}^{Mutation} = 9.75 \pm 1.48\ kJ/mol\]</div>
 </div>
 <div class="section" id="final-results">
 <h2>Final results<a class="headerlink" href="#final-results" title="Permalink to this headline">¶</a></h2>
-<p>At this point, if you still remember, the number we were interested in was <span class="math notranslate">\(\Delta \Delta G_{Folding}^{Mutation}\)</span>,
+<p>At this point, if you still remember, the number we were interested in was <span class="math notranslate nohighlight">\(\Delta \Delta G_{Folding}^{Mutation}\)</span>,
 that is, the change in the folding free energy upon introducing the W6F mutation.
-This value is recovered from <span class="math notranslate">\(\Delta G_{Folded}^{Mutation}\)</span>, which we just
-calculated, and <span class="math notranslate">\(\Delta G_{Unfolded}^{Mutation}\)</span>, which you can obtain by running
+This value is recovered from <span class="math notranslate nohighlight">\(\Delta G_{Folded}^{Mutation}\)</span>, which we just
+calculated, and <span class="math notranslate nohighlight">\(\Delta G_{Unfolded}^{Mutation}\)</span>, which you can obtain by running
 the calculations starting from <code class="docutils literal notranslate"><span class="pre">tripeptide.pdb</span></code> rather than <code class="docutils literal notranslate"><span class="pre">protein.pdb</span></code>.
 Using 5 repeats, we obtained the following mean and standard error for the latter
 free energy difference:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\Delta G_{Unfolded}^{Mutation} = -4.82 \pm 0.19\ kJ/mol\]</div>
 <p>Thus, our final result of interest is the following:</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\Delta \Delta G_{Folding}^{Mutation} &amp;= \Delta G_{Folded}^{Mutation} - \Delta G_{Unfolded}^{Mutation} = \\
                                      &amp;= 9.75 \pm 1.48\ - (-4.82 \pm 0.19) =  \\
                                      &amp;= 14.57 \pm 1.49\ kJ/mol\end{split}\]</div>
 <p>This suggests that the W6F mutation has a destabilising effect on the fold of
-Trp-cage of about <span class="math notranslate">\(14.6 \pm 1.5\ kJ/mol\)</span>, which is not far from the
-experimentally determined value of <span class="math notranslate">\(12.5 \pm 0.6\ kJ/mol\)</span>.</p>
+Trp-cage of about <span class="math notranslate nohighlight">\(14.6 \pm 1.5\ kJ/mol\)</span>, which is not far from the
+experimentally determined value of <span class="math notranslate nohighlight">\(12.5 \pm 0.6\ kJ/mol\)</span>.</p>
 </div>
 </div>
 
