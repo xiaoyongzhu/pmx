@@ -395,6 +395,21 @@ a digit, the digit is moved at the end of the name. E.g. “1CA” becomes
 </dd></dl>
 
 <dl class="method">
+<dt id="pmx.molecule.Molecule.renumber_atoms">
+<code class="descname">renumber_atoms</code><span class="sig-paren">(</span><em>start=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.renumber_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renumber all atoms starting from a chosen number (default is 1).
+The original atom IDs are stored in the attribute <code class="docutils literal notranslate"><span class="pre">orig_id</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>start</strong> (<em>int</em><em>, </em><em>optional</em>) – integer from which to start the indexing of the atoms</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pmx.molecule.Molecule.set_resid">
 <code class="descname">set_resid</code><span class="sig-paren">(</span><em>resid</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.set_resid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the residue ID.</p>
@@ -417,6 +432,32 @@ a digit, the digit is moved at the end of the name. E.g. “1CA” becomes
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resname</strong> (<em>str</em>) – the residue name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.molecule.Molecule.writePDB">
+<code class="descname">writePDB</code><span class="sig-paren">(</span><em>fname</em>, <em>title=''</em>, <em>nr=1</em>, <em>bPDBTER=False</em>, <em>bAssignChainIDs=False</em>, <em>resnrlist=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.writePDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes Atomselection to file in PDB format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fname</strong> (<em>str</em>) – filename</li>
+<li><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – title of the PDB file. If not given, it is taken from the instance
+title</li>
+<li><strong>nr</strong> (<em>int</em><em>, </em><em>optional</em>) – what is nr? it seems to choose whether to overwrite or append to a
+file?</li>
+<li><strong>bPDBTER</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to separate chains with TER entries.</li>
+<li><strong>bAssignChainIDs</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to write the chains IDs to file. Default is False.</li>
+<li><strong>resnrlist</strong> (<em>list</em><em>, </em><em>optional</em>) – list of residues to write to file. If empty list provided, all
+residues are written to file, otherwise only the ones in the list
+will be written.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
