@@ -2,8 +2,8 @@ pmx: alchemistry in gromacs
 ===========================
 Toolkit for free-energy calculation setup/analysis and biomolecular structure handling.
 
-**Warning:** this is a development version of pmx, it is not stable or reliable yet. 
-You are welcome to try/test it and provide feedback, but use at your own risk. The current 
+**Warning:** this is a development version of pmx, it is not stable or reliable yet.
+You are welcome to try/test it and provide feedback, but use at your own risk. The current
 stable version of pmx can be found here: https://github.com/dseeliger/pmx
 
 **pmx** is a python library that allows users to setup and analyse molecular
@@ -35,6 +35,12 @@ calculations for protein, nucleic acid, and small molecule mutations.
 
    Protein webserver <http://pmx.mpibpc.mpg.de/webserver.html>
    DNA webserver <http://pmx.mpibpc.mpg.de/dna_webserver.html>
+
+.. toctree::
+   :maxdepth: 1
+   :caption: For Developers
+
+   developers/index
 
 Citations
 ---------

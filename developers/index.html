@@ -1,0 +1,555 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Developers Guide &mdash; pmx  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Modules" href="../api/modules.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/webserver.html">Protein webserver</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://pmx.mpibpc.mpg.de/dna_webserver.html">DNA webserver</a></li>
+</ul>
+<p class="caption"><span class="caption-text">For Developers</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developers Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#structure">Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#style">Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-2-3-compatibility">Python 2/3 Compatibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#continuous-integration">Continuous Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#versioning">Versioning</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pmx</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Developers Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developers/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="developers-guide">
+<h1>Developers Guide<a class="headerlink" href="#developers-guide" title="Permalink to this headline">¶</a></h1>
+<p>Here are some general information on the current structure of the repository, and
+how things like documentation and testing are setup. It is a good point where to start
+for who would like to contribute to the code, with some links to useful websites
+and resources.</p>
+<div class="section" id="structure">
+<h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<p>The repository is structured as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pmx</span>
+<span class="o">|</span>
+ <span class="o">--</span> <span class="n">src</span><span class="o">/</span>
+<span class="o">|</span>   <span class="o">|</span>
+<span class="o">|</span>    <span class="o">--</span> <span class="n">pmx</span><span class="o">/</span>
+<span class="o">|</span>       <span class="o">|</span>
+<span class="o">|</span>        <span class="o">--</span> <span class="n">data</span><span class="o">/</span>
+<span class="o">|</span>       <span class="o">|</span>
+<span class="o">|</span>        <span class="o">--</span> <span class="n">scripts</span><span class="o">/</span>
+<span class="o">|</span>       <span class="o">|</span>
+<span class="o">|</span>        <span class="o">--</span> <span class="n">extensions</span><span class="o">/</span>
+<span class="o">|</span>
+ <span class="o">--</span> <span class="n">tests</span><span class="o">/</span>
+<span class="o">|</span>   <span class="o">|</span>
+<span class="o">|</span>    <span class="o">--</span> <span class="n">data</span><span class="o">/</span>
+<span class="o">|</span>
+ <span class="o">--</span> <span class="n">docs</span><span class="o">/</span>
+<span class="o">|</span>
+ <span class="o">--</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">src/pmx</span></code> folder contains the actual library. In this folder there are all the
+<strong>pmx</strong> modules (e.g. <code class="docutils literal notranslate"><span class="pre">model.py</span></code>, <code class="docutils literal notranslate"><span class="pre">forcefield.py</span></code>, <code class="docutils literal notranslate"><span class="pre">estimators.py</span></code>). See the
+following blogs on the advantages of such structure:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://blog.ionelmc.ro/2014/05/25/python-packaging/#the-structure">https://blog.ionelmc.ro/2014/05/25/python-packaging/#the-structure</a></div>
+<div class="line"><a class="reference external" href="https://hynek.me/articles/testing-packaging/">https://hynek.me/articles/testing-packaging/</a></div>
+<div class="line"><br /></div>
+</div>
+<p>The folder <code class="docutils literal notranslate"><span class="pre">src/pmx/data</span></code> contains the files used by <strong>pmx</strong> or Gromacs. For instance,
+here are stored the forcefield libraries (in <code class="docutils literal notranslate"><span class="pre">data/mutff</span></code>), and a number of pickled
+files used by <strong>pmx</strong>. The folder <code class="docutils literal notranslate"><span class="pre">src/pmx/scripts</span></code> contains all scripts that are meant to
+be called from the command line. The file <code class="docutils literal notranslate"><span class="pre">src/pmx/scripts/cli.py</span></code> defines the scripts that are
+part of the command line interface. The folder <code class="docutils literal notranslate"><span class="pre">src/pmx/extensions</span></code> contains
+extension written in C, which are compiled during installation.</p>
+<p>The folder <code class="docutils literal notranslate"><span class="pre">tests</span></code> contains all the tests for the library. The folder <code class="docutils literal notranslate"><span class="pre">docs</span></code> contains the documentation.
+More on these below.</p>
+</div>
+<div class="section" id="style">
+<h2>Style<a class="headerlink" href="#style" title="Permalink to this headline">¶</a></h2>
+<p>We do not follow strict style rules, but try to adhere to the PEP8 guide:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">https://www.python.org/dev/peps/pep-0008/</a></div>
+<div class="line"><br /></div>
+</div>
+<p>A suggestion that makes life easier with this: use a code editor or IDE that supports
+syntax highlighting, code formatting, linting (automatically checks the code for errors),
+and allows running the code from within the environment (like in a Jupyter notebook). Examples
+are <a class="reference external" href="https://atom.io/">Atom</a> and <a class="reference external" href="https://www.jetbrains.com/pycharm/">PyCharm</a>. For more,
+have a look the following post:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://realpython.com/python-ides-code-editors-guide/">https://realpython.com/python-ides-code-editors-guide/</a></div>
+<div class="line"><br /></div>
+</div>
+<p>As another general suggestion: use functions whenever possible, classes only when necessary.
+It makes sense to create classes to, <em>e.g.</em>, hold data that can be manipulated in different ways (a PDB file for instance),
+or sometimes to group a bunch of related functions. But if you only need to <em>do</em> something, then
+functions might be all that is needed. Generally it is easier to start writing functions, then,
+if you find yourself writing functions inside of functions, it might be time to
+write a class instead. On the other hand, if you only have one function in a class, then it might
+be better to stick with just a function.</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://www.reddit.com/r/Python/comments/1wcc18/what_are_the_advantages_to_using_classes_vs_not/">https://www.reddit.com/r/Python/comments/1wcc18/what_are_the_advantages_to_using_classes_vs_not/</a></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="python-2-3-compatibility">
+<h2>Python 2/3 Compatibility<a class="headerlink" href="#python-2-3-compatibility" title="Permalink to this headline">¶</a></h2>
+<p>The code should be written so to be compatible with both Python <code class="docutils literal notranslate"><span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">3</span></code>. Because of this,
+make sure to have the following line among the imports.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+</pre></div>
+</div>
+<p>Common issues with Python <code class="docutils literal notranslate"><span class="pre">3</span></code> versus <code class="docutils literal notranslate"><span class="pre">2</span></code> are:</p>
+<ul>
+<li><p class="first">In Python <code class="docutils literal notranslate"><span class="pre">3</span></code>, <code class="docutils literal notranslate"><span class="pre">print</span></code> is a function so it needs to be written with parentheses. The parameter <code class="docutils literal notranslate"><span class="pre">end</span></code>
+allows to choose what to end the line with. By default is a newline <code class="docutils literal notranslate"><span class="pre">'\n'</span></code>. Other useful choices
+are <code class="docutils literal notranslate"><span class="pre">''</span></code> to continue printing to the same line, or <code class="docutils literal notranslate"><span class="pre">'\r'</span></code> to put the cursor back at the beginning of the line.
+For instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello World&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Hello</span> <span class="n">World</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;HELLO Mike,&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hello John&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">HELLO</span> <span class="n">Mike</span><span class="p">,</span> <span class="n">hello</span> <span class="n">John</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;HELLO Mike,&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hello John&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hello</span> <span class="n">John</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>For writing to standard error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello World&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Several basic functions return iterators rather then lists (e.g. <code class="docutils literal notranslate"><span class="pre">range</span></code>, <code class="docutils literal notranslate"><span class="pre">map</span></code>, <code class="docutils literal notranslate"><span class="pre">zip</span></code>).
+To keep things working in both versions of Python, you can convert the iterators to lists, <em>e.g.</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">There are different ways to iterate through <code class="docutils literal notranslate"><span class="pre">dict</span></code>. <code class="docutils literal notranslate"><span class="pre">dict.iterkeys()</span></code>, <code class="docutils literal notranslate"><span class="pre">dict.itervalues()</span></code> works in Python <code class="docutils literal notranslate"><span class="pre">2</span></code>, while
+<code class="docutils literal notranslate"><span class="pre">dict.keys()</span></code> and <code class="docutils literal notranslate"><span class="pre">dict.values()</span></code> works in Python <code class="docutils literal notranslate"><span class="pre">3</span></code>. To iterate over keys in both Python <code class="docutils literal notranslate"><span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">3</span></code>, you can do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mydict</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>to iterate over values</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="n">itervalues</span>
+<span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">itervalues</span><span class="p">(</span><span class="n">mydict</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>to iterate over both, you can do either of the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">mydict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="kn">from</span> <span class="nn">future.utils</span> <span class="k">import</span> <span class="n">iteritems</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">mydict</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>A very useful webpage on these problems and how to go around them:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://python-future.org/compatible_idioms.html">http://python-future.org/compatible_idioms.html</a></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Documentation for the library is stored in the <code class="docutils literal notranslate"><span class="pre">docs</span></code> folder and it is build
+using <code class="docutils literal notranslate"><span class="pre">sphinx</span></code>, which converts <strong>reStructuredText</strong> markup language into a range
+of output formats, including HTML and LaTeX (for printable PDF versions).</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="http://www.sphinx-doc.org/en/master/">http://www.sphinx-doc.org/en/master/</a></div>
+<div class="line"><br /></div>
+</div>
+<p>The API documentation is built automatically from the source files by reading the
+<strong>docstrings</strong> written in in <strong>NumPy</strong> style. Examples can be found here as well as directly in the code:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html">https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html</a></div>
+<div class="line"><br /></div>
+</div>
+<p>The documentation is published online with GitHub pages. It is
+deployed automatically from <a class="reference external" href="https://travis-ci.org/">Travis CI</a> using <code class="docutils literal notranslate"><span class="pre">doctr</span></code>. In practice, after testing,
+Travic CI builds the documentation and sends it to the branch <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> so to make it
+available at this web address.</p>
+<p>Info can be found here:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://pages.github.com/">https://pages.github.com/</a></div>
+<div class="line"><a class="reference external" href="https://blog.github.com/2016-08-22-publish-your-project-documentation-with-github-pages/">https://blog.github.com/2016-08-22-publish-your-project-documentation-with-github-pages/</a></div>
+<div class="line"><a class="reference external" href="https://docs.travis-ci.com/user/deployment/pages/">https://docs.travis-ci.com/user/deployment/pages/</a></div>
+<div class="line"><a class="reference external" href="https://drdoctr.github.io/doctr/">https://drdoctr.github.io/doctr/</a></div>
+<div class="line"><br /></div>
+</div>
+<p>To build the documentation locally, in the <code class="docutils literal notranslate"><span class="pre">docs/build</span></code> folder, you do the following
+from within the <code class="docutils literal notranslate"><span class="pre">docs</span></code> folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">clean</span> <span class="n">html</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>For testing we use <code class="docutils literal notranslate"><span class="pre">pytest</span></code>:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://docs.pytest.org/en/latest/">https://docs.pytest.org/en/latest/</a></div>
+<div class="line"><br /></div>
+</div>
+<p>All tests are in the <code class="docutils literal notranslate"><span class="pre">tests</span></code> folder. There you will see there is a Python file
+for each module in <strong>pmx</strong>, with the prefix “test_”: <em>e.g.</em> the tests for the module
+<code class="docutils literal notranslate"><span class="pre">model.py</span></code> are defined in <code class="docutils literal notranslate"><span class="pre">tests/test_model.py</span></code>. Similarly, test functions are
+specified with the same prefix; thus, in <code class="docutils literal notranslate"><span class="pre">tests/test_model.py</span></code> you can
+find a function called for example <code class="docutils literal notranslate"><span class="pre">test_model_moltype</span></code>.</p>
+<p>It gets a bit more complicated when having to load/write files, and this is handled
+by the <code class="docutils literal notranslate"><span class="pre">gf</span></code> function defined in <code class="docutils literal notranslate"><span class="pre">tests/conftest.py</span></code>. <code class="docutils literal notranslate"><span class="pre">Pytest</span></code> also allows to create
+test classes (that start with <code class="docutils literal notranslate"><span class="pre">Test</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">TestClass</span></code>), and has additional
+features like <strong>fixtures</strong> and <strong>parametrized functions</strong>.
+A good intro to testing with <code class="docutils literal notranslate"><span class="pre">pytest</span></code> is the following:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://semaphoreci.com/community/tutorials/testing-python-applications-with-pytest">https://semaphoreci.com/community/tutorials/testing-python-applications-with-pytest</a></div>
+<div class="line"><br /></div>
+</div>
+<p>To run all tests and get a summary report you just type “pytest” in the root
+directory of the repo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pytest
+============================= test session starts ==============================
+platform linux2 -- Python 2.7.13, pytest-3.4.1, py-1.5.2, pluggy-0.6.0
+rootdir: /home/maldegh/sw/degrootlab-pmx-develop, inifile:
+plugins: cov-2.5.1
+collected 11 items
+
+tests/test_chain.py .                                                    [  9%]
+tests/test_estimators.py ...                                             [ 36%]
+tests/test_import.py .                                                   [ 45%]
+tests/test_model.py .....                                                [ 90%]
+tests/test_utils.py .                                                    [100%]
+
+========================== 11 passed in 0.14 seconds ===========================
+</pre></div>
+</div>
+</div>
+<div class="section" id="continuous-integration">
+<h2>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this headline">¶</a></h2>
+<p>Every time changes are pushed to the repository, the code is built and tested automatically
+in Python <code class="docutils literal notranslate"><span class="pre">2.7</span></code> and <code class="docutils literal notranslate"><span class="pre">3.6</span></code> by <a class="reference external" href="https://travis-ci.org/">Travis CI</a>.</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://travis-ci.org/deGrootLab/pmx">https://travis-ci.org/deGrootLab/pmx</a></div>
+<div class="line"><br /></div>
+</div>
+<p>So if the new commits break the build or fail the tests
+you should get notified. The configuration file for Travis CI is <code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code>.</p>
+<p>The repo is also linked to <a class="reference external" href="https://codecov.io/">Codecov</a> so to see which parts
+of the code are covered by tests.</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://codecov.io/gh/deGrootLab/pmx">https://codecov.io/gh/deGrootLab/pmx</a></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="versioning">
+<h2>Versioning<a class="headerlink" href="#versioning" title="Permalink to this headline">¶</a></h2>
+<p>We follow the following standard sequence-based scheme:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MAJOR</span><span class="o">.</span><span class="n">MINOR</span><span class="p">[</span><span class="o">.</span><span class="n">MICRO</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">MAJOR</span></code> designates a major revision number for the software (e.g. <code class="docutils literal notranslate"><span class="pre">2</span></code> or <code class="docutils literal notranslate"><span class="pre">3</span></code> for Python).
+This is done when adding a lot of features, breaking backward-compatibility,
+or drastically changing the API.</p>
+<p><code class="docutils literal notranslate"><span class="pre">MINOR</span></code> releases involve moderate changes,
+like bug fixes and minor improvements. End users should be able to upgrade without worrying that their code
+will not work anymore. If there are small API changes, the user should be notified with a deprecation warning.</p>
+<p>Sometimes the third level <code class="docutils literal notranslate"><span class="pre">MICRO</span></code> can be used, primarily
+for bug fixes. Development versions can just be suffixed by a <em>dev</em> number,
+e.g. <em>1.2dev0</em>, <em>1.2dev1</em>, <em>1.2dev2</em>, <em>etc</em>.</p>
+<p>More info can be found here:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://the-hitchhikers-guide-to-packaging.readthedocs.io/en/latest/specification.html#sequence-based-scheme">https://the-hitchhikers-guide-to-packaging.readthedocs.io/en/latest/specification.html#sequence-based-scheme</a></div>
+<div class="line"><br /></div>
+</div>
+<p>Tracking versions is handled by <code class="docutils literal notranslate"><span class="pre">versioneer</span></code>.</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://github.com/warner/python-versioneer">https://github.com/warner/python-versioneer</a></div>
+<div class="line"><a class="reference external" href="https://blog.mozilla.org/warner/2012/01/31/version-string-management-in-python-introducing-python-versioneer/">https://blog.mozilla.org/warner/2012/01/31/version-string-management-in-python-introducing-python-versioneer/</a></div>
+<div class="line"><br /></div>
+</div>
+<p>Which makes versioning easy by using Git tags:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://git-scm.com/book/en/v2/Git-Basics-Tagging">https://git-scm.com/book/en/v2/Git-Basics-Tagging</a></div>
+<div class="line"><br /></div>
+</div>
+<p>In practice, if you have modified the code and would like to tag it with a new version:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git tag -a 1.4.3 -m &quot;my version 1.4.3&quot;
+</pre></div>
+</div>
+<p>To see all versions of the code available:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git tag
+1.0dev0
+1.0
+1.1
+1.2
+1.3
+1.4
+1.4.1
+1.4.2
+1.4.3
+</pre></div>
+</div>
+<p>To see the tag data along with the commit that was tagged:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git show 1.4.3
+tag 1.4.3
+Tagger: John Doe &lt;john@doe.com&gt;
+Date:   Tue Jan 1 12:01:01 2018 -0700
+
+my version 1.4.3
+
+commit ca82a6dff817ec66f44342007202690a93763949
+Author: Mark Smith &lt;mark@smith.com&gt;
+Date:   Mon Dec 17 21:52:11 2017 -0700
+
+    changed the version number
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../api/modules.html" class="btn btn-neutral" title="Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, The Authors
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = ''
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/js/versions.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

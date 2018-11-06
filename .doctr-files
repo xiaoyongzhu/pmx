@@ -17,6 +17,7 @@
 ./_sources/classes/molecule.rst.txt
 ./_sources/classes/topology.rst.txt
 ./_sources/classes/trajectory.rst.txt
+./_sources/developers/index.rst.txt
 ./_sources/examples/analysis.rst.txt
 ./_sources/examples/hybrid_topology.rst.txt
 ./_sources/examples/index.rst.txt
@@ -109,6 +110,7 @@
 ./classes/molecule.html
 ./classes/topology.html
 ./classes/trajectory.html
+./developers/index.html
 ./examples/analysis.html
 ./examples/hybrid_topology.html
 ./examples/index.html
