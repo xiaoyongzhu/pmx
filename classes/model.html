@@ -219,50 +219,114 @@ if the Model is then written to file and used as input for Gromacs
 <dl class="attribute">
 <dt id="pmx.model.Model.title">
 <code class="descname">title</code><a class="headerlink" href="#pmx.model.Model.title" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – title of model. Default is ‘PMX MODEL’.</p>
+<dd><p>title of model. Default is ‘PMX MODEL’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.model.Model.filename">
 <code class="descname">filename</code><a class="headerlink" href="#pmx.model.Model.filename" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – filename from which the Model was imported, otherwise None.</p>
+<dd><p>filename from which the Model was imported, otherwise None.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.model.Model.chains">
 <code class="descname">chains</code><a class="headerlink" href="#pmx.model.Model.chains" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of Chain instances</p>
+<dd><p>list of Chain instances</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.model.Model.chdic">
 <code class="descname">chdic</code><a class="headerlink" href="#pmx.model.Model.chdic" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dict</em> – dict with chain IDs as keys and Chain instances as values</p>
+<dd><p>dict with chain IDs as keys and Chain instances as values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.model.Model.residues">
 <code class="descname">residues</code><a class="headerlink" href="#pmx.model.Model.residues" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of molecules/residues</p>
+<dd><p>list of molecules/residues</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.model.Model.unity">
 <code class="descname">unity</code><a class="headerlink" href="#pmx.model.Model.unity" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – coordinates unit, either ‘A’ or ‘nm’.</p>
+<dd><p>coordinates unit, either ‘A’ or ‘nm’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.model.Model.box">
 <code class="descname">box</code><a class="headerlink" href="#pmx.model.Model.box" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>2d array</em> – 3x3 array containing the box vectors. See Gromacs manual, Table 3.1</p>
+<dd><p>3x3 array containing the box vectors. See Gromacs manual, Table 3.1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">2d array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.model.Model.moltype">
 <code class="descname">moltype</code><a class="headerlink" href="#pmx.model.Model.moltype" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – Type of system: protein, dna, rna, or unknown if organic molecule or
+<dd><p>Type of system: protein, dna, rna, or unknown if organic molecule or
 a mix of molecules are in the system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -559,7 +623,7 @@ writing PDB files. Default is False.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, The Authors.
+        &copy; Copyright 2018, The Authors
 
     </p>
   </div> 
@@ -594,22 +658,15 @@ writing PDB files. Default is False.</li>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script type="text/javascript" src="../_static/js/versions.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/js/versions.js"></script>
+    
 
   
 

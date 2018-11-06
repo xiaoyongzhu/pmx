@@ -213,158 +213,366 @@ set to True, then you also need to provide a force field name.</li>
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.filename">
 <code class="descname">filename</code><a class="headerlink" href="#pmx.forcefield.Topology.filename" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – name of the input topology file</p>
+<dd><p>name of the input topology file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.forcefield">
 <code class="descname">forcefield</code><a class="headerlink" href="#pmx.forcefield.Topology.forcefield" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – forcefield included in the topology file, if present</p>
+<dd><p>forcefield included in the topology file, if present</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.is_itp">
 <code class="descname">is_itp</code><a class="headerlink" href="#pmx.forcefield.Topology.is_itp" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – whether the Topology is an <code class="docutils literal notranslate"><span class="pre">itp</span></code> file rather than <code class="docutils literal notranslate"><span class="pre">top</span></code></p>
+<dd><p>whether the Topology is an <code class="docutils literal notranslate"><span class="pre">itp</span></code> file rather than <code class="docutils literal notranslate"><span class="pre">top</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.include_itps">
 <code class="descname">include_itps</code><a class="headerlink" href="#pmx.forcefield.Topology.include_itps" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of itp files included in the topology file, if present</p>
+<dd><p>list of itp files included in the topology file, if present</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.nrexcl">
 <code class="descname">nrexcl</code><a class="headerlink" href="#pmx.forcefield.Topology.nrexcl" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of bonds between atoms from which to exclude interactions.
+<dd><p>number of bonds between atoms from which to exclude interactions.
 See Gromacs manual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.atoms">
 <code class="descname">atoms</code><a class="headerlink" href="#pmx.forcefield.Topology.atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of atoms</p>
+<dd><p>list of atoms</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.residues">
 <code class="descname">residues</code><a class="headerlink" href="#pmx.forcefield.Topology.residues" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of residues</p>
+<dd><p>list of residues</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.bonds">
 <code class="descname">bonds</code><a class="headerlink" href="#pmx.forcefield.Topology.bonds" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of bonds</p>
+<dd><p>list of bonds</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.have_constraints">
 <code class="descname">have_constraints</code><a class="headerlink" href="#pmx.forcefield.Topology.have_constraints" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – whether constraints are present</p>
+<dd><p>whether constraints are present</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.constrains">
 <code class="descname">constrains</code><a class="headerlink" href="#pmx.forcefield.Topology.constrains" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of constraints</p>
+<dd><p>list of constraints</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.pairs">
 <code class="descname">pairs</code><a class="headerlink" href="#pmx.forcefield.Topology.pairs" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of pairs</p>
+<dd><p>list of pairs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.cmap">
 <code class="descname">cmap</code><a class="headerlink" href="#pmx.forcefield.Topology.cmap" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of cmap</p>
+<dd><p>list of cmap</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.angles">
 <code class="descname">angles</code><a class="headerlink" href="#pmx.forcefield.Topology.angles" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of angles</p>
+<dd><p>list of angles</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.dihedrals">
 <code class="descname">dihedrals</code><a class="headerlink" href="#pmx.forcefield.Topology.dihedrals" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of dihedrals</p>
+<dd><p>list of dihedrals</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.has_vsites2">
 <code class="descname">has_vsites2</code><a class="headerlink" href="#pmx.forcefield.Topology.has_vsites2" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – whether vsites2 are present</p>
+<dd><p>whether vsites2 are present</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.has_vsites3">
 <code class="descname">has_vsites3</code><a class="headerlink" href="#pmx.forcefield.Topology.has_vsites3" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – whether vsites3 are present</p>
+<dd><p>whether vsites3 are present</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.has_vsites4">
 <code class="descname">has_vsites4</code><a class="headerlink" href="#pmx.forcefield.Topology.has_vsites4" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – whether vsites4 are present</p>
+<dd><p>whether vsites4 are present</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.virtual_sites2">
 <code class="descname">virtual_sites2</code><a class="headerlink" href="#pmx.forcefield.Topology.virtual_sites2" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of vsites2</p>
+<dd><p>list of vsites2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.virtual_sites3">
 <code class="descname">virtual_sites3</code><a class="headerlink" href="#pmx.forcefield.Topology.virtual_sites3" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of vsites3</p>
+<dd><p>list of vsites3</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.virtual_sites4">
 <code class="descname">virtual_sites4</code><a class="headerlink" href="#pmx.forcefield.Topology.virtual_sites4" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of vsites4</p>
+<dd><p>list of vsites4</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.has_posre">
 <code class="descname">has_posre</code><a class="headerlink" href="#pmx.forcefield.Topology.has_posre" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – whether position restraints are present</p>
+<dd><p>whether position restraints are present</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.posre">
 <code class="descname">posre</code><a class="headerlink" href="#pmx.forcefield.Topology.posre" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of  position restraints</p>
+<dd><p>list of  position restraints</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.molecules">
 <code class="descname">molecules</code><a class="headerlink" href="#pmx.forcefield.Topology.molecules" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of molecules</p>
+<dd><p>list of molecules</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.system">
 <code class="descname">system</code><a class="headerlink" href="#pmx.forcefield.Topology.system" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – name of system</p>
+<dd><p>name of system</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.qA">
 <code class="descname">qA</code><a class="headerlink" href="#pmx.forcefield.Topology.qA" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – net charge of state A</p>
+<dd><p>net charge of state A</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.forcefield.Topology.qB">
 <code class="descname">qB</code><a class="headerlink" href="#pmx.forcefield.Topology.qB" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – net charge of state B</p>
+<dd><p>net charge of state B</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -470,7 +678,7 @@ is False.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, The Authors.
+        &copy; Copyright 2018, The Authors
 
     </p>
   </div> 
@@ -505,22 +713,15 @@ is False.</li>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script type="text/javascript" src="../_static/js/versions.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/js/versions.js"></script>
+    
 
   
 
