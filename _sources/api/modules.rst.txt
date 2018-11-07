@@ -122,3 +122,24 @@ pmx.xdrfile
     :members:
     :undoc-members:
     :show-inheritance:
+
+Notes
+-----
+.. [1] Jarzynski C (1997) Equilibrium free-energy
+        differences from nonequilibrium measurements:
+        A master-equation approach.
+        Phys Rev E 56:5018–5035
+
+.. [2] Goette M, Grubmüller H (2009) Accuracy
+        and convergence of free energy differences calculated
+        from nonequilibrium switching processes.
+        J Comput Chem 30(3):447–456
+
+.. [3] Shirts MR, Bair E, Hooker G, Pande VS
+        (2003) Equilibrium free energies from non-equilibrium
+        measurements using maximum-likelihood methods.
+        Phys Rev Lett 91 (14):140601
+
+.. [4] Hahn AM, Then H (2010) Measuring the
+        convergence of Monte Carlo free-energy calculations. 
+        Phys Rev E 81(4):041117
