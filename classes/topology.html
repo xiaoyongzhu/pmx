@@ -203,11 +203,11 @@ to the topology file in Gromacs.</p>
 <li><strong>is_itp</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the topology provided is an <code class="docutils literal notranslate"><span class="pre">itp</span></code> file. If not provided,
 this is automatically determined by the file extension (<code class="docutils literal notranslate"><span class="pre">.itp</span></code> vs
 <code class="docutils literal notranslate"><span class="pre">.top</span></code>).</li>
+<li><strong>assign_types</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to assign types for the atoms in the Topology. Default is True.</li>
 <li><strong>ff</strong> (<em>str</em><em>, </em><em>optional</em>) – force field to use. If not provided, it is determined based on the
 forcefield.itp include statement in the <code class="docutils literal notranslate"><span class="pre">top</span></code> file. If you are providing
 an <code class="docutils literal notranslate"><span class="pre">itp</span></code> file without a reference to the force field, and assign_types is
 set to True, then you also need to provide a force field name.</li>
-<li><strong>assign_types</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to assign atom types for the atoms in the Topology.</li>
 <li><strong>version</strong> (<em>str?</em>) – what is version? is it still needed?</li>
 </ul>
 </td>
