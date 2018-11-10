@@ -1882,7 +1882,32 @@ found in topDic</p>
 <dl class="method">
 <dt id="pmx.atomselection.Atomselection.fetch_atoms">
 <code class="descname">fetch_atoms</code><span class="sig-paren">(</span><em>key</em>, <em>how='byname'</em>, <em>wildcard=False</em>, <em>inv=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atomselection.Atomselection.fetch_atoms" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Find atoms given their name, element, or id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str|int</em>) – key used to find the atoms.</li>
+<li><strong>how</strong> (<em>str</em><em>, </em><em>optional</em>) – the way atoms are identified. Options are “byname”, “byelem”, or
+“byid”. Default is “byname”.</li>
+<li><strong>wildcard</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to loosely match the atom name. In this case, if the key
+provided is within an atom name, the atom will be selected. E.g. the
+key=’H1’ will select atoms named, for instance, “H12”, “H13”, and
+“HH1”.</li>
+<li><strong>inv</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to invert the selection. Default is False.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>atoms</strong> – list of Atom objects found.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pmx.atomselection.Atomselection.get_b13">

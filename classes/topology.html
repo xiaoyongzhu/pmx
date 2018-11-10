@@ -628,18 +628,35 @@ See Gromacs manual.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pmx.forcefield.Topology.read_header">
+<code class="descname">read_header</code><span class="sig-paren">(</span><em>lines</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.read_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the include statemets at the top of the topology file.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pmx.forcefield.Topology.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>outfile</em>, <em>stateBonded='AB'</em>, <em>stateTypes='AB'</em>, <em>stateQ='AB'</em>, <em>scale_mass=False</em>, <em>dummy_qA='on'</em>, <em>dummy_qB='on'</em>, <em>target_qB=None</em>, <em>full_morphe=True</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>outfile</em>, <em>stateBonded='AB'</em>, <em>stateTypes='AB'</em>, <em>stateQ='AB'</em>, <em>scale_mass=False</em>, <em>dummy_qA='on'</em>, <em>dummy_qB='on'</em>, <em>target_qB=None</em>, <em>full_morphe=True</em>, <em>write_atypes=True</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the Topology to file.</p>
+<p>The parameters <code class="docutils literal notranslate"><span class="pre">stateBonded</span></code>, <code class="docutils literal notranslate"><span class="pre">stateTypes</span></code>, and <code class="docutils literal notranslate"><span class="pre">stateQ</span></code> control
+what to write in the B-state columns of the topology. This is needed
+for free energy calculations. However, if you are writing a
+standard topology file that do not contain information on B-states,
+choose the option ‘A’ so that only the A-state data will be written.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>outfile</strong> (<em>str</em>) – filename of topology file</li>
-<li><strong>stateBonded</strong> (<em>A|B|AB</em><em>, </em><em>optional</em>) – write bonded terms for state A, B, or both. Default is both (AB).</li>
-<li><strong>stateTypes</strong> (<em>A|B|AB</em><em>, </em><em>optional</em>) – write atomtypes for state A, B, or both. Default is both (AB).</li>
-<li><strong>stateQ</strong> (<em>A|B|AB</em><em>, </em><em>optional</em>) – write charges for state A, B, or both. Default is both (AB).</li>
+<li><strong>stateBonded</strong> (<em>A|AA|BB|AB</em><em>, </em><em>optional</em>) – write bonded terms with states A only, AA, BB, or AB.
+Default is AB. If you want to write a ‘standard’ topology with no
+B-state columns, select ‘A’.</li>
+<li><strong>stateTypes</strong> (<em>A|AA|BB|AB</em><em>, </em><em>optional</em>) – write atomtypes with states A only, AA, BB, or AB.
+Default is AB. If you want to write a ‘standard’ topology with no
+B-state columns, select ‘A’.</li>
+<li><strong>stateQ</strong> (<em>A|AA|BB|AB</em><em>, </em><em>optional</em>) – write charges with statse A only, AA, BB, or AB.
+Default is AB. If you want to write a ‘standard’ topology with no
+B-state columns, select ‘A’.</li>
 <li><strong>scale_mass</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to scale the masses of dummy atoms. Default is False.</li>
 <li><strong>dummy_qA</strong> (<em>on|off</em>) – whether to have charges on dummy atoms in state A (‘on’) or
 not (‘off’). Default is ‘on’.</li>
@@ -648,10 +665,28 @@ not (‘off’). Default is ‘on’.</li>
 <li><strong>target_qB</strong> (<em>float?</em>) – target charge for hybrid B states? Default is None.</li>
 <li><strong>full_morphe</strong> (<em>bool</em><em>, </em><em>optional</em>) – <p>???</p>
 </li>
+<li><strong>write_atypes</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to write the atomtypes section. Default is True. If you are
+including atomtypes in another Topology and do not want to write
+this section in this file, set this to False.</li>
 <li><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to print out information about each atom written. Default
 is False.</li>
 </ul>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.forcefield.Topology.write_header">
+<code class="descname">write_header</code><span class="sig-paren">(</span><em>fp</em>, <em>write_ff=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.write_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the include statemets at the top of the topology file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>write_ff</strong> (<em>bool</em>) – whether to write the line that includes the forcefield parameters
+or the rest of the header.</td>
 </tr>
 </tbody>
 </table>
