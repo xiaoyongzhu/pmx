@@ -628,6 +628,25 @@ See Gromacs manual.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pmx.forcefield.Topology.make_posre">
+<code class="descname">make_posre</code><span class="sig-paren">(</span><em>heavy=True</em>, <em>k=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.make_posre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate position restraints for the atoms in Topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>heavy</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to restrain only heavy atoms (True) or also hydrogens
+(False). Default is True</li>
+<li><strong>k</strong> (<em>float</em><em>, </em><em>optional</em>) – force constant of position restraints. Default is 1000 kJ/nm^2.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pmx.forcefield.Topology.read_header">
 <code class="descname">read_header</code><span class="sig-paren">(</span><em>lines</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.read_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the include statemets at the top of the topology file.</p>
@@ -635,7 +654,7 @@ See Gromacs manual.</p>
 
 <dl class="method">
 <dt id="pmx.forcefield.Topology.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>outfile</em>, <em>stateBonded='AB'</em>, <em>stateTypes='AB'</em>, <em>stateQ='AB'</em>, <em>scale_mass=False</em>, <em>dummy_qA='on'</em>, <em>dummy_qB='on'</em>, <em>target_qB=None</em>, <em>full_morphe=True</em>, <em>write_atypes=True</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>outfile</em>, <em>stateBonded='AB'</em>, <em>stateTypes='AB'</em>, <em>stateQ='AB'</em>, <em>scale_mass=False</em>, <em>dummy_qA='on'</em>, <em>dummy_qB='on'</em>, <em>target_qB=None</em>, <em>full_morphe=True</em>, <em>write_atypes=True</em>, <em>posre_ifdef=True</em>, <em>posre_include=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the Topology to file.</p>
 <p>The parameters <code class="docutils literal notranslate"><span class="pre">stateBonded</span></code>, <code class="docutils literal notranslate"><span class="pre">stateTypes</span></code>, and <code class="docutils literal notranslate"><span class="pre">stateQ</span></code> control
 what to write in the B-state columns of the topology. This is needed
@@ -668,6 +687,11 @@ not (‘off’). Default is ‘on’.</li>
 <li><strong>write_atypes</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to write the atomtypes section. Default is True. If you are
 including atomtypes in another Topology and do not want to write
 this section in this file, set this to False.</li>
+<li><strong>posre_ifdef</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to use an “ifdef POSRES” statement for the position
+restraints. Default is True.</li>
+<li><strong>posre_include</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to place the position restraints in a separate itp file
+that is included in the topology via an “#include” statement.
+Default is False.</li>
 <li><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to print out information about each atom written. Default
 is False.</li>
 </ul>
@@ -687,6 +711,26 @@ is False.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>write_ff</strong> (<em>bool</em>) – whether to write the line that includes the forcefield parameters
 or the rest of the header.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.forcefield.Topology.write_posre">
+<code class="descname">write_posre</code><span class="sig-paren">(</span><em>fp</em>, <em>ifdef=True</em>, <em>use_include=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.write_posre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write position restraints section.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ifdef</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to use an “ifdef POSRES” statement. Default is True.</li>
+<li><strong>use_include</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to place the position restraints in a separate itp file
+that is included in the topology via an “#include” statement.
+Default is False.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
