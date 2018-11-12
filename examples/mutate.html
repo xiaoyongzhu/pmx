@@ -187,7 +187,7 @@ protein, DNA, and RNA residues.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.alchemy</span> <span class="k">import</span> <span class="n">mutate</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># load the PDB file</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;peptide.pdb&#39;</span><span class="p">,</span> <span class="n">for_gmx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;peptide.pdb&#39;</span><span class="p">,</span> <span class="n">rename_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># perform mutation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">mutate</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">mut_resid</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">mut_resname</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">ff</span><span class="o">=</span><span class="s1">&#39;amber99sb-star-ildn-mut&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># save mutant PDB file</span>
@@ -200,7 +200,7 @@ protein, DNA, and RNA residues.</p>
 </pre></div>
 </div>
 <p>Similarly, you can also mutate <a class="reference download internal" download="" href="../_downloads/5c7277fcb2fe6e38e176efdbc4312270/dna.pdb"><code class="xref download docutils literal notranslate"><span class="pre">DNA</span></code></a> with the same <a class="reference internal" href="../api/modules.html#pmx.alchemy.mutate" title="pmx.alchemy.mutate"><code class="xref py py-func docutils literal notranslate"><span class="pre">pmx.alchemy.mutate()</span></code></a> function.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;peptide.pdb&#39;</span><span class="p">,</span> <span class="n">for_gmx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;dna.pdb&#39;</span><span class="p">,</span> <span class="n">rename_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">mutate</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">mut_resid</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mut_resname</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">ff</span><span class="o">=</span><span class="s1">&#39;amber99sb-star-ildn-bsc1-mut&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;mutant_dna.pdb&#39;</span><span class="p">)</span>
 </pre></div>
@@ -217,7 +217,7 @@ protein, DNA, and RNA residues.</p>
 If you want to keep the original residue IDs, you can do this by using the
 <code class="docutils literal notranslate"><span class="pre">renumber_residues</span></code> argument when loading the <code class="docutils literal notranslate"><span class="pre">Model</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># load the PDB file</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;peptide.pdb&#39;</span><span class="p">,</span> <span class="n">for_gmx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">renumber_residues</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;peptide.pdb&#39;</span><span class="p">,</span> <span class="n">rename_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">renumber_residues</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In this case, however, your residue IDs might not be unique anymore. If <strong>pmx</strong>

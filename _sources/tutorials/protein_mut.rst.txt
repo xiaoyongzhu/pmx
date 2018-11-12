@@ -60,7 +60,7 @@ also discussed in :ref:`the examples <examples>`::
     from pmx import *
 
     # load, mutate, and save the PDB file
-    m = Model('peptide.pdb', for_gmx=True)
+    m = Model('peptide.pdb', rename_atoms=True)
     m2 = mutate(m=m, mut_resid=6, mut_resname='F', ff='amber99sb-star-ildn-mut')
     m2.write('mutant.pdb')
 

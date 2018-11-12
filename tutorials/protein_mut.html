@@ -238,7 +238,7 @@ also discussed in <a class="reference internal" href="../examples/index.html#exa
 <span class="kn">from</span> <span class="nn">pmx</span> <span class="k">import</span> <span class="o">*</span>
 
 <span class="c1"># load, mutate, and save the PDB file</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;peptide.pdb&#39;</span><span class="p">,</span> <span class="n">for_gmx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;peptide.pdb&#39;</span><span class="p">,</span> <span class="n">rename_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">m2</span> <span class="o">=</span> <span class="n">mutate</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">mut_resid</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">mut_resname</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">ff</span><span class="o">=</span><span class="s1">&#39;amber99sb-star-ildn-mut&#39;</span><span class="p">)</span>
 <span class="n">m2</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;mutant.pdb&#39;</span><span class="p">)</span>
 

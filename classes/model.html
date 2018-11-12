@@ -195,7 +195,7 @@ acts on this object.</p>
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pmx.model.Model">
-<em class="property">class </em><code class="descclassname">pmx.model.</code><code class="descname">Model</code><span class="sig-paren">(</span><em>filename=None</em>, <em>pdbline=None</em>, <em>renumber_atoms=True</em>, <em>renumber_residues=True</em>, <em>bPDBTER=True</em>, <em>bNoNewID=True</em>, <em>for_gmx=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pmx.model.</code><code class="descname">Model</code><span class="sig-paren">(</span><em>filename=None</em>, <em>pdbline=None</em>, <em>renumber_atoms=True</em>, <em>renumber_residues=True</em>, <em>rename_atoms=False</em>, <em>scale_coords=None</em>, <em>bPDBTER=True</em>, <em>bNoNewID=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Model Class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -204,17 +204,22 @@ acts on this object.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> (<em>str</em>) – filename of input structure</li>
 <li><strong>pdbline</strong> (<em>bool</em><em>(</em><em>?</em><em>)</em>) – what is pdbline?</li>
-<li><strong>renumber_atoms</strong> (<em>bool</em>) – renumber all atoms from 1. Default is True.</li>
-<li><strong>renumber_residues</strong> (<em>bool</em>) – renumber all residues from 1. In this way, each residue will have a
+<li><strong>renumber_atoms</strong> (<em>bool</em><em>, </em><em>optional</em>) – renumber all atoms from 1. Default is True.</li>
+<li><strong>renumber_residues</strong> (<em>bool</em><em>, </em><em>optional</em>) – renumber all residues from 1. In this way, each residue will have a
 unique ID, also across chains. Default is True.</li>
+<li><strong>rename_atoms</strong> (<em>bool</em><em>, </em><em>optional</em>) – rename atoms so to conform to Gromacs format. Default is False.</li>
+<li><strong>scale_coords</strong> (<em>A|nm</em><em>, </em><em>optional</em>) – whether to enforce the units of the coordinates to be in A or in nm.
+By default, PDB coordinates are assumed to be in Angstrom (A) and
+GRO coordinates in nanometers (nm). If you read a PDB file but would
+like operate on nm coordinates, then select “nm”. Viceversa, if you
+read a GRO file but would like to work on A coordinates, select “A”.
+Note that if you read a PDB file in A coordinates and select “A”,
+nothing happens (same for GRO and “nm” selection).</li>
 <li><strong>bPDBTER</strong> (<em>bool</em><em>(</em><em>?</em><em>)</em>) – whether to recognize TER lines and other chain breaks, e.g.
 discontinuous residue indices(?). Default is True.</li>
 <li><strong>bNoNewID</strong> (<em>bool</em><em>(</em><em>?</em><em>)</em>) – whether to assign new chain IDs? If True, new chain IDs starting
 with ‘pmx’ will be assigned(?). Only relevant if bPDBTER is True.
 Default is True.</li>
-<li><strong>for_gmx</strong> (<em>bool</em>) – rename atoms and scale coordinates. Set this to True
-if the Model is then written to file and used as input for Gromacs
-(pdb2gmx). Default is False.</li>
 </ul>
 </td>
 </tr>

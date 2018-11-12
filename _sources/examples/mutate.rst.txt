@@ -13,7 +13,7 @@ This is how you can mutate a :download:`protein <peptide.pdb>` residue. ::
     >>> from pmx.alchemy import mutate
 
     >>> # load the PDB file
-    >>> m = Model('peptide.pdb', for_gmx=True)
+    >>> m = Model('peptide.pdb', rename_atoms=True)
     >>> # perform mutation
     >>> m2 = mutate(m=m, mut_resid=9, mut_resname='R', ff='amber99sb-star-ildn-mut')
     >>> # save mutant PDB file
@@ -27,7 +27,7 @@ The ``Model`` can also be modified in place: ::
 
 Similarly, you can also mutate :download:`DNA <dna.pdb>` with the same :func:`pmx.alchemy.mutate` function. ::
 
-    >>> m = Model('peptide.pdb', for_gmx=True)
+    >>> m = Model('dna.pdb', rename_atoms=True)
     >>> m2 = mutate(m=m, mut_resid=2, mut_resname='T', ff='amber99sb-star-ildn-bsc1-mut')
     >>> m2.write('mutant_dna.pdb')
 
@@ -44,7 +44,7 @@ If you want to keep the original residue IDs, you can do this by using the
 ``renumber_residues`` argument when loading the ``Model``::
 
     >>> # load the PDB file
-    >>> m = Model('peptide.pdb', for_gmx=True, renumber_residues=False)
+    >>> m = Model('peptide.pdb', rename_atoms=True, renumber_residues=False)
 
 In this case, however, your residue IDs might not be unique anymore. If **pmx**
 finds that your residue ID selection is not unique, it will raise an error.
