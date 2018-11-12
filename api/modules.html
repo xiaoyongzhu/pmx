@@ -301,6 +301,258 @@ wants to avoid using a soft-core for the electrostatic interactions.</p>
 </table>
 </dd></dl>
 
+<dl class="class">
+<dt id="pmx.alchemy.AbsRestraints">
+<em class="property">class </em><code class="descclassname">pmx.alchemy.</code><code class="descname">AbsRestraints</code><span class="sig-paren">(</span><em>protein=None</em>, <em>ligand=None</em>, <em>complex=None</em>, <em>ligname=None</em>, <em>pro_ids=None</em>, <em>lig_ids=None</em>, <em>kbond=4184</em>, <em>kangle=41.84</em>, <em>kdihedral=41.84</em>, <em>T=298.15</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.AbsRestraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Identifies a set of restraints as defined by Boresch between the
+protein/host and ligand/guest molecule. <a class="footnote-reference" href="#id13" id="id1">[5]</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">Pro</span><span class="p">)</span>  <span class="n">p3</span> <span class="o">--</span> <span class="n">p2</span>          <span class="n">l2</span>   <span class="p">(</span><span class="n">Lig</span><span class="p">)</span>
+              \         <span class="o">/</span>  \
+               <span class="n">p1</span> <span class="o">---</span> <span class="n">l1</span>    <span class="n">l3</span>
+</pre></div>
+</div>
+<p>The process of choosing atoms involved in the restraints is
+stochastic. Thus, every time you call this function, you might get a
+different set of restraints. If you would like to have a deterministic
+behaviour provide a <code class="docutils literal notranslate"><span class="pre">seed</span></code>.</p>
+<p>If you already have a structure file of the protein-ligand complex and want
+to choose restraints based on the indices, you can do so by providing a
+model of the <code class="docutils literal notranslate"><span class="pre">complex</span></code> as well as the residue name of the ligand
+(<code class="docutils literal notranslate"><span class="pre">ligname</span></code>).</p>
+<p>If you know which atoms to use for the restraints, you can provide their
+atom indices as they are in the input Model objects with the arguments
+<code class="docutils literal notranslate"><span class="pre">pro_ids</span></code> and <code class="docutils literal notranslate"><span class="pre">lig_ids</span></code>. The expected order of atoms is <code class="docutils literal notranslate"><span class="pre">l1,</span> <span class="pre">l2,</span> <span class="pre">l3</span></code> as
+in the scheme above for the ligand, and <code class="docutils literal notranslate"><span class="pre">p1,</span> <span class="pre">p2,</span> <span class="pre">p3</span></code> for the protein.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>protein</strong> (<a class="reference internal" href="../classes/model.html#pmx.model.Model" title="pmx.model.Model"><em>Model</em></a><em>, </em><em>optional</em>) – model of the protein/host molecule.</li>
+<li><strong>ligand</strong> (<a class="reference internal" href="../classes/model.html#pmx.model.Model" title="pmx.model.Model"><em>Model</em></a><em>, </em><em>optional</em>) – model of the ligand/guest molecule.</li>
+<li><strong>complex</strong> (<a class="reference internal" href="../classes/model.html#pmx.model.Model" title="pmx.model.Model"><em>Model</em></a><em>, </em><em>optional</em>) – model of the protein-ligand or host-guest complex.</li>
+<li><strong>ligname</strong> (<em>str</em><em>, </em><em>optional</em>) – name of ligand/host residue. This is required if a complex is provided.</li>
+<li><strong>pro_ids</strong> (<em>list</em><em>, </em><em>optional</em>) – list with three indeces.</li>
+<li><strong>lig_ids</strong> (<em>list</em><em>, </em><em>optional</em>) – list with three indeces.</li>
+<li><strong>kbond</strong> (<em>float</em><em>, </em><em>optional</em>) – force constant to use for the distance restraint.
+Default is 4184 kJ/(mol * nm^2).</li>
+<li><strong>kangle</strong> (<em>float</em><em>, </em><em>optional</em>) – force constant to use for the angle restraints.
+Default is 41.84 kJ/(mol * rad^2).</li>
+<li><strong>kdihedral</strong> (<em>float</em><em>, </em><em>optional</em>) – force constant to use for the dihedral restraints.
+Default is 41.84 kJ/(mol * rad^2).</li>
+<li><strong>T</strong> (<em>float</em><em>, </em><em>optional</em>) – temperature in Kelvin. Default is 298.15 K.</li>
+<li><strong>seed</strong> (<em>bool</em><em>, </em><em>optional</em>) – random seed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pmx.alchemy.AbsRestraints.lig_atoms">
+<code class="descname">lig_atoms</code><a class="headerlink" href="#pmx.alchemy.AbsRestraints.lig_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of three ligand/guest Atoms selected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.alchemy.AbsRestraints.pro_atoms">
+<code class="descname">pro_atoms</code><a class="headerlink" href="#pmx.alchemy.AbsRestraints.pro_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of three protein/host Atoms selected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.alchemy.AbsRestraints.dist">
+<code class="descname">dist</code><a class="headerlink" href="#pmx.alchemy.AbsRestraints.dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>distance <code class="docutils literal notranslate"><span class="pre">l1-p1</span></code> in nm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.alchemy.AbsRestraints.angle1">
+<code class="descname">angle1</code><a class="headerlink" href="#pmx.alchemy.AbsRestraints.angle1" title="Permalink to this definition">¶</a></dt>
+<dd><p>angle <code class="docutils literal notranslate"><span class="pre">l2-l1-p1</span></code> in degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.alchemy.AbsRestraints.angle2">
+<code class="descname">angle2</code><a class="headerlink" href="#pmx.alchemy.AbsRestraints.angle2" title="Permalink to this definition">¶</a></dt>
+<dd><p>angle <code class="docutils literal notranslate"><span class="pre">l1-p1-p2</span></code> in degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.alchemy.AbsRestraints.dihedral1">
+<code class="descname">dihedral1</code><a class="headerlink" href="#pmx.alchemy.AbsRestraints.dihedral1" title="Permalink to this definition">¶</a></dt>
+<dd><p>dihedral <code class="docutils literal notranslate"><span class="pre">l3-l2-l1-p1</span></code> in degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.alchemy.AbsRestraints.dihedral2">
+<code class="descname">dihedral2</code><a class="headerlink" href="#pmx.alchemy.AbsRestraints.dihedral2" title="Permalink to this definition">¶</a></dt>
+<dd><p>dihedral <code class="docutils literal notranslate"><span class="pre">l2-l1-p1-p2</span></code> in degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.alchemy.AbsRestraints.dihedral3">
+<code class="descname">dihedral3</code><a class="headerlink" href="#pmx.alchemy.AbsRestraints.dihedral3" title="Permalink to this definition">¶</a></dt>
+<dd><p>dihedral <code class="docutils literal notranslate"><span class="pre">l1-p1-p2-p3</span></code> in degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.alchemy.AbsRestraints.dg">
+<code class="descname">dg</code><a class="headerlink" href="#pmx.alchemy.AbsRestraints.dg" title="Permalink to this definition">¶</a></dt>
+<dd><p>free energy of restraining the ligand while decoupled. This is calculate
+with equation 32 in Boresch et al. <a class="footnote-reference" href="#id13" id="id2">[5]</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.alchemy.AbsRestraints.calc_dg">
+<code class="descname">calc_dg</code><span class="sig-paren">(</span><em>release=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.AbsRestraints.calc_dg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the free energy contribution of the
+restraints given the distance, angles, and dihedrals and their
+force constants as defined in the instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>release</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to calculate the free energy of adding (False) or releasing
+(True) the restraints.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.alchemy.AbsRestraints.make_ii">
+<code class="descname">make_ii</code><span class="sig-paren">(</span><em>switch_on=True</em>, <em>ligand_first=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.AbsRestraints.make_ii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the data needed to add an intermolecular interactions
+section in a topology file to be used as restraints.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>switch_on</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether you want to switch the restraints on (restraints present in
+state B) or off (restraints present in state A). Default is
+True (switching on).</li>
+<li><strong>ligand_first</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether in the input gro/pdb file of the protein-ligand complex
+you are preparing the ligand atoms will come before (True) or after
+(False) the protein atoms. This is needed in order to adjust the
+atoms indices correctly. If you provided a Model of the complex
+(self.is_complex is True), this argument is disregarded as indices
+as provided will be used.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ii</strong> – dictionary with “bonds”, “angles”, and “dihedrals” keys with
+intermolecular_interactions information that can
+be passed to a Topology object.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.alchemy.AbsRestraints.select_restraints">
+<code class="descname">select_restraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.AbsRestraints.select_restraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automated restraints selection. For the ligand/guest, three heavy
+atoms close to its center of mass are selected. For the protein,
+the backbone N-CA-C atoms closest to the selected ligand atoms are
+picked. If the protein/host is another small molecule, then three
+atoms close to the ligand atoms are selected.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.alchemy.AbsRestraints.write_summary">
+<code class="descname">write_summary</code><span class="sig-paren">(</span><em>fname='restraints.info'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.AbsRestraints.write_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write restraints information, including free energy of restraining,
+to file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>str</em><em>, </em><em>optional</em>) – name of output file. Default is “restraints.info”.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-pmx.analysis">
 <span id="pmx-analysis"></span><h2>pmx.analysis<a class="headerlink" href="#module-pmx.analysis" title="Permalink to this headline">¶</a></h2>
@@ -426,7 +678,7 @@ estimate of the free energy change and its uncertainty on the plot.</p>
 <dt id="pmx.estimators.Jarz">
 <em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">Jarz</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T=298.15</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Jarzynski estimator. <a class="footnote-reference" href="#id7" id="id1">[1]</a></p>
+<p>Jarzynski estimator. <a class="footnote-reference" href="#id9" id="id3">[1]</a></p>
 <p>Both the forward and reverse estimates, as well as the mean of the two
 are calculated.</p>
 <p>The standard error is calculated via bootstrap when <code class="docutils literal notranslate"><span class="pre">nboots</span></code>&gt;0, and by
@@ -563,7 +815,7 @@ separating the input work values into groups/blocks.</p>
 <dt id="pmx.estimators.Jarz.calc_dg">
 <em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>forward=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_dg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the free energy difference using Jarzynski’s equality.
-<a class="footnote-reference" href="#id7" id="id2">[1]</a></p>
+<a class="footnote-reference" href="#id9" id="id4">[1]</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -663,7 +915,7 @@ False.</li>
 <dt id="pmx.estimators.Crooks">
 <em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">Crooks</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Crooks Gaussian Intersection (CGI) estimator. <a class="footnote-reference" href="#id8" id="id3">[2]</a></p>
+<p>Crooks Gaussian Intersection (CGI) estimator. <a class="footnote-reference" href="#id10" id="id5">[2]</a></p>
 <p>The forward and reverse work
 values are fitted to Gaussian functions and their intersection is taken
 as the free energy estimate. In some cases, when the two Gaussians are very
@@ -993,7 +1245,7 @@ free energies.</p>
 <dt id="pmx.estimators.BAR">
 <em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">BAR</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Bennett acceptance ratio (BAR) estimator. <a class="footnote-reference" href="#id9" id="id4">[3]</a></p>
+<p>Bennett acceptance ratio (BAR) estimator. <a class="footnote-reference" href="#id11" id="id6">[3]</a></p>
 <p>The standard error is calculated via bootstrap when <code class="docutils literal notranslate"><span class="pre">nboots</span></code>&gt;0, and by
 separating the work values into groups when <code class="docutils literal notranslate"><span class="pre">nblocks</span></code>&gt;1.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1082,7 +1334,7 @@ the input work values into groups/blocks.</p>
 <dl class="attribute">
 <dt id="pmx.estimators.BAR.conv">
 <code class="descname">conv</code><a class="headerlink" href="#pmx.estimators.BAR.conv" title="Permalink to this definition">¶</a></dt>
-<dd><p>convergence of the free energy estimate. <a class="footnote-reference" href="#id10" id="id5">[4]</a></p>
+<dd><p>convergence of the free energy estimate. <a class="footnote-reference" href="#id12" id="id7">[4]</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1110,7 +1362,7 @@ the input work values into groups/blocks.</p>
 <dl class="staticmethod">
 <dt id="pmx.estimators.BAR.calc_conv">
 <em class="property">static </em><code class="descname">calc_conv</code><span class="sig-paren">(</span><em>dg</em>, <em>wf</em>, <em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_conv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates BAR convergence as described by Hahn &amp; Then. <a class="footnote-reference" href="#id10" id="id6">[4]</a></p>
+<dd><p>Evaluates BAR convergence as described by Hahn &amp; Then. <a class="footnote-reference" href="#id12" id="id8">[4]</a></p>
 <p>Returns a value between -1 and 1: the closer this
 value to zero the better the BAR convergence.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2472,39 +2724,48 @@ library</p>
 </div>
 <div class="section" id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
-<table class="docutils footnote" frame="void" id="id7" rules="none">
+<table class="docutils footnote" frame="void" id="id9" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Jarzynski C (1997) Equilibrium free-energy
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> Jarzynski C (1997) Equilibrium free-energy
 differences from nonequilibrium measurements:
 A master-equation approach.
 Phys Rev E 56:5018–5035</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id8" rules="none">
+<table class="docutils footnote" frame="void" id="id10" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[2]</a></td><td>Goette M, Grubmüller H (2009) Accuracy
+<tr><td class="label"><a class="fn-backref" href="#id5">[2]</a></td><td>Goette M, Grubmüller H (2009) Accuracy
 and convergence of free energy differences calculated
 from nonequilibrium switching processes.
 J Comput Chem 30(3):447–456</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id9" rules="none">
+<table class="docutils footnote" frame="void" id="id11" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[3]</a></td><td>Shirts MR, Bair E, Hooker G, Pande VS
+<tr><td class="label"><a class="fn-backref" href="#id6">[3]</a></td><td>Shirts MR, Bair E, Hooker G, Pande VS
 (2003) Equilibrium free energies from non-equilibrium
 measurements using maximum-likelihood methods.
 Phys Rev Lett 91 (14):140601</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id10" rules="none">
+<table class="docutils footnote" frame="void" id="id12" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[4]</td><td><em>(<a class="fn-backref" href="#id5">1</a>, <a class="fn-backref" href="#id6">2</a>)</em> Hahn AM, Then H (2010) Measuring the
+<tr><td class="label">[4]</td><td><em>(<a class="fn-backref" href="#id7">1</a>, <a class="fn-backref" href="#id8">2</a>)</em> Hahn AM, Then H (2010) Measuring the
 convergence of Monte Carlo free-energy calculations.
 Phys Rev E 81(4):041117</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id13" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[5]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Boresch S, Tettinger F, Leitgeb M, Karplus M (2003)
+Absolute Binding Free Energies:  A Quantitative Approach for
+Their Calculation.
+J Phys Chem B 107(35):9535-9551</td></tr>
 </tbody>
 </table>
 </div>

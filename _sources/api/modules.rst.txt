@@ -141,5 +141,10 @@ Notes
         Phys Rev Lett 91 (14):140601
 
 .. [4] Hahn AM, Then H (2010) Measuring the
-        convergence of Monte Carlo free-energy calculations. 
+        convergence of Monte Carlo free-energy calculations.
         Phys Rev E 81(4):041117
+
+.. [5] Boresch S, Tettinger F, Leitgeb M, Karplus M (2003)
+       Absolute Binding Free Energies:  A Quantitative Approach for
+       Their Calculation.
+       J Phys Chem B 107(35):9535-9551

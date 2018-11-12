@@ -366,7 +366,7 @@ a mix of molecules are in the system.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#pmx.model.Model.remove_atom" title="pmx.model.Model.remove_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_atom</span></code></a>(atom)</td>
 <td>Removes an Atom instance.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pmx.model.Model.remove_residue" title="pmx.model.Model.remove_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_residue</span></code></a>(residue)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pmx.model.Model.remove_residue" title="pmx.model.Model.remove_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_residue</span></code></a>(residue[,&nbsp;renumber_atoms,&nbsp;…])</td>
 <td>Removes a Molecule/residue instance.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pmx.model.Model.remove_chain" title="pmx.model.Model.remove_chain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_chain</span></code></a>(key)</td>
@@ -551,13 +551,20 @@ True. Default is True.</li>
 
 <dl class="method">
 <dt id="pmx.model.Model.remove_residue">
-<code class="descname">remove_residue</code><span class="sig-paren">(</span><em>residue</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.remove_residue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">remove_residue</code><span class="sig-paren">(</span><em>residue</em>, <em>renumber_atoms=True</em>, <em>renumber_residues=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.remove_residue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a Molecule/residue instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>residue</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – Molecule instance to remove</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>residue</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – Molecule instance to remove</li>
+<li><strong>renumber_atoms</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to renumber the atoms of the Model after removing the
+residue. Default is True.</li>
+<li><strong>renumber_residues</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to renumber the residues of the Model after removing the
+residue. Default is True.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

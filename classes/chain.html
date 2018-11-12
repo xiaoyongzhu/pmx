@@ -292,7 +292,7 @@ is built. By default seq=None.</td>
 <tr class="row-even"><td><a class="reference internal" href="#pmx.chain.Chain.insert_residue" title="pmx.chain.Chain.insert_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_residue</span></code></a>(pos,&nbsp;mol[,&nbsp;newResNum])</td>
 <td>Inserts a residue at a specified position.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pmx.chain.Chain.remove_residue" title="pmx.chain.Chain.remove_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_residue</span></code></a>(residue[,&nbsp;bKeepResNum])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pmx.chain.Chain.remove_residue" title="pmx.chain.Chain.remove_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_residue</span></code></a>(residue[,&nbsp;renumber_atoms,&nbsp;…])</td>
 <td>Removes a residue.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pmx.chain.Chain.replace_residue" title="pmx.chain.Chain.replace_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_residue</span></code></a>(residue,&nbsp;new[,&nbsp;bKeepResNum])</td>
@@ -465,7 +465,7 @@ ID in pos</li>
 
 <dl class="method">
 <dt id="pmx.chain.Chain.remove_residue">
-<code class="descname">remove_residue</code><span class="sig-paren">(</span><em>residue</em>, <em>bKeepResNum=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.remove_residue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">remove_residue</code><span class="sig-paren">(</span><em>residue</em>, <em>renumber_atoms=True</em>, <em>renumber_residues=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.remove_residue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a residue.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -473,8 +473,10 @@ ID in pos</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>residue</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – Molecule instance to remove</li>
-<li><strong>bKeepResNum</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to keep the original residue IDs. Default is False (i.e.
-renumber all residues from 1).</li>
+<li><strong>renumber_atoms</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to renumber the atoms of the Model after removing the
+residue. Default is True.</li>
+<li><strong>renumber_residues</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to renumber the residues of the Model after removing the
+residue. Default is True.</li>
 </ul>
 </td>
 </tr>
