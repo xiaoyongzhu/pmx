@@ -912,6 +912,116 @@ False.</li>
 </dd></dl>
 
 <dl class="class">
+<dt id="pmx.estimators.JarzGauss">
+<em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">JarzGauss</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>nboots=0</em>, <em>nblocks=1</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.JarzGauss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Jarzynski estimator using Gaussian approximation (Hummer, J.Chem.Phys., 2001)</p>
+<p>Description…</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
+<li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
+<li><strong>T</strong> (<em>float</em><em> or </em><em>int</em>) – </li>
+<li><strong>nboots</strong> (<em>int</em>) – number of bootstrap samples to use for error estimation.</li>
+<li><strong>bReverse</strong> (<em>True</em><em> or </em><em>False</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<dl class="staticmethod">
+<dt id="pmx.estimators.JarzGauss.calc_dg">
+<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.JarzGauss.calc_dg" title="Permalink to this definition">¶</a></dt>
+<dd><p>to be filled</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.JarzGauss.calc_err">
+<em class="property">static </em><code class="descname">calc_err</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.JarzGauss.calc_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the standard error via an analytic expression.
+The expression is derived by Hummer, 2001, JChemPhys.
+Gaussian approximation is assumed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>w</strong> (<em>array_like</em>) – work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>err</strong> – standard deviation of the estimator.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.JarzGauss.calc_err_blocks">
+<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>nblocks</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.JarzGauss.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the standard error based on a number of blocks the
+work values are divided into. It is useful when you run independent
+equilibrium simulations, so that you can then use their respective
+work values to compute the standard error based on the repeats.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>w</strong> (<em>array_like</em>) – array of work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature.</li>
+<li><strong>nblocks</strong> (<em>int</em>) – number of blocks to divide the data into. This can be for
+instance the number of independent equilibrium simulations
+you ran.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pmx.estimators.JarzGauss.calc_err_boot">
+<em class="property">static </em><code class="descname">calc_err_boot</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>nboots</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.JarzGauss.calc_err_boot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the standard error via bootstrap. The work values are
+resampled randomly with replacement multiple (nboots) times,
+and the Gaussian approximation for Jarzinski free energy
+is recalculated for each bootstrap samples.
+The standard error of the estimate is returned as the standard d
+eviation of the bootstrapped free energies.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>w</strong> (<em>array_like</em>) – work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature.</li>
+<li><strong>nboots</strong> (<em>int</em>) – number of bootstrap samples to use for the error estimate.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>err</strong> – standard error of the mean.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pmx.estimators.Crooks">
 <em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">Crooks</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
