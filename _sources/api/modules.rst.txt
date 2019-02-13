@@ -148,3 +148,7 @@ Notes
        Absolute Binding Free Energies:  A Quantitative Approach for
        Their Calculation.
        J Phys Chem B 107(35):9535-9551
+
+.. [6] Hummer, G (2001)
+       Fast-growth thermodynamic integration: Error and efficiency analysis
+       J. Chem. Phys. 114

@@ -17,13 +17,22 @@
   
 
   
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -31,21 +40,16 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Developers Guide" href="../developers/index.html" />
     <link rel="prev" title="IndexFile" href="../classes/indexfile.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -306,7 +310,7 @@ wants to avoid using a soft-core for the electrostatic interactions.</p>
 <em class="property">class </em><code class="descclassname">pmx.alchemy.</code><code class="descname">AbsRestraints</code><span class="sig-paren">(</span><em>protein=None</em>, <em>ligand=None</em>, <em>complex=None</em>, <em>ligname=None</em>, <em>pro_ids=None</em>, <em>lig_ids=None</em>, <em>kbond=4184</em>, <em>kangle=41.84</em>, <em>kdihedral=41.84</em>, <em>T=298.15</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.AbsRestraints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Identifies a set of restraints as defined by Boresch between the
-protein/host and ligand/guest molecule. <a class="footnote-reference" href="#id13" id="id1">[5]</a></p>
+protein/host and ligand/guest molecule. <a class="footnote-reference" href="#id17" id="id1">[5]</a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">Pro</span><span class="p">)</span>  <span class="n">p3</span> <span class="o">--</span> <span class="n">p2</span>          <span class="n">l2</span>   <span class="p">(</span><span class="n">Lig</span><span class="p">)</span>
               \         <span class="o">/</span>  \
                <span class="n">p1</span> <span class="o">---</span> <span class="n">l1</span>    <span class="n">l3</span>
@@ -464,7 +468,7 @@ Default is 41.84 kJ/(mol * rad^2).</li>
 <dt id="pmx.alchemy.AbsRestraints.dg">
 <code class="descname">dg</code><a class="headerlink" href="#pmx.alchemy.AbsRestraints.dg" title="Permalink to this definition">¶</a></dt>
 <dd><p>free energy of restraining the ligand while decoupled. This is calculate
-with equation 32 in Boresch et al. <a class="footnote-reference" href="#id13" id="id2">[5]</a></p>
+with equation 32 in Boresch et al. <a class="footnote-reference" href="#id17" id="id2">[5]</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -678,7 +682,7 @@ estimate of the free energy change and its uncertainty on the plot.</p>
 <dt id="pmx.estimators.Jarz">
 <em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">Jarz</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T=298.15</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Jarzynski estimator. <a class="footnote-reference" href="#id9" id="id3">[1]</a></p>
+<p>Jarzynski estimator. <a class="footnote-reference" href="#id13" id="id3">[1]</a></p>
 <p>Both the forward and reverse estimates, as well as the mean of the two
 are calculated.</p>
 <p>The standard error is calculated via bootstrap when <code class="docutils literal notranslate"><span class="pre">nboots</span></code>&gt;0, and by
@@ -813,9 +817,9 @@ separating the input work values into groups/blocks.</p>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.Jarz.calc_dg">
-<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>forward=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_dg" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_dg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the free energy difference using Jarzynski’s equality.
-<a class="footnote-reference" href="#id9" id="id4">[1]</a></p>
+<a class="footnote-reference" href="#id13" id="id4">[1]</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -823,21 +827,16 @@ separating the input work values into groups/blocks.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>w</strong> (<em>array_like</em>) – array of work values.</li>
 <li><strong>T</strong> (<em>float</em>) – temperature in Kelvin.</li>
-<li><strong>forward</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the work values provided are for the forward transition.
-Default if True. If they are for the reverse transition, set it to
-False.</li>
+<li><strong>bReverse</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the work values provided are for the reverse transition.
+Default if False. If they are for the reverse transition, set it to
+True.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><em>float</em> – location of the intersection.</li>
-<li><em>bool</em> – whether the intersection could be calculated. If the intersection
-was calculated as expected a True value is returned.
-If the Gaussians are too close to each other, the intersection
-cannot be calculated and a False value is returned; in this case,
-the first float value retured is the average of the Gaussian means.</li>
-</ul>
-</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dg</strong> – estimate of the free energy difference.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
 </td>
 </tr>
 </tbody>
@@ -846,7 +845,7 @@ the first float value retured is the average of the Gaussian means.</li>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.Jarz.calc_err_blocks">
-<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>nblocks</em>, <em>forward=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_err_blocks</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>nblocks</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_err_blocks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the standard error based on a number of blocks the
 work values are divided into. It is useful when you run independent
 equilibrium simulations, so that you can then use their respective
@@ -858,9 +857,9 @@ work values to compute the standard error based on the repeats.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>w</strong> (<em>array_like</em>) – array of work values.</li>
 <li><strong>T</strong> (<em>float</em>) – temperature.</li>
-<li><strong>forward</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the work values provided are for the forward transition.
-Default if True. If they are for the reverse transition, set it to
-False.</li>
+<li><strong>bReverse</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the work values provided are for the reverse transition.
+Default if False. If they are for the reverse transition, set it to
+True.</li>
 <li><strong>nblocks</strong> (<em>int</em>) – number of blocks to divide the data into. This can be for
 instance the number of independent equilibrium simulations
 you ran.</li>
@@ -879,7 +878,7 @@ you ran.</li>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.Jarz.calc_err_boot">
-<em class="property">static </em><code class="descname">calc_err_boot</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>nboots</em>, <em>forward=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_err_boot" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_err_boot</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>nboots</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Jarz.calc_err_boot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the standard error via bootstrap. The work values are
 resampled randomly with replacement multiple (nboots) times,
 and the Jarzinski free energy recalculated for each bootstrap samples.
@@ -892,9 +891,9 @@ eviation of the bootstrapped free energies.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>w</strong> (<em>array_like</em>) – work values.</li>
 <li><strong>T</strong> (<em>float</em>) – temperature.</li>
-<li><strong>forward</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the work values provided are for the forward transition.
-Default if True. If they are for the reverse transition, set it to
-False.</li>
+<li><strong>bReverse</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the work values provided are for the reverse transition.
+Default if False. If they are for the reverse transition, set it to
+True.</li>
 <li><strong>nboots</strong> (<em>int</em>) – number of bootstrap samples to use for the error estimate.</li>
 </ul>
 </td>
@@ -913,10 +912,14 @@ False.</li>
 
 <dl class="class">
 <dt id="pmx.estimators.JarzGauss">
-<em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">JarzGauss</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>nboots=0</em>, <em>nblocks=1</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.JarzGauss" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">JarzGauss</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T=298.15</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.JarzGauss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Jarzynski estimator using Gaussian approximation (Hummer, J.Chem.Phys., 2001)</p>
-<p>Description…</p>
+<p>Jarzynski estimator using a Gaussian approximation. <a class="footnote-reference" href="#id18" id="id5">[6]</a></p>
+<p>Both the forward and reverse estimates.</p>
+<p>The standard error is calculated using the analytical expression derived
+by Hummer (2001). <a class="footnote-reference" href="#id18" id="id6">[6]</a> When <code class="docutils literal notranslate"><span class="pre">nboots</span></code>&gt;0, the error is also calculated
+by bootstrap. When  <code class="docutils literal notranslate"><span class="pre">nblocks</span></code>&gt;1, it is calculated by
+separating the work values into blocks.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -924,27 +927,176 @@ False.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>wf</strong> (<em>array_like</em>) – array of forward work values.</li>
 <li><strong>wr</strong> (<em>array_like</em>) – array of reverse work values.</li>
-<li><strong>T</strong> (<em>float</em><em> or </em><em>int</em>) – </li>
-<li><strong>nboots</strong> (<em>int</em>) – number of bootstrap samples to use for error estimation.</li>
-<li><strong>bReverse</strong> (<em>True</em><em> or </em><em>False</em>) – </li>
+<li><strong>T</strong> (<em>float</em><em>, </em><em>optional</em>) – temperature in Kelvin. Default is 298.15 K.</li>
+<li><strong>nboots</strong> (<em>int</em><em>, </em><em>optional</em>) – how many bootstrap samples to draw for estimating the standard error.
+Default is zero (do not estimate the error).</li>
+<li><strong>nblocks</strong> (<em>int</em><em>, </em><em>optional</em>) – how many blocks to divide the input work values into for the estimation
+of the standard error. Default is one (do not estimate the error).</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimate</span> <span class="o">=</span> <span class="n">JarzGauss</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nblocks</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dg_forward</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">dg_for</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dg_reverse</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">dg_rev</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dg_forward_err1</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">err_for</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dg_forward_err2</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">err_boot_for</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dg_forward_err3</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">err_blocks_for</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="pmx.estimators.JarzGauss.dg_for">
+<code class="descname">dg_for</code><a class="headerlink" href="#pmx.estimators.JarzGauss.dg_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>the forward free energy estimate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.JarzGauss.dg_rev">
+<code class="descname">dg_rev</code><a class="headerlink" href="#pmx.estimators.JarzGauss.dg_rev" title="Permalink to this definition">¶</a></dt>
+<dd><p>the reverse free energy estimate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.JarzGauss.err_for">
+<code class="descname">err_for</code><a class="headerlink" href="#pmx.estimators.JarzGauss.err_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>analytical estimate of the standard error of the forward free energy
+estimate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.JarzGauss.err_rev">
+<code class="descname">err_rev</code><a class="headerlink" href="#pmx.estimators.JarzGauss.err_rev" title="Permalink to this definition">¶</a></dt>
+<dd><p>analytical estimate of the standard error of the reverse free energy
+estimate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.JarzGauss.err_boot_for">
+<code class="descname">err_boot_for</code><a class="headerlink" href="#pmx.estimators.JarzGauss.err_boot_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>standard error of the forward free energy estimate calculated
+via bootstrap.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.JarzGauss.err_boot_rev">
+<code class="descname">err_boot_rev</code><a class="headerlink" href="#pmx.estimators.JarzGauss.err_boot_rev" title="Permalink to this definition">¶</a></dt>
+<dd><p>standard error of the reverse free energy estimate calculated
+via bootstrap.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.JarzGauss.err_blocks_for">
+<code class="descname">err_blocks_for</code><a class="headerlink" href="#pmx.estimators.JarzGauss.err_blocks_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>standard error of the forward free energy estimate calculated by
+separating the input work values into groups/blocks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pmx.estimators.JarzGauss.err_blocks_rev">
+<code class="descname">err_blocks_rev</code><a class="headerlink" href="#pmx.estimators.JarzGauss.err_blocks_rev" title="Permalink to this definition">¶</a></dt>
+<dd><p>standard error of the reverse free energy estimate calculated by
+separating the input work values into groups/blocks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="staticmethod">
 <dt id="pmx.estimators.JarzGauss.calc_dg">
 <em class="property">static </em><code class="descname">calc_dg</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.JarzGauss.calc_dg" title="Permalink to this definition">¶</a></dt>
-<dd><p>to be filled</p>
+<dd><p>Calculates the free energy difference using the Jarzynski estimator
+with a Gaussian approximation. <a class="footnote-reference" href="#id18" id="id7">[6]</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>w</strong> (<em>array_like</em>) – array of work values.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature in Kelvin.</li>
+<li><strong>bReverse</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the work values provided are for the reverse transition.
+Default if False. If they are for the reverse transition, set it to
+True.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dg</strong> – estimate of the free energy difference.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="pmx.estimators.JarzGauss.calc_err">
 <em class="property">static </em><code class="descname">calc_err</code><span class="sig-paren">(</span><em>w</em>, <em>T</em>, <em>bReverse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.JarzGauss.calc_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the standard error via an analytic expression.
-The expression is derived by Hummer, 2001, JChemPhys.
-Gaussian approximation is assumed.</p>
+The expression is derived by Hummer, 2001, JChemPhys. <a class="footnote-reference" href="#id18" id="id8">[6]</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -952,6 +1104,9 @@ Gaussian approximation is assumed.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>w</strong> (<em>array_like</em>) – work values.</li>
 <li><strong>T</strong> (<em>float</em>) – temperature.</li>
+<li><strong>bReverse</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the work values provided are for the reverse transition.
+Default if False. If they are for the reverse transition, set it to
+True.</li>
 </ul>
 </td>
 </tr>
@@ -976,13 +1131,22 @@ work values to compute the standard error based on the repeats.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>w</strong> (<em>array_like</em>) – array of work values.</li>
 <li><strong>T</strong> (<em>float</em>) – temperature.</li>
 <li><strong>nblocks</strong> (<em>int</em>) – number of blocks to divide the data into. This can be for
 instance the number of independent equilibrium simulations
 you ran.</li>
+<li><strong>bReverse</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the work values provided are for the reverse transition.
+Default if False. If they are for the reverse transition, set it to
+True.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sderr</strong> – the standard error of the estimate.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
 </td>
 </tr>
 </tbody>
@@ -1006,6 +1170,9 @@ eviation of the bootstrapped free energies.</p>
 <li><strong>w</strong> (<em>array_like</em>) – work values.</li>
 <li><strong>T</strong> (<em>float</em>) – temperature.</li>
 <li><strong>nboots</strong> (<em>int</em>) – number of bootstrap samples to use for the error estimate.</li>
+<li><strong>bReverse</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the work values provided are for the reverse transition.
+Default if False. If they are for the reverse transition, set it to
+True.</li>
 </ul>
 </td>
 </tr>
@@ -1025,7 +1192,7 @@ eviation of the bootstrapped free energies.</p>
 <dt id="pmx.estimators.Crooks">
 <em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">Crooks</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.Crooks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Crooks Gaussian Intersection (CGI) estimator. <a class="footnote-reference" href="#id10" id="id5">[2]</a></p>
+<p>Crooks Gaussian Intersection (CGI) estimator. <a class="footnote-reference" href="#id14" id="id9">[2]</a></p>
 <p>The forward and reverse work
 values are fitted to Gaussian functions and their intersection is taken
 as the free energy estimate. In some cases, when the two Gaussians are very
@@ -1355,7 +1522,7 @@ free energies.</p>
 <dt id="pmx.estimators.BAR">
 <em class="property">class </em><code class="descclassname">pmx.estimators.</code><code class="descname">BAR</code><span class="sig-paren">(</span><em>wf</em>, <em>wr</em>, <em>T</em>, <em>nboots=0</em>, <em>nblocks=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Bennett acceptance ratio (BAR) estimator. <a class="footnote-reference" href="#id11" id="id6">[3]</a></p>
+<p>Bennett acceptance ratio (BAR) estimator. <a class="footnote-reference" href="#id15" id="id10">[3]</a></p>
 <p>The standard error is calculated via bootstrap when <code class="docutils literal notranslate"><span class="pre">nboots</span></code>&gt;0, and by
 separating the work values into groups when <code class="docutils literal notranslate"><span class="pre">nblocks</span></code>&gt;1.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1444,7 +1611,7 @@ the input work values into groups/blocks.</p>
 <dl class="attribute">
 <dt id="pmx.estimators.BAR.conv">
 <code class="descname">conv</code><a class="headerlink" href="#pmx.estimators.BAR.conv" title="Permalink to this definition">¶</a></dt>
-<dd><p>convergence of the free energy estimate. <a class="footnote-reference" href="#id12" id="id7">[4]</a></p>
+<dd><p>convergence of the free energy estimate. <a class="footnote-reference" href="#id16" id="id11">[4]</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1472,7 +1639,7 @@ the input work values into groups/blocks.</p>
 <dl class="staticmethod">
 <dt id="pmx.estimators.BAR.calc_conv">
 <em class="property">static </em><code class="descname">calc_conv</code><span class="sig-paren">(</span><em>dg</em>, <em>wf</em>, <em>wr</em>, <em>T</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.estimators.BAR.calc_conv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates BAR convergence as described by Hahn &amp; Then. <a class="footnote-reference" href="#id12" id="id8">[4]</a></p>
+<dd><p>Evaluates BAR convergence as described by Hahn &amp; Then. <a class="footnote-reference" href="#id16" id="id12">[4]</a></p>
 <p>Returns a value between -1 and 1: the closer this
 value to zero the better the BAR convergence.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1838,6 +2005,43 @@ Default is ‘C-alpha’.</li>
 <li><strong>sep</strong> (<em>bool</em><em>, </em><em>optional</em>) – write each frame to a separate .gro, .g96 or .pdb file.
 Default is False.</li>
 <li><strong>other_flags</strong> (<em>str</em><em>, </em><em>optional</em>) – additional flags to pass as you would type them in the shell</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pmx.gmx.write_mdp">
+<code class="descclassname">pmx.gmx.</code><code class="descname">write_mdp</code><span class="sig-paren">(</span><em>mdp</em>, <em>fout='mdpfile.mdp'</em>, <em>nsteps=10000</em>, <em>cutoff=1.0</em>, <em>T=300</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.gmx.write_mdp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a few standard mdp files.</p>
+<p>With the argument <code class="docutils literal notranslate"><span class="pre">mdp</span></code> you can choose from a few standard predefined
+mdp file:</p>
+<blockquote>
+<div><ul class="simple">
+<li>enmin :energy minimisation;</li>
+<li>npt : simulation in NPT ensemble;</li>
+<li>npt-restr : simulation in NPT ensemble with -DPOSRES defined;</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mdp</strong> (<em>str</em>) – what type of mdp file to load and write.
+Options available are: ‘enmin’, ‘npt-restr’, ‘npt’.</li>
+<li><strong>fout</strong> (<em>str</em>) – filename of the mdp file to be written.</li>
+<li><strong>nsteps</strong> (<em>int</em>) – number of steps.</li>
+<li><strong>cutoff</strong> (<em>float</em>) – short-range cutoff (nm) for vdw and coulomb interactions.</li>
+<li><strong>T</strong> (<em>float</em>) – temperature in Kelvin.</li>
 </ul>
 </td>
 </tr>
@@ -2834,7 +3038,7 @@ library</p>
 </div>
 <div class="section" id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
-<table class="docutils footnote" frame="void" id="id9" rules="none">
+<table class="docutils footnote" frame="void" id="id13" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> Jarzynski C (1997) Equilibrium free-energy
@@ -2843,39 +3047,47 @@ A master-equation approach.
 Phys Rev E 56:5018–5035</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id10" rules="none">
+<table class="docutils footnote" frame="void" id="id14" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id5">[2]</a></td><td>Goette M, Grubmüller H (2009) Accuracy
+<tr><td class="label"><a class="fn-backref" href="#id9">[2]</a></td><td>Goette M, Grubmüller H (2009) Accuracy
 and convergence of free energy differences calculated
 from nonequilibrium switching processes.
 J Comput Chem 30(3):447–456</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id11" rules="none">
+<table class="docutils footnote" frame="void" id="id15" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id6">[3]</a></td><td>Shirts MR, Bair E, Hooker G, Pande VS
+<tr><td class="label"><a class="fn-backref" href="#id10">[3]</a></td><td>Shirts MR, Bair E, Hooker G, Pande VS
 (2003) Equilibrium free energies from non-equilibrium
 measurements using maximum-likelihood methods.
 Phys Rev Lett 91 (14):140601</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id12" rules="none">
+<table class="docutils footnote" frame="void" id="id16" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[4]</td><td><em>(<a class="fn-backref" href="#id7">1</a>, <a class="fn-backref" href="#id8">2</a>)</em> Hahn AM, Then H (2010) Measuring the
+<tr><td class="label">[4]</td><td><em>(<a class="fn-backref" href="#id11">1</a>, <a class="fn-backref" href="#id12">2</a>)</em> Hahn AM, Then H (2010) Measuring the
 convergence of Monte Carlo free-energy calculations.
 Phys Rev E 81(4):041117</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id13" rules="none">
+<table class="docutils footnote" frame="void" id="id17" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label">[5]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Boresch S, Tettinger F, Leitgeb M, Karplus M (2003)
 Absolute Binding Free Energies:  A Quantitative Approach for
 Their Calculation.
 J Phys Chem B 107(35):9535-9551</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id18" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[6]</td><td><em>(<a class="fn-backref" href="#id5">1</a>, <a class="fn-backref" href="#id6">2</a>, <a class="fn-backref" href="#id7">3</a>, <a class="fn-backref" href="#id8">4</a>)</em> Hummer, G (2001)
+Fast-growth thermodynamic integration: Error and efficiency analysis
+J. Chem. Phys. 114</td></tr>
 </tbody>
 </table>
 </div>
@@ -2892,7 +3104,7 @@ J Phys Chem B 107(35):9535-9551</td></tr>
         <a href="../developers/index.html" class="btn btn-neutral float-right" title="Developers Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../classes/indexfile.html" class="btn btn-neutral" title="IndexFile" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../classes/indexfile.html" class="btn btn-neutral float-left" title="IndexFile" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -2934,28 +3146,16 @@ J Phys Chem B 107(35):9535-9551</td></tr>
     </div>
 </div>
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/javascript" src="../_static/js/versions.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
