@@ -720,8 +720,33 @@ a forcefield file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>write_ff</strong> (<em>bool</em>) – whether to write also the line that includes the forcefield
-parameters or not.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fp</strong> (<em>file</em>) – handle for output file.</li>
+<li><strong>write_ff</strong> (<em>bool</em>) – whether to write also the line that includes the forcefield
+parameters or not.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.forcefield.Topology.write_include_itps">
+<code class="descname">write_include_itps</code><span class="sig-paren">(</span><em>fp</em>, <em>which='top'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.write_include_itps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the include statemets at the top and bottom of the topology
+file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fp</strong> (<em>file</em>) – handle for output file.</li>
+<li><strong>which</strong> (<em>top | bottom</em>) – which include statements to write. “top” are the include statementes
+included before any [ moleculetype ], while “bottom” are the ones
+after other moleculetypes.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

@@ -208,9 +208,17 @@ these too can be modified and returned by setting the <code class="docutils lite
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># write topology and itps to a new file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pmxtop</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;pmxtop.top&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">itp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pmxitps</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">itp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">itp</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above will overwrite the original itp files. If you want to save the new pmx itp file
+without losing the original files, you can do as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">itp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pmxitps</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">itp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;pmxitp_</span><span class="si">%s</span><span class="s1">.itp&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>You will then need to update the <code class="docutils literal notranslate"><span class="pre">pmxtop.itp</span></code> accordingly so to include the
+new itp file.</p>
 <p>If you like getting lots of screen output, you can set the <code class="docutils literal notranslate"><span class="pre">verbose</span></code> argument
 to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pmxtop</span><span class="p">,</span> <span class="n">pmxitps</span> <span class="o">=</span> <span class="n">gen_hybrid_top</span><span class="p">(</span><span class="n">topol</span><span class="o">=</span><span class="n">top</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

@@ -30,8 +30,16 @@ these too can be modified and returned by setting the ``recursive`` argument to 
     >>> # write topology and itps to a new file
     >>> pmxtop.write('pmxtop.top')
     >>> for i, itp in enumerate(pmxitps):
+    >>>     itp.write(itp.filename)
+
+The above will overwrite the original itp files. If you want to save the new pmx itp file
+without losing the original files, you can do as follows::
+
+    >>> for i, itp in enumerate(pmxitps):
     >>>     itp.write('pmxitp_%s.itp' % i)
 
+You will then need to update the ``pmxtop.itp`` accordingly so to include the
+new itp file.
 
 If you like getting lots of screen output, you can set the ``verbose`` argument
 to ``True``. ::
