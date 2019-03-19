@@ -19,12 +19,15 @@ The ``pmx`` help will show the scripts available. ::
     ------------------------
 
     Available commands are:
-        mutate     Mutate protein or DNA/RNA
-        gentop     Fill hybrid topology with B states
-        analyse    Estimate free energy from Gromacs xvg files
+        mutate       Mutate protein or DNA/RNA
+        gentop       Fill hybrid topology with B states
+        analyse      Estimate free energy from Gromacs xvg files
 
-        genlib     Generate pmx ff library
-        gmxlib     Show/set GMXLIB path
+        doublebox    Place two input structures into a single box
+        abfe         Setup files for an ABFE calculation
+
+        genlib       Generate pmx ff library
+        gmxlib       Show/set GMXLIB path
 
     optional arguments:
         -h, --help  show this help message and exit

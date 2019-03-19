@@ -6,7 +6,7 @@ Clone the source code from GitHub with::
     $ git clone https://github.com/deGrootLab/pmx.git
 
 Then::
-    
+
     $ cd pmx
     $ pip install .
 
@@ -42,6 +42,12 @@ to your bashrc file. ::
 
     Do you wish pmx to set the GMXLIB variable in your ~/.bashrc? [yes|no]
     >>>
+
+Alternatively, you can set the variable only for a certain python process using
+the ``set_gmxlib()`` function::
+
+    >>> from pmx.gmx import set_gmxlib
+    >>> set_gmxlib()
 
 
 .. _numpy: http://www.numpy.org/

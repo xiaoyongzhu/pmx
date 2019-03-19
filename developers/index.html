@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                2.0dev
+                3.0dev
               </div>
             
           
@@ -111,7 +111,6 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developers Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#structure">Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#style">Style</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#python-2-3-compatibility">Python 2/3 Compatibility</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#continuous-integration">Continuous Integration</a></li>
@@ -254,71 +253,6 @@ write a class instead. On the other hand, if you only have one function in a cla
 be better to stick with just a function.</p>
 <div class="line-block">
 <div class="line"><a class="reference external" href="https://www.reddit.com/r/Python/comments/1wcc18/what_are_the_advantages_to_using_classes_vs_not/">https://www.reddit.com/r/Python/comments/1wcc18/what_are_the_advantages_to_using_classes_vs_not/</a></div>
-<div class="line"><br /></div>
-</div>
-</div>
-<div class="section" id="python-2-3-compatibility">
-<h2>Python 2/3 Compatibility<a class="headerlink" href="#python-2-3-compatibility" title="Permalink to this headline">¶</a></h2>
-<p>The code should be written so to be compatible with both Python <code class="docutils literal notranslate"><span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">3</span></code>. Because of this,
-make sure to have the following line among the imports.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
-</pre></div>
-</div>
-<p>Common issues with Python <code class="docutils literal notranslate"><span class="pre">3</span></code> versus <code class="docutils literal notranslate"><span class="pre">2</span></code> are:</p>
-<ul>
-<li><p class="first">In Python <code class="docutils literal notranslate"><span class="pre">3</span></code>, <code class="docutils literal notranslate"><span class="pre">print</span></code> is a function so it needs to be written with parentheses. The parameter <code class="docutils literal notranslate"><span class="pre">end</span></code>
-allows to choose what to end the line with. By default is a newline <code class="docutils literal notranslate"><span class="pre">'\n'</span></code>. Other useful choices
-are <code class="docutils literal notranslate"><span class="pre">''</span></code> to continue printing to the same line, or <code class="docutils literal notranslate"><span class="pre">'\r'</span></code> to put the cursor back at the beginning of the line.
-For instance:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello World&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Hello</span> <span class="n">World</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;HELLO Mike,&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hello John&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">HELLO</span> <span class="n">Mike</span><span class="p">,</span> <span class="n">hello</span> <span class="n">John</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;HELLO Mike,&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hello John&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">hello</span> <span class="n">John</span><span class="p">,</span>
-</pre></div>
-</div>
-<p>For writing to standard error:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello World&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Several basic functions return iterators rather then lists (e.g. <code class="docutils literal notranslate"><span class="pre">range</span></code>, <code class="docutils literal notranslate"><span class="pre">map</span></code>, <code class="docutils literal notranslate"><span class="pre">zip</span></code>).
-To keep things working in both versions of Python, you can convert the iterators to lists, <em>e.g.</em>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">There are different ways to iterate through <code class="docutils literal notranslate"><span class="pre">dict</span></code>. <code class="docutils literal notranslate"><span class="pre">dict.iterkeys()</span></code>, <code class="docutils literal notranslate"><span class="pre">dict.itervalues()</span></code> works in Python <code class="docutils literal notranslate"><span class="pre">2</span></code>, while
-<code class="docutils literal notranslate"><span class="pre">dict.keys()</span></code> and <code class="docutils literal notranslate"><span class="pre">dict.values()</span></code> works in Python <code class="docutils literal notranslate"><span class="pre">3</span></code>. To iterate over keys in both Python <code class="docutils literal notranslate"><span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">3</span></code>, you can do:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mydict</span><span class="p">:</span>
-    <span class="o">...</span>
-</pre></div>
-</div>
-<p>to iterate over values</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="n">itervalues</span>
-<span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">itervalues</span><span class="p">(</span><span class="n">mydict</span><span class="p">):</span>
-    <span class="o">...</span>
-</pre></div>
-</div>
-<p>to iterate over both, you can do either of the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">mydict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="o">...</span>
-
-<span class="kn">from</span> <span class="nn">future.utils</span> <span class="k">import</span> <span class="n">iteritems</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">mydict</span><span class="p">):</span>
-    <span class="o">...</span>
-</pre></div>
-</div>
-</li>
-</ul>
-<p>A very useful webpage on these problems and how to go around them:</p>
-<div class="line-block">
-<div class="line"><a class="reference external" href="http://python-future.org/compatible_idioms.html">http://python-future.org/compatible_idioms.html</a></div>
 <div class="line"><br /></div>
 </div>
 </div>
@@ -500,7 +434,7 @@ Date:   Mon Dec 17 21:52:11 2017 -0700
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, The Authors
+        &copy; Copyright 2019, The Authors
 
     </p>
   </div> 

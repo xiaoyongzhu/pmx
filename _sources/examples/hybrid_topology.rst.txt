@@ -38,7 +38,7 @@ without losing the original files, you can do as follows::
     >>> for i, itp in enumerate(pmxitps):
     >>>     itp.write('pmxitp_%s.itp' % i)
 
-You will then need to update the ``pmxtop.itp`` accordingly so to include the
+You will then need to update the ``pmxtop.top`` accordingly so to include the
 new itp file.
 
 If you like getting lots of screen output, you can set the ``verbose`` argument

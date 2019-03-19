@@ -13,7 +13,7 @@ This is how you can mutate a :download:`protein <peptide.pdb>` residue. ::
     >>> from pmx.alchemy import mutate
 
     >>> # load the PDB file
-    >>> m = Model('peptide.pdb', rename_atoms=True)
+    >>> m = Model('protein.pdb', rename_atoms=True)
     >>> # perform mutation
     >>> m2 = mutate(m=m, mut_resid=9, mut_resname='R', ff='amber99sb-star-ildn-mut')
     >>> # save mutant PDB file

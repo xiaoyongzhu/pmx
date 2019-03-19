@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                2.0dev
+                3.0dev
               </div>
             
           
@@ -196,7 +196,7 @@ to the topology file in Gromacs.</p>
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pmx.forcefield.Topology">
-<em class="property">class </em><code class="descclassname">pmx.forcefield.</code><code class="descname">Topology</code><span class="sig-paren">(</span><em>filename</em>, <em>is_itp=None</em>, <em>ff=None</em>, <em>assign_types=True</em>, <em>version='new'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pmx.forcefield.</code><code class="descname">Topology</code><span class="sig-paren">(</span><em>filename</em>, <em>is_itp=None</em>, <em>ff=None</em>, <em>assign_types=True</em>, <em>self_contained=False</em>, <em>version='new'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology" title="Permalink to this definition">¶</a></dt>
 <dd><p>Topology class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -204,14 +204,19 @@ to the topology file in Gromacs.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> (<em>str</em>) – topology file</li>
-<li><strong>is_itp</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the topology provided is an <code class="docutils literal notranslate"><span class="pre">itp</span></code> file. If not provided,
+<li><strong>is_itp</strong> (<em>bool</em>) – whether the topology provided is an <code class="docutils literal notranslate"><span class="pre">itp</span></code> file. If not provided,
 this is automatically determined by the file extension (<code class="docutils literal notranslate"><span class="pre">.itp</span></code> vs
 <code class="docutils literal notranslate"><span class="pre">.top</span></code>).</li>
-<li><strong>assign_types</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to assign types for the atoms in the Topology. Default is True.</li>
+<li><strong>assign_types</strong> (<em>bool</em>) – whether to assign types for the atoms in the Topology. Default is True.</li>
+<li><strong>self_contained</strong> (<em>bool</em>) – Whether the file contains all bonded and non-bonded parameters needed
+to simulate the system. This can be the case for some small-molecule
+topologies. If this is set to true, atomtypes are assigned to each
+atom without looking for a forcefield file.</li>
 <li><strong>ff</strong> (<em>str</em><em>, </em><em>optional</em>) – force field to use. If not provided, it is determined based on the
 forcefield.itp include statement in the <code class="docutils literal notranslate"><span class="pre">top</span></code> file. If you are providing
-an <code class="docutils literal notranslate"><span class="pre">itp</span></code> file without a reference to the force field, and assign_types is
-set to True, then you also need to provide a force field name.</li>
+an <code class="docutils literal notranslate"><span class="pre">itp</span></code> file without a reference to the force field, assign_types is
+True, and self_contained is False, then you have to provide a force field
+name, so that pmx will know where to look to assign atom and bond types.</li>
 <li><strong>version</strong> (<em>str?</em>) – what is version? is it still needed?</li>
 </ul>
 </td>
@@ -632,6 +637,22 @@ See Gromacs manual.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pmx.forcefield.Topology.make_nonbond_params">
+<code class="descname">make_nonbond_params</code><span class="sig-paren">(</span><em>rule=2</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.make_nonbond_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create nonbonded params needed to keep LJ intramolecular interactions
+when decoupling a ligand.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<em>int</em>) – combination rule to use, following notation in the Gromacs manual
+in section 5.3.2.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pmx.forcefield.Topology.make_posre">
 <code class="descname">make_posre</code><span class="sig-paren">(</span><em>heavy=True</em>, <em>k=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.make_posre" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate position restraints for the atoms in Topology.</p>
@@ -713,6 +734,36 @@ a forcefield file.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pmx.forcefield.Topology.write_footer">
+<code class="descname">write_footer</code><span class="sig-paren">(</span><em>fp, what=['all']</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.write_footer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes bottom part of topology file. After all moleculetype info
+and before [ system ].</p>
+<p>The argument “what” takes a list of keywords that will be used to write
+elements of the footer in a certain order. The available keywords are
+the following:</p>
+<blockquote>
+<div>“posre”       : write #ifdef POSRES section
+“water”       : write #include for water parameters
+“posre_water” : write #ifdef POSRES_WATER section
+“ions”        : write #include for ion parameters
+“all”         : write all lines present in the footer</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fp</strong> (<em>file</em>) – handle for output file.</li>
+<li><strong>what</strong> (<em>list</em>) – list of keywords corresponsding to the sections you want to write.
+The order of the sections will reflect the order of keywords in
+this list.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pmx.forcefield.Topology.write_header">
 <code class="descname">write_header</code><span class="sig-paren">(</span><em>fp</em>, <em>write_ff=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.forcefield.Topology.write_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the include statemets at the top of the topology file.</p>
@@ -742,7 +793,7 @@ file.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>fp</strong> (<em>file</em>) – handle for output file.</li>
-<li><strong>which</strong> (<em>top | bottom</em>) – which include statements to write. “top” are the include statementes
+<li><strong>which</strong> (<em>top | bottom</em>) – which include statements to write. “top” are the include statements
 included before any [ moleculetype ], while “bottom” are the ones
 after other moleculetypes.</li>
 </ul>
@@ -797,7 +848,7 @@ Default is False.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, The Authors
+        &copy; Copyright 2019, The Authors
 
     </p>
   </div> 
