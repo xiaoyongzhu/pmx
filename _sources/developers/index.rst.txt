@@ -155,7 +155,7 @@ directory of the repo::
 Continuous Integration
 ----------------------
 Every time changes are pushed to the repository, the code is built and tested automatically
-in Python ``2.7`` and ``3.6`` by `Travis CI <https://travis-ci.org/>`_.
+by `Travis CI <https://travis-ci.org/>`_.
 
 |  https://travis-ci.org/deGrootLab/pmx
 |

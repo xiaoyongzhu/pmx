@@ -12,6 +12,7 @@ Then::
 
 Software requirements:
 
+* python >= 3.6
 * numpy_
 * scipy_
 * matplotlib_
