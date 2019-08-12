@@ -242,7 +242,7 @@ def ks_norm_test(data, alpha=0.05, refks=None):
 
 
 def plot_work_dist(wf, wr, fname='Wdist.png', nbins=20, dG=None, dGerr=None,
-                   units='kJ/mol', dpi=300):
+                   units='kJ/mol', dpi=300, window_len=11):
     '''Plots forward and reverse work distributions. Optionally, it adds the
     estimate of the free energy change and its uncertainty on the plot.
 
@@ -264,6 +264,8 @@ def plot_work_dist(wf, wr, fname='Wdist.png', nbins=20, dG=None, dGerr=None,
         the units of dG and dGerr. Default is 'kJ/mol'.
     dpi : int
         resolution of the saved image file.
+    window_len: int
+        Width of smoothing window for plotting. Default is 11 samples.
 
     Returns
     -------
@@ -306,8 +308,8 @@ def plot_work_dist(wf, wr, fname='Wdist.png', nbins=20, dG=None, dGerr=None,
     maxi = max(wf+wr)
     mini = min(wf+wr)
 
-    sm1 = smooth(np.array(wf))
-    sm2 = smooth(np.array(wr))
+    sm1 = smooth(np.array(wf), window_len=window_len)
+    sm2 = smooth(np.array(wr), window_len=window_len)
     plt.subplot(1, 2, 1)
     plt.plot(x1, wf, 'g-', linewidth=2, label="Forward (0->1)", alpha=.3)
     plt.plot(x1, sm1, 'g-', linewidth=3)

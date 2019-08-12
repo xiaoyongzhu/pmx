@@ -270,6 +270,12 @@ def parse_options():
                         type=float,
                         help='Define a sigmoidal lambda path.',
                         default=0.0)
+    parser.add_argument('--win',
+                        metavar='',
+                        dest='win',
+                        type=int,
+                        help='Width of smoothing window for plotting. Default is 11 samples.',
+                        default=11)
 
     args, unknown = parser.parse_known_args()
     check_unknown_cmd(unknown)
@@ -628,7 +634,7 @@ def main(args):
             # plot
             plot_work_dist(fname=args.wplot, wf=res_ab, wr=res_ba, dG=show_dg,
                            dGerr=show_err, nbins=args.nbins, dpi=args.dpi,
-                           units=units)
+                           units=units, window_len=args.win)
         elif 'bar' not in locals() and 'cgi' in locals():
             show_dg = cgi.dg * unit_fact
             # hierarchy of error estimates : blocks > boots
@@ -641,7 +647,7 @@ def main(args):
             # plot
             plot_work_dist(fname=args.wplot, wf=res_ab, wr=res_ba, dG=show_dg,
                            dGerr=show_err, nbins=args.nbins, dpi=args.dpi,
-                           units=units)
+                           units=units, window_len=args.win)
         elif 'bar' not in locals() and 'cgi' not in locals() and 'jarz' in locals():
             # for the moment, show values only under specific circumstances
             if hasattr(jarz, 'dg_mean'):
@@ -652,7 +658,7 @@ def main(args):
             # plot
             plot_work_dist(fname=args.wplot, wf=res_ab, wr=res_ba, dG=show_dg,
                            dGerr=show_err, nbins=args.nbins, dpi=args.dpi,
-                           units=units)
+                           units=units, window_len=args.win)
 
     if quiet is True:
         print('Done')
