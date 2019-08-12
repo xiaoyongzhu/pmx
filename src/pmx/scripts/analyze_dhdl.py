@@ -194,6 +194,24 @@ def parse_options():
                         'for the reverse (B->A) tranformation. Default is '
                         '"integB.dat"',
                         default='integB.dat')
+    parser.add_argument('-lA',
+                        metavar='work input',
+                        dest='lA',
+                        type=float,
+                        help='Initial value of labmda in forward '
+                        '(A->B) transformation. '
+                        'Equal to the final value in the reverse '
+                        '(B->A) transformation.',
+                        default=0.0)
+    parser.add_argument('-lB',
+                        metavar='work input',
+                        dest='lB',
+                        type=float,
+                        help='Initial value of labmda in reverse '
+                        '(B->A) transformation. '
+                        'Equal to the final value in the forward '
+                        '(A->B) transformation.',
+                        default=1.0)
     # The following are mutually exclusive options
     exclu1.add_argument('--skip',
                         metavar='',
@@ -393,11 +411,11 @@ def main(args):
             print('                   PROCESSING THE DATA')
             print(' ========================================================')
             print('  Forward Data')
-        res_ab = read_dgdl_files(filesAB, lambda0=0,
+        res_ab = read_dgdl_files(filesAB, lambda0=args.lA, lambda1=args.lB,
                                  invert_values=False, verbose=not quiet, sigmoid=sigmoid)
         if quiet is False:
             print('  Reverse Data')
-        res_ba = read_dgdl_files(filesBA, lambda0=1,
+        res_ba = read_dgdl_files(filesBA, lambda0=args.lB, lambda1=args.lA,
                                  invert_values=reverseB, verbose=not quiet, sigmoid=sigmoid)
 
         _dump_integ_file(args.oA, filesAB, res_ab)

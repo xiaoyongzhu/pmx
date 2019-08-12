@@ -10,15 +10,17 @@ __all__ = ['read_dgdl_files', 'integrate_dgdl',
            'ks_norm_test', 'plot_work_dist']
 
 
-def read_dgdl_files(lst, lambda0=0, invert_values=False, verbose=True, sigmoid=0.0):
+def read_dgdl_files(lst, lambda0=0, lambda1=1, invert_values=False, verbose=True, sigmoid=0.0):
     '''Takes a list of dgdl.xvg files and returns the integrated work values.
 
     Parameters
     ----------
     lst : list
         list containing the paths to the dgdl.xvg files.
-    lambda0 : [0,1]
-        whether the simulations started from lambda 0 or 1. Default is 0.
+    lambda0 : float
+        lambda at which simulations started. Default is 0.
+    lambda1 : float
+        lambda at which simulations ended. Default is 1.
     invert_values : bool
         whether to invert the sign of the returned work value.
 
@@ -31,9 +33,11 @@ def read_dgdl_files(lst, lambda0=0, invert_values=False, verbose=True, sigmoid=0
         in w.
     '''
 
-    # check lambda0 is either 0 or 1
-    assert lambda0 in [0, 1]
+    # check lambda0 & 1 are between 0 and 1
+    assert (lambda0>=0 and lambda0<=1), "Incorrect initial lambda "
+    assert (lambda1>=0 and lambda1<=1), "Incorrect final lambda "
 
+<<<<<<< HEAD
     #find the first good file
     good=False;
     idx=0;
@@ -52,13 +56,18 @@ def read_dgdl_files(lst, lambda0=0, invert_values=False, verbose=True, sigmoid=0
     if(not good):
         raise RuntimeError("No good dgdl files provided.");
 
+=======
+    _check_dgdl(lst[0], lambda0=lambda0, lambda1=lambda1, verbose=verbose)
+    first_w, ndata = integrate_dgdl(lst[0], lambda0=lambda0, lambda1=lambda1,
+                                    invert_values=invert_values, sigmoid=sigmoid)
+>>>>>>> d0c61fd... added linear lambda(t) support
     w_list = [first_w]
     for idx, f in enumerate(lst[idx+1:]):
         if verbose is True:
             sys.stdout.write('\r    Reading %s' % f)
             sys.stdout.flush()
 
-        w, _ = integrate_dgdl(f, ndata=ndata, lambda0=lambda0,
+        w, _ = integrate_dgdl(f, ndata=ndata, lambda0=lambda0, lambda1=lambda1,
                               invert_values=invert_values, sigmoid=sigmoid)
         if w is not None:
             w_list.append(w)
@@ -68,7 +77,7 @@ def read_dgdl_files(lst, lambda0=0, invert_values=False, verbose=True, sigmoid=0
     return w_list
 
 
-def integrate_dgdl(fn, ndata=-1, lambda0=0, invert_values=False, sigmoid=0.0):
+def integrate_dgdl(fn, ndata=-1, lambda0=0, lambda1=1, invert_values=False, sigmoid=0.0):
     '''Integrates the data in a dgdl.xvg file.
 
     Parameters
@@ -77,8 +86,10 @@ def integrate_dgdl(fn, ndata=-1, lambda0=0, invert_values=False, sigmoid=0.0):
         the inpur dgdl.xvg file from Gromacs.
     ndata : int, optional
         number of datapoints in file. If -1, then ??? default is -1.
-    lambda0 : [0,1]
-        whether the simulations started from lambda 0 or 1. Default is 0.
+    lambda0 : float
+        lambda at which simulations started. Default is 0.
+    lambda1 : float
+        lambda at which simulations ended. Default is 1.
     invert_values : bool
         whether to invert the sign of the returned work value.
 
@@ -90,8 +101,9 @@ def integrate_dgdl(fn, ndata=-1, lambda0=0, invert_values=False, sigmoid=0.0):
         number of data points in the input file.
     '''
 
-    # check lambda0 is either 0 or 1
-    assert lambda0 in [0, 1]
+    # check lambda0 is between 0 and 1
+    assert (lambda0>=0 and lambda0<=1), "Incorrect initial lambda "
+    assert (lambda1>=0 and lambda1<=1), "Incorrect final lambda "
 
     lines = open(fn, encoding="ISO-8859-1").readlines()
     if not lines:
@@ -118,9 +130,7 @@ def integrate_dgdl(fn, ndata=-1, lambda0=0, invert_values=False, sigmoid=0.0):
         return None, None
     # convert time to lambda
     ndata = len(r)
-    dlambda = 1./float(ndata)
-    if lambda0 == 1:
-        dlambda *= -1
+    dlambda = (lambda1-lambda0)/float(ndata)
 
     # arrays for the integration
     # --------------------------
@@ -137,7 +147,7 @@ def integrate_dgdl(fn, ndata=-1, lambda0=0, invert_values=False, sigmoid=0.0):
     # array of dgdl
     y = r
 
-    if lambda0 == 1:
+    if lambda0 > lambda1:
         x.reverse()
         y.reverse()
 
@@ -362,7 +372,7 @@ def plot_work_dist(wf, wr, fname='Wdist.png', nbins=20, dG=None, dGerr=None,
     plt.savefig(fname, dpi=dpi)
 
 
-def _check_dgdl(fn, lambda0, verbose=True):
+def _check_dgdl(fn, lambda0=0, lambda1=1, verbose=True):
     '''Prints some info about a dgdl.xvg file.'''
     lines = open(fn, encoding="ISO-8859-1").readlines()
     if not lines:
@@ -372,9 +382,7 @@ def _check_dgdl(fn, lambda0, verbose=True):
         if line[0] not in '#@&':
             r.append([float(x) for x in line.split()])
     ndata = len(r)
-    dlambda = 1./float(ndata)
-    if lambda0 == 1:
-        dlambda *= -1
+    dlambda = (lambda1-lambda0)/float(ndata)
 
     if verbose is True:
         print('    # data points: %d' % ndata)
