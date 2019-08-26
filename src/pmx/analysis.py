@@ -78,7 +78,7 @@ def integrate_dgdl(fn, ndata=-1, lambda0=0, invert_values=False, sigmoid=0.0):
     # check lambda0 is either 0 or 1
     assert lambda0 in [0, 1]
 
-    lines = open(fn).readlines()
+    lines = open(fn, encoding="ISO-8859-1").readlines()
     if not lines:
         return None, None
 
@@ -342,7 +342,7 @@ def plot_work_dist(wf, wr, fname='Wdist.png', nbins=20, dG=None, dGerr=None,
 
 def _check_dgdl(fn, lambda0, verbose=True):
     '''Prints some info about a dgdl.xvg file.'''
-    lines = open(fn).readlines()
+    lines = open(fn, encoding="ISO-8859-1").readlines()
     if not lines:
         return None
     r = []
