@@ -251,6 +251,15 @@ def apply_fit_R( atoms, R):
             for c in range(3):
                 atom.x[r]+=R[r][c]*x_old[c]
 
+def center_vector( v ):
+    vout = _p.center_vec( v )
+    return( vout )
+
+def calc_fit_R( cs1, cs2, m ):
+    R = _p.calc_fit_R(cs1, cs2, m)
+    return(R)
+
+
 def fit(model1, model2, atom_names = []):
     if atom_names:
         subset1 = model1.fetch_atoms( atom_names )
