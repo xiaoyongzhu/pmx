@@ -34,11 +34,26 @@ def read_dgdl_files(lst, lambda0=0, invert_values=False, verbose=True, sigmoid=0
     # check lambda0 is either 0 or 1
     assert lambda0 in [0, 1]
 
-    _check_dgdl(lst[0], lambda0, verbose=verbose)
-    first_w, ndata = integrate_dgdl(lst[0], lambda0=lambda0,
-                                    invert_values=invert_values, sigmoid=sigmoid)
+    #find the first good file
+    good=False;
+    idx=0;
+    first_w=0;
+    ndata=0;
+    while(not good and idx<len(lst)):
+        try:
+            _check_dgdl(lst[idx], lambda0, verbose=verbose)
+            first_w, ndata = integrate_dgdl(lst[idx], lambda0=lambda0,
+                                        invert_values=invert_values, sigmoid=sigmoid)
+            good=True
+        except:
+            print(' !! Error in checking %s' % (lst[idx]))
+            good=False
+            idx+=1
+    if(not good):
+        raise RuntimeError("No good dgdl files provided.");
+
     w_list = [first_w]
-    for idx, f in enumerate(lst[1:]):
+    for idx, f in enumerate(lst[idx+1:]):
         if verbose is True:
             sys.stdout.write('\r    Reading %s' % f)
             sys.stdout.flush()
@@ -87,7 +102,12 @@ def integrate_dgdl(fn, ndata=-1, lambda0=0, invert_values=False, sigmoid=0.0):
     # optional files integrity check before calling this integration func
 
     lines = [l for l in lines if l[0] not in '#@&']
-    r = list(map(lambda x: float(x.split()[1]), lines))
+    r=[]
+    try:
+        r = list(map(lambda x: float(x.split()[1]), lines))
+    except:
+        print(' !! Error in reading %s' % (fn))
+        return None, None
 
     if ndata != -1 and len(r) != ndata:
         try:
