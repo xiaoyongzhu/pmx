@@ -166,10 +166,17 @@ class XDRFile:
 
         #load libxdrfil
         try:
-          p = os.path.join(os.path.dirname(__file__),'_xdrio.so')
-          self.xdr=cdll.LoadLibrary(p)
-        except:
-          raise IOError("_xdrio.so can't be loaded")
+              p = os.path.join(os.path.dirname(__file__),'_xdrio.so')
+              self.xdr=cdll.LoadLibrary(p)
+        except OSError:
+              #extension .so files have suffixes in their names since Python 3.5
+              from distutils.sysconfig import get_config_var
+              suf = get_config_var('EXT_SUFFIX')
+              try:
+                  p = os.path.join(os.path.dirname(__file__),"_xdrio%s"%suf)
+                  self.xdr=cdll.LoadLibrary(p)
+              except:
+                  raise IOError("neither _xdrio.so nor _xdrio%s could be loaded"%suf)
 
         #difine a proper return type for xdrfile_open, so that python doesn't truncate the file pointer to an integer
         class XDRFILEstruct(Structure):
