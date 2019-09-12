@@ -98,6 +98,9 @@ class Frame:
                 atom.x[2] = self.x[i][2]
 
     def update( self, atom_sel ):
+        if(len(atom_sel.atoms)!=self.natoms):
+            raise ValueError("Model and Trajectory have different numbers of atoms: %d and %d"\
+                             %(len(atom_sel.atoms),self.natoms) )
         self.update_atoms(atom_sel )
         self.update_box( atom_sel.box )
 
@@ -163,17 +166,31 @@ class XDRFile:
 
         #load libxdrfil
         try:
-          p = os.path.join(os.path.dirname(__file__),'_xdrio.so')
-          self.xdr=cdll.LoadLibrary(p)
-        except:
-          raise IOError("_xdrio.so can't be loaded")
+              p = os.path.join(os.path.dirname(__file__),'_xdrio.so')
+              self.xdr=cdll.LoadLibrary(p)
+        except OSError:
+              #extension .so files have suffixes in their names since Python 3.5
+              from distutils.sysconfig import get_config_var
+              suf = get_config_var('EXT_SUFFIX')
+              try:
+                  p = os.path.join(os.path.dirname(__file__),"_xdrio%s"%suf)
+                  self.xdr=cdll.LoadLibrary(p)
+              except:
+                  raise IOError("neither _xdrio.so nor _xdrio%s could be loaded"%suf)
 
+        #difine a proper return type for xdrfile_open, so that python doesn't truncate the file pointer to an integer
+        class XDRFILEstruct(Structure):
+            pass;
+        self.xdr.xdrfile_open.restype = POINTER(XDRFILEstruct)
+        
+        #TODO: for safety and future ctypes compatability, declare the argument and return types for all c functions called
 
         #open file
+        fn_cp=c_char_p(fn.encode('utf-8')); #ctypes needs an explicit conversion of sdtrings, or only first character is visible in C
         if self.mode==out_mode:
-            self.xd = self.xdr.xdrfile_open(fn,"w")
+            self.xd = self.xdr.xdrfile_open(fn_cp,"w")
         else:
-            self.xd = self.xdr.xdrfile_open(fn,"r")
+            self.xd = self.xdr.xdrfile_open(fn_cp,"r")
         if not self.xd: raise IOError("Cannot open file: '%s'"%fn)
 
         #read natoms
@@ -184,9 +201,9 @@ class XDRFile:
             self.natoms = atomNum
         else:
             if self.mode&mTrr:
-                r=self.xdr.read_trr_natoms(fn,byref(natoms))
+                r=self.xdr.read_trr_natoms(fn_cp,byref(natoms))
             else:
-                r=self.xdr.read_xtc_natoms(fn,byref(natoms))
+                r=self.xdr.read_xtc_natoms(fn_cp,byref(natoms))
             if r!=self.exdrOK: raise IOError("Error reading: '%s'"%fn)
             self.natoms=natoms.value
 
@@ -237,3 +254,9 @@ class XDRFile:
                 f.step=step.value
                 f.time=time.value
                 yield f
+
+    def close(self):
+        """Close the xdr file.
+        Call this when you are done reading/writing to avoid a memory leak.
+        """
+        self.xdr.xdrfile_close(self.xd);
