@@ -37,7 +37,6 @@ def read_dgdl_files(lst, lambda0=0, lambda1=1, invert_values=False, verbose=True
     assert (lambda0>=0 and lambda0<=1), "Incorrect initial lambda "
     assert (lambda1>=0 and lambda1<=1), "Incorrect final lambda "
 
-<<<<<<< HEAD
     #find the first good file
     good=False;
     idx=0;
@@ -45,8 +44,8 @@ def read_dgdl_files(lst, lambda0=0, lambda1=1, invert_values=False, verbose=True
     ndata=0;
     while(not good and idx<len(lst)):
         try:
-            _check_dgdl(lst[idx], lambda0, verbose=verbose)
-            first_w, ndata = integrate_dgdl(lst[idx], lambda0=lambda0,
+            _check_dgdl(lst[idx], lambda0=lambda0, lambda1=lambda1, verbose=verbose)
+            first_w, ndata = integrate_dgdl(lst[idx], lambda0=lambda0, lambda1=lambda1,
                                         invert_values=invert_values, sigmoid=sigmoid)
             good=True
         except:
@@ -56,11 +55,6 @@ def read_dgdl_files(lst, lambda0=0, lambda1=1, invert_values=False, verbose=True
     if(not good):
         raise RuntimeError("No good dgdl files provided.");
 
-=======
-    _check_dgdl(lst[0], lambda0=lambda0, lambda1=lambda1, verbose=verbose)
-    first_w, ndata = integrate_dgdl(lst[0], lambda0=lambda0, lambda1=lambda1,
-                                    invert_values=invert_values, sigmoid=sigmoid)
->>>>>>> d0c61fd... added linear lambda(t) support
     w_list = [first_w]
     for idx, f in enumerate(lst[idx+1:]):
         if verbose is True:
