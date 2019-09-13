@@ -304,9 +304,9 @@ def plot_work_dist(wf, wr, fname='Wdist.png', nbins=20, dG=None, dGerr=None,
         val.set_lw(2)
     plt.subplot(1, 2, 2)
     plt.hist(wf, bins=nbins, orientation='horizontal', facecolor='green',
-             alpha=.75, normed=True)
+             alpha=.75, density=True)
     plt.hist(wr, bins=nbins, orientation='horizontal', facecolor='blue',
-             alpha=.75, normed=True)
+             alpha=.75, density=True)
 
     x = np.arange(mini, maxi, .5)
 
