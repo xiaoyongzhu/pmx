@@ -608,6 +608,9 @@ def main(args):
                                                                                  p=prec, u=units), quiet=quiet)
 
     _tee(out, ' ========================================================', quiet=quiet)
+    
+    #close the outputfile, forsing a fush to disk, so that the unit test can read it properly
+    out.close();
 
     # -----------------------
     # plot work distributions
