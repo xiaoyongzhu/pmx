@@ -28,7 +28,7 @@ def test_dhdl(tmpdir):
         b=signal - 0.5*dif + np.random.normal(loc=0.0, scale=noise_scale, size=signal.shape)
         
         dataf=np.transpose(np.vstack((l,f)))
-        datab=np.transpose(np.vstack((np.flip(l),np.flip(b))))
+        datab=np.transpose(np.vstack((l,np.flip(b)))) # don't flip l. it's used as time here, not lambda value
         fh_f=tmpdir.join("test_temp_f%d.xvg"%i)
         fh_b=tmpdir.join("test_temp_b%d.xvg"%i)
         np.savetxt(fh_f, dataf, fmt='%16.8f')
