@@ -10,7 +10,7 @@ from pmx.forcefield import Topology, merge_atomtypes
 from pmx import gmx
 from copy import deepcopy
 from time import sleep
-from .cli import check_unknown_cmd
+from cli import check_unknown_cmd
 
 
 # TODO: build folder structure and mdp files for equil or nonequil calcs?

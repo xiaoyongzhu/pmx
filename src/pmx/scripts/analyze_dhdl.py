@@ -12,7 +12,7 @@ import numpy as np
 import pickle
 import argparse
 import warnings
-from .cli import check_unknown_cmd
+from cli import check_unknown_cmd
 
 # Constants
 kb = 0.00831447215   # kJ/(K*mol)
