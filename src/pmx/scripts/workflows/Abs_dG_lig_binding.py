@@ -7,6 +7,7 @@ import os
 import numpy as np
 import argparse
 import warnings
+import shutil as sh
 from pmx.scripts.cli import check_unknown_cmd
 
 # Constants
@@ -41,7 +42,7 @@ def parse_options():
                         type=str,
                         dest='toppath',
                         help='Path to itp and structure files describing the protein and the ligand.',
-                        default=['../topologies'])
+                        default='../topologies')
     parser.add_argument('-t',
                         metavar='temperature',
                         dest='temperature',
@@ -55,10 +56,30 @@ def parse_options():
 
     return args
 
+# ==============================================================================
+#                             Workflow Class
+# ==============================================================================
+class Workflow:
+    def __init__(self, args, proteins=[], ligands=[]):
+        self.args = args
+        self.proteins = proteins
+        self.ligands = ligands
+        
+    def check_sanity(self):
+        if(not sh.which('gmx')):
+            raise RuntimeError('gmx not found in $PATH!');
+        if(not sh.which('perl')):
+            raise RuntimeError('perl not found in $PATH!');
+        
+    def check_inputs(self):
+        if(not os.path.isdir(self.args.toppath)):
+            raise RuntimeError('Folder \"%s\" provided as toppath does not exist'\
+                               %self.args.toppath);
 
 # ==============================================================================
 #                               FUNCTIONS
 # ==============================================================================
+    
 def main(args):
     """Run the main script.
 
@@ -68,29 +89,33 @@ def main(args):
         The command line arguments
     """
 
-   #sanity checks
-   
-   #copy data (*.itp, template topology, ligand and protein structures) to CWD
-   
-   #solvate and generate ions
-   
-   #run EM
-   
-   #run NVT w hard position restraints to prevent protein deformation
-   
-   #run NVT w softer position restraints
-   
-   #run NPT to sample starting frames for TI
-   
-   #genergate Boresh-style protein-ligand restraints
-   
-   #align vaccum ligand onto apo protein structures
-   
-   #run TI
-   
-   #analyse dHdl files
-   
-   #plot summary
+    w=Workflow(args, ["BRD1"], ["lig"])
+    
+    #sanity checks
+    w.check_sanity()
+    w.check_inputs()
+        
+    #copy data (*.itp, template topology, ligand and protein structures) to CWD
+    
+    #solvate and generate ions
+    
+    #run EM
+    
+    #run NVT w hard position restraints to prevent protein deformation
+    
+    #run NVT w softer position restraints
+    
+    #run NPT to sample starting frames for TI
+    
+    #genergate Boresh-style protein-ligand restraints
+    
+    #align vaccum ligand onto apo protein structures
+    
+    #run TI
+    
+    #analyse dHdl files
+    
+    #plot summary
 
 
 
