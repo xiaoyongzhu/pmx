@@ -80,6 +80,7 @@ def read_dgdl_files(lst, lambda0=0, invert_values=False, verbose=True,\
     #Everything before is too short.
     good=False
     idx, t_list=find_longest_dgdl_file(lst) 
+    last_t=t_list[idx]
     first_w=0
     ndata=0
     while(not good and idx<len(lst)):

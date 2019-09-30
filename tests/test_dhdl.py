@@ -10,16 +10,16 @@ import sys
 
 def test_dhdl(tmpdir):
     #make fake dHdl files in a temp directory
-    trjlen=51;
-    dif=3.0;
+    trjlen=51
+    dif=3.0
     W_scale=100.0
-    dG=100.0;
-    noise_scale=10.0;
-    nruns=80;
+    dG=100.0
+    noise_scale=10.0
+    nruns=80
     l=np.linspace(0., 1., num=trjlen, endpoint=True)
     signal=(1/(1+np.exp((-l+0.5)*10))-0.5)*W_scale + dG
     
-    np.random.seed(123456); #force reproducible random numbers
+    np.random.seed(123456) #force reproducible random numbers
     
     fns_f=[]
     fns_b=[]
@@ -50,8 +50,8 @@ def test_dhdl(tmpdir):
     os.chdir(orig_dir)   #reset cwd
 
     #read results
-    bar=-1;
-    barerr=-1;
+    bar=-1
+    barerr=-1
     print("#"*40)
     with open(str(tmpdir)+"/results.txt","rb") as fp:
         lines = fp.readlines()
@@ -67,5 +67,5 @@ def test_dhdl(tmpdir):
                 print(s)
                 barerr=float(s[-2])
     
-    assert_almost_equal(bar, dG*0.98, decimal=2);
-    assert_almost_equal(barerr, 0.17, decimal=2);
+    assert_almost_equal(bar, dG*0.98, decimal=2)
+    assert_almost_equal(barerr, 0.17, decimal=2)

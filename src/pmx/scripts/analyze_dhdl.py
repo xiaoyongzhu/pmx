@@ -610,7 +610,7 @@ def main(args):
     _tee(out, ' ========================================================', quiet=quiet)
     
     #close the outputfile, forcing a flush to disk, so that the unit test can read it properly
-    out.close();
+    out.close()
 
     # -----------------------
     # plot work distributions
