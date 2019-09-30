@@ -69,3 +69,4 @@ def test_dhdl(tmpdir):
     
     assert_almost_equal(bar, dG*0.98, decimal=2)
     assert_almost_equal(barerr, 0.17, decimal=2)
+    
