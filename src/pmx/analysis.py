@@ -12,8 +12,47 @@ from .utils import data2gauss, gauss_func
 __all__ = ['read_dgdl_files', 'integrate_dgdl',
            'ks_norm_test', 'plot_work_dist']
 
+def find_longest_dgdl_file(lst):
+    '''Takes a list of dgdl.xvg files and returns the longest one.
+    The length is measured by the timestamp of the last recorded datapoint.
+    
+    Parameters
+    ----------
+    lst : list
+        list containing the paths to the dgdl.xvg files.
 
-def read_dgdl_files(lst, lambda0=0, invert_values=False, verbose=True, sigmoid=0.0):
+    Returns
+    -------
+    longest_idx : int
+        index of the longest dgdl file in lst
+    t_list : list
+        List of last timestamps of the dhdl files
+    '''
+    #find last line of every file in lst
+    last_t=0.0 #length of simultaion in ps
+    longest_idx=-1 #index of first full-length (longest) simultaion
+    t_list=[0.0]*len(lst)
+    for idx in range(len(lst)):
+        if(os.path.exists(lst[idx])):
+            result = subprocess.run(['tail', '-n', '1', lst[idx]],\
+                                    stdout=subprocess.PIPE)
+            try:
+                s=result.stdout.split()
+                t=float(s[0])
+                t_list[idx] = t
+                if t > last_t:
+                    last_t = t
+                    longest_idx = idx
+            except:
+                continue #if can't convert to float or split line
+    if(longest_idx<0):
+        raise RuntimeError("No valid dgdl file found.")
+        
+    return(longest_idx, t_list)
+
+
+def read_dgdl_files(lst, lambda0=0, invert_values=False, verbose=True,\
+                    sigmoid=0.0):
     '''Takes a list of dgdl.xvg files and returns the integrated work values.
 
     Parameters
@@ -36,45 +75,27 @@ def read_dgdl_files(lst, lambda0=0, invert_values=False, verbose=True, sigmoid=0
 
     # check lambda0 is either 0 or 1
     assert lambda0 in [0, 1]
-
-
-    #find last line of every file in lst
-    last_t=0.0; #length of simultaion in ps
-    longest_idx=-1; #index of first full-length (longest) simultaion
-    t_list=[0.0]*len(lst)
-    for idx in range(len(lst)):
-        if(os.path.exists(lst[idx])):
-            result = subprocess.run(['tail', '-n', '1', lst[idx]], stdout=subprocess.PIPE)
-            try:
-                s=result.stdout.split()
-                t=float(s[0])
-                t_list[idx] = t
-                if t > last_t:
-                    last_t = t
-                    longest_idx = idx
-            except:
-                continue; #if can't convert to float or split line
-    if(longest_idx<0):
-        raise RuntimeError("No valid dgdl file found.");
     
-    #find the first good file
-    good=False;
-    idx=longest_idx; # start first full-length (longest) simultaion, everything before is too short
-    first_w=0;
-    ndata=0;
+    #Start with first full-length (longest) simultaion.
+    #Everything before is too short.
+    good=False
+    idx, t_list=find_longest_dgdl_file(lst) 
+    first_w=0
+    ndata=0
     while(not good and idx<len(lst)):
         if(t_list[idx] >= last_t): #only check full length simulations
             try:
                 _check_dgdl(lst[idx], lambda0, verbose=verbose)
-                first_w, ndata = integrate_dgdl(lst[idx], lambda0=lambda0,
-                                            invert_values=invert_values, sigmoid=sigmoid)
+                first_w, ndata = integrate_dgdl(lst[idx], lambda0=lambda0,\
+                                            invert_values=invert_values,\
+                                            sigmoid=sigmoid)
                 good=True
             except:
                 print(' !! Error in checking %s' % (lst[idx]))
                 good=False
                 idx+=1
     if(not good):
-        raise RuntimeError("No good dgdl files provided.");
+        raise RuntimeError("No good dgdl files provided.")
 
     w_list = [first_w]
     for idx, f in enumerate(lst[idx+1:]):
