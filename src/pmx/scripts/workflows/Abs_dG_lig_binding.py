@@ -41,8 +41,9 @@ def parse_options():
     parser.add_argument('-toppath',
                         type=str,
                         dest='toppath',
-                        help='Path to itp and structure files describing the protein and the ligand.',
-                        default='../topologies')
+                        help='Path to itp and structure files describing'
+                            ' the protein and the ligand.',
+                        default='../data')
     parser.add_argument('-t',
                         metavar='temperature',
                         dest='temperature',
@@ -59,22 +60,69 @@ def parse_options():
 # ==============================================================================
 #                             Workflow Class
 # ==============================================================================
-class Workflow:
-    def __init__(self, args, proteins=[], ligands=[]):
+class Workflow_inProtein:
+    def __init__(self, args, proteins=[], ligands=[], basepath=os.getcwd()):
         self.args = args
         self.proteins = proteins
         self.ligands = ligands
+        self.basepath = basepath
         
     def check_sanity(self):
         if(not sh.which('gmx')):
-            raise RuntimeError('gmx not found in $PATH!');
+            raise RuntimeError('gmx not found in $PATH!')
         if(not sh.which('perl')):
-            raise RuntimeError('perl not found in $PATH!');
+            raise RuntimeError('perl not found in $PATH!')
         
     def check_inputs(self):
         if(not os.path.isdir(self.args.toppath)):
             raise RuntimeError('Folder \"%s\" provided as toppath does not exist'\
-                               %self.args.toppath);
+                               %self.args.toppath)
+            
+    def gen_folder_name(self,protein,ligand):
+        return(self.basepath+'/prot_'+protein+'/lig_'+ligand)
+                               
+    def gather_inputs(self):
+        for p in self.proteins:
+            for l in self.ligands:
+                folder = self.gen_folder_name(p,l)
+                os.makedirs(folder, exist_ok=True)
+                
+                #topology
+                sh.copy(self.args.toppath+"/topol_abs_prot_norestr_amber.top",\
+                        folder+"/topol.top")
+                sh.copy(self.args.toppath+"/ligand/"+l+"/lig.itp",folder+"/")
+                sh.copy(self.args.toppath+"/proteins/"+p+"/prot.itp",folder+"/")
+                
+                #initial coordinates where protein and ligand are bound
+                sh.copy(self.args.toppath+"/proteins/"+p+"/prot_lig.pdb",\
+                        folder+"/init.pdb")
+                
+                os.chdir(folder)
+                
+                #generate temporary index file
+                os.system("echo 'q\\n' | "+\
+                          "gmx make_ndx -f init.pdb -o index.ndx > setup.log")
+                
+                #generate restraints for equillibration
+                os.system("echo 'Protein\\n' | "+\
+                          "gmx genrestr -f init.pdb "+\
+                          "-fc 9000 9000 9000 "+\
+                          "-o prot_posre.itp -n index.ndx >> setup.log")
+                os.system("echo 'MOL\\n' | "+\
+                          "gmx genrestr -f init.pdb "+\
+                          "-fc 9000 9000 9000 "+\
+                          "-o lig_posre.itp -n index.ndx >> setup.log")
+                os.system("echo 'Protein\\n' | "+\
+                          "gmx genrestr -f init.pdb "+\
+                          "-fc 500 500 500 "+\
+                          "-o prot_posre_soft.itp -n index.ndx >> setup.log")
+                os.system("echo 'MOL\\n' | "+\
+                          "gmx genrestr -f init.pdb "+\
+                          "-fc 500 500 500 "+\
+                          "-o lig_posre_soft.itp -n index.ndx >> setup.log")
+                
+                #Return to basepath
+                os.chdir(self.basepath)
 
 # ==============================================================================
 #                               FUNCTIONS
@@ -89,13 +137,14 @@ def main(args):
         The command line arguments
     """
 
-    w=Workflow(args, ["BRD1"], ["lig"])
+    w=Workflow_inProtein(args, ["BRD1"], ["lig"], os.getcwd())
     
     #sanity checks
     w.check_sanity()
     w.check_inputs()
         
     #copy data (*.itp, template topology, ligand and protein structures) to CWD
+    w.gather_inputs()
     
     #solvate and generate ions
     
