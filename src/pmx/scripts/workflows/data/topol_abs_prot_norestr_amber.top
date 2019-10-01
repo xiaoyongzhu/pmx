@@ -1,13 +1,19 @@
 ; Include forcefield parameters
 #include "amber99sb-ildn.ff/forcefield.itp"
-#include "lig.itp"
+
 #include "prot.itp"
 #ifdef POSRES
 #include "prot_posre.itp" ; protein position restraints
-#include "lig_posre.itp" ; ligand position restraints
 #endif
 #ifdef POSRESSOFT
 #include "prot_posre_soft.itp" ; protein position restraints
+#endif
+
+#include "lig.itp"
+#ifdef POSRES
+#include "lig_posre.itp" ; ligand position restraints
+#endif
+#ifdef POSRESSOFT
 #include "lig_posre_soft.itp" ; ligand position restraints
 #endif
 
