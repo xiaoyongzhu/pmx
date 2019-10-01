@@ -174,7 +174,6 @@ class Workflow_inProtein:
                     for filePath in cleanList:
                         try:
                             os.unlink(filePath)
-                            os.remove(filePath)
                         except:
                             print("Error while deleting file : ", filePath)
                 
@@ -219,7 +218,6 @@ class Workflow_inProtein:
                     for filePath in cleanList:
                         try:
                             os.unlink(filePath)
-                            os.remove(filePath)
                         except:
                             print("Error while deleting file : ", filePath)
                 
