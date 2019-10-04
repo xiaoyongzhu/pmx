@@ -10,6 +10,9 @@ import warnings
 from pmx.analysis import read_dgdl_files, plot_work_dist, ks_norm_test
 from pmx.model import Model
 from pmx.scripts.cli import check_unknown_cmd
+#from pmx.scripts.workflows.Workflow import Workflow, check_file_ready
+from Workflow import Workflow, check_file_ready
+from find_avg import find_avg_struct
 
 # Constants
 kb = 0.00831447215   # kJ/(K*mol)
@@ -18,22 +21,6 @@ kb = 0.00831447215   # kJ/(K*mol)
 # ==============================================================================
 #                            HELPER FUNCTIONS
 # ==============================================================================
-def check_file_ready(fname):
-    """Checks if a file was sucessfully created
-    and gives an informative error if not.
-    
-    Parameters
-    ----------
-    fname : str
-        Path to the file beeing checked
-
-    Raises:
-    ----------
-    OSError:
-        If fname is not found.
-    """
-    if(not os.path.isfile(fname)):
-        raise OSError("Failed creating "+fname)
 
 
 # ==============================================================================
@@ -96,23 +83,14 @@ def parse_options():
 # ==============================================================================
 #                             Workflow Class
 # ==============================================================================
-class Workflow_inProtein:
+class Workflow_inProtein(Workflow):
     def __init__(self, toppath, mdppath, proteins=[], ligands=[],
                  n_repeats=3, n_sampling_sims=1, basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,
                  mdrun="gmx mdrun", mdrun_opts=""):
-        self.toppath = toppath
-        self.mdppath = mdppath
-        self.n_repeats = n_repeats
-        self.n_sampling_sims = n_sampling_sims
-        self.proteins = proteins
-        self.ligands = ligands
-        self.basepath = basepath
-        self.d = d
-        self.bt = bt
-        self.salt_conc = salt_conc
-        self.mdrun = mdrun
-        self.mdrun_opts = mdrun_opts
+        Workflow.__init__(self, toppath, mdppath, proteins, ligands,
+                          n_repeats, n_sampling_sims, basepath,
+                          d, bt, salt_conc, mdrun, mdrun_opts) 
         self.states={"A":"l0", "B":"l1"} #states and suffixes of mdp files
         
         
@@ -234,7 +212,7 @@ class Workflow_inProtein:
                 os.chdir(self.basepath)
                 
     def run_stage(self, stage, mdp_template, struct_template,
-                  posre=None, clean=True):
+                  posre=None, clean=True, completition_check=None):
         print("Running stage "+stage+":")
         for p in self.proteins:
             for l in self.ligands:
@@ -250,7 +228,8 @@ class Workflow_inProtein:
                             os.chdir(sim_folder)
                             print("\t"+sim_folder)
                             #don't rerun if already ready
-                            if(os.path.isfile("confout.gro")):
+                            if(completition_check and
+                               os.path.isfile(completition_check)):
                                 print("\t\tPrevious")
                                 continue
                             
@@ -293,7 +272,6 @@ class Workflow_inProtein:
                             
                             #Return to basepath
                             os.chdir(self.basepath)
-                        
 
 # ==============================================================================
 #                               FUNCTIONS
@@ -314,7 +292,7 @@ def main(args):
     w=Workflow_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
                          basepath=basepath,
                          mdrun="mdrun_threads_AVX2_256",
-                         mdrun_opts="-pin on -nsteps 10")
+                         mdrun_opts="-pin on -nsteps 1000")
     
     #sanity checks
     w.check_sanity()
@@ -329,21 +307,120 @@ def main(args):
     #run EM
     w.run_stage("em", mdppath+"/protein/em_posre_{0}.mdp",
                 basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb")
+                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                completition_check="confout.gro")
         
     #run NVT w hard position restraints to prevent protein deformation
     w.run_stage("nvt_posre", mdppath+"/protein/eq_nvt_posre_{0}.mdp",
                 basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/em{4}/confout.gro",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb")
+                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                completition_check="confout.gro")
     
     #run NVT w softer position restraints
     w.run_stage("nvt_posre_soft", mdppath+"/protein/eq_nvt_posre_soft_{0}.mdp",
                 basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre{4}/confout.gro",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb")
+                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                completition_check="confout.gro")
     
     #run NPT to sample starting frames for TI
+    w.run_stage("npt", mdppath+"/protein/eq_npt_test_{0}.mdp",
+                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre_soft{4}/confout.gro",
+                completition_check="confout.gro")
     
     #genergate Boresh-style protein-ligand restraints
+    def gen_restr_calback(**kwargs):
+        folder = kwargs.get('folder')
+        p = kwargs.get('p')
+        l = kwargs.get('l')
+        states = kwargs.get('states')
+        n_repeats=kwargs.get('n_repeats')
+        n_sampling_sims=kwargs.get('n_sampling_sims')
+        
+        b=kwargs.get('b', 0) #begining of trj to use (ps)
+        srctraj=kwargs.get('srctraj')
+        srctpr=kwargs.get('srctpr')
+        mdp=kwargs.get('mdp')
+
+        print(folder)
+        os.chdir(folder)
+        
+        #create prot+MOL index group
+        os.system("echo \"1|13\nq\n\" | "
+                  "gmx make_ndx -f ions0_0.pdb "
+                  "-o index_prot_mol.ndx > /dev/null 2>&1")
+        check_file_ready("index_prot_mol.ndx")
+                  
+        #make topology
+        os.system("sed 's/SOL/;SOL/g' topol.top > topol_prot_mol.top")
+                          
+        print('\tCollecting trajectories')
+        for s in states:
+            #make tprs
+            if(s == "A"):   #align A to initial structure
+                ref="box.pdb"
+            else:           #align B to average of A
+                ref="averageA.gro"
+            os.system("gmx grompp -p topol_prot_mol.top -c %s "
+                      "-f %s -o tpr%s.tpr "
+                      "-maxwarn 2 > grompp%s.log 2>&1"%(
+                              ref, mdp, s,s) )
+            check_file_ready("tpr%s.tpr"%s)
+              
+            #collect trjs
+            #independent repeats for error analysis
+            for i in range(n_repeats):
+                #sampling simulations in each repeat
+                for m in range(n_sampling_sims):
+                    if(not os.path.isfile("eq%s%d_%d.xtc"%(s,i,m))):
+                        tpr=srctpr.format(p,l,s,i,m)
+                        trj=srctraj.format(p,l,s,i,m)
+                        os.system("echo 4 Protein_MOL | "
+                                  "gmx trjconv -s %s -f %s "
+                                  "-o eq%s%d_%d.xtc "
+                                  "-sep -ur compact -pbc mol -center "
+                                  "-boxcenter zero -n index_prot_mol.ndx "
+                                  "-b %d > /dev/null 2>&1"%(
+                                          tpr,trj, s,i,m, b) )
+                        check_file_ready("eq%s%d_%d.xtc"%(s,i,m))
+                        
+            #concatenate trajectories
+            os.system("gmx trjcat -f eq%s*.xtc -o all_eq%s.xtc -sort "
+                      "-cat > /dev/null 2>&1"%(s,s) )
+            check_file_ready("all_eq%s.xtc"%s)
+                      
+            #fit to reference structure in tpr files
+            os.system("echo 4 0 | gmx trjconv -s tpr%s.tpr -f all_eq%s.xtc "
+                      "-o all_eq%s_fit.xtc -fit rot+trans > /dev/null 2>&1"%(
+                              s,s,s) )
+            check_file_ready("all_eq%s_fit.xtc"%s)
+            
+            #dump first frame
+            if(not os.path.isfile("dump%s.gro"%s)):
+                os.system("echo 0 | gmx trjconv -f all_eq%s_fit.xtc "
+                          "-s tpr%s.tpr -o dump%s.gro "
+                          "-dump 0 > /dev/null 2>&1"%(
+                                  s,s,s) )
+                check_file_ready("dump%s.gro"%s)
+                
+            #find avg structure of A
+            if(s=="A"):
+                if(not os.path.isfile("averageA.gro")):
+                    find_avg_struct("dumpA.gro", "all_eqA_fit.xtc",
+                                    "averageA.gro")
+                    check_file_ready("averageA.gro")
+                    
+        #generate the restraints
+        
+        #restore base path    
+        os.chdir(basepath)
+        
+        
+        
+        
+    w.run_callback_on_folders("Restraints", gen_restr_calback,
+                              srctpr =basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
+                              srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
+                              mdp=mdppath+"/protein/init.mdp", b=0)
     
     #align vaccum ligand onto apo protein structures
     
