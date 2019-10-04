@@ -13,6 +13,7 @@ from pmx.scripts.cli import check_unknown_cmd
 #from pmx.scripts.workflows.Workflow import Workflow, check_file_ready
 from Workflow import Workflow, check_file_ready
 from find_avg import find_avg_struct
+from find_anchors_and_write_ii import find_restraints
 
 # Constants
 kb = 0.00831447215   # kJ/(K*mol)
@@ -353,7 +354,6 @@ def main(args):
         #make topology
         os.system("sed 's/SOL/;SOL/g' topol.top > topol_prot_mol.top")
                           
-        print('\tCollecting trajectories')
         for s in states:
             #make tprs
             if(s == "A"):   #align A to initial structure
@@ -367,32 +367,35 @@ def main(args):
             check_file_ready("tpr%s.tpr"%s)
               
             #collect trjs
-            #independent repeats for error analysis
-            for i in range(n_repeats):
-                #sampling simulations in each repeat
-                for m in range(n_sampling_sims):
-                    if(not os.path.isfile("eq%s%d_%d.xtc"%(s,i,m))):
-                        tpr=srctpr.format(p,l,s,i,m)
-                        trj=srctraj.format(p,l,s,i,m)
-                        os.system("echo 4 Protein_MOL | "
-                                  "gmx trjconv -s %s -f %s "
-                                  "-o eq%s%d_%d.xtc "
-                                  "-sep -ur compact -pbc mol -center "
-                                  "-boxcenter zero -n index_prot_mol.ndx "
-                                  "-b %d > /dev/null 2>&1"%(
-                                          tpr,trj, s,i,m, b) )
-                        check_file_ready("eq%s%d_%d.xtc"%(s,i,m))
-                        
-            #concatenate trajectories
-            os.system("gmx trjcat -f eq%s*.xtc -o all_eq%s.xtc -sort "
-                      "-cat > /dev/null 2>&1"%(s,s) )
-            check_file_ready("all_eq%s.xtc"%s)
-                      
-            #fit to reference structure in tpr files
-            os.system("echo 4 0 | gmx trjconv -s tpr%s.tpr -f all_eq%s.xtc "
-                      "-o all_eq%s_fit.xtc -fit rot+trans > /dev/null 2>&1"%(
-                              s,s,s) )
-            check_file_ready("all_eq%s_fit.xtc"%s)
+            if(not os.path.isfile("all_eq%s_fit.xtc"%s)):
+                print("\tCollecting trajectories for state%s"%s)
+                
+                #independent repeats for error analysis
+                for i in range(n_repeats):
+                    #sampling simulations in each repeat
+                    for m in range(n_sampling_sims):
+                        if(not os.path.isfile("eq%s%d_%d.xtc"%(s,i,m))):
+                            tpr=srctpr.format(p,l,s,i,m)
+                            trj=srctraj.format(p,l,s,i,m)
+                            os.system("echo 4 Protein_MOL | "
+                                      "gmx trjconv -s %s -f %s "
+                                      "-o eq%s%d_%d.xtc "
+                                      "-sep -ur compact -pbc mol -center "
+                                      "-boxcenter zero -n index_prot_mol.ndx "
+                                      "-b %d > /dev/null 2>&1"%(
+                                              tpr,trj, s,i,m, b) )
+                            check_file_ready("eq%s%d_%d.xtc"%(s,i,m))
+                            
+                #concatenate trajectories
+                os.system("gmx trjcat -f eq%s*.xtc -o all_eq%s.xtc -sort "
+                          "-cat > /dev/null 2>&1"%(s,s) )
+                check_file_ready("all_eq%s.xtc"%s)
+                          
+                #fit to reference structure in tpr files
+                os.system("echo 4 0 | gmx trjconv -s tpr%s.tpr -f all_eq%s.xtc "
+                          "-o all_eq%s_fit.xtc -fit rot+trans > /dev/null 2>&1"%(
+                                  s,s,s) )
+                check_file_ready("all_eq%s_fit.xtc"%s)
             
             #dump first frame
             if(not os.path.isfile("dump%s.gro"%s)):
@@ -410,6 +413,10 @@ def main(args):
                     check_file_ready("averageA.gro")
                     
         #generate the restraints
+        if(not os.path.isfile("ii.itp")):
+            find_restraints(log=False)
+            check_file_ready("ii.itp")
+            check_file_ready("out_dg.dat")
         
         #restore base path    
         os.chdir(basepath)

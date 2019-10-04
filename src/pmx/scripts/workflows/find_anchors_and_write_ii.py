@@ -10,7 +10,6 @@ import scipy as sp
 import scipy.optimize
 import scipy.stats
 from scipy.special import erf
-import pickle
 
 #import tqdm
 
@@ -225,48 +224,33 @@ def find_distribs(localindeces, relcoords, bscale=1.0, plot=False):
     return(Dsum)
 
 ################################################################################
-#start of execution
-if __name__== "__main__":
-    parser = argparse.ArgumentParser(description='Finds best anchor atoms, fits the force constants and writes the restraints itp file.',
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-sA', dest='structA', type=str, default="dumpA.gro",
-                       help='input structure for A')
-    parser.add_argument('-sB', dest='structB', type=str, default="dumpB.gro",
-                       help='input structure for B')
-    parser.add_argument('-r', dest='ref', type=str, default="averageA.gro",
-                       help='input reference average structure of A')
-    parser.add_argument('-fA', dest='trajA', type=str, default="all_eqA_fit.xtc",
-                       help='input trajectory')
-    parser.add_argument('-fB', dest='trajB', type=str, default="all_eqB_fit.xtc",
-                       help='input trajectory')
-    parser.add_argument('--oii', dest='out', type=str, default="ii.itp",
-                       help='output restraint topology')
-    parser.add_argument('-dg', dest='an_cor_file', type=str, default="out_dg.dat",
-                       help='output restraint topology')
-    parser.add_argument('--skip', dest='skip', type=int, default=0,
-                       help='analyse every this many frames')
-
-    args = parser.parse_args()
-
-
-
+def find_restraints(structA="dumpA.gro", structB="dumpB.gro",
+                    ref="averageA.gro",
+                    trajA="all_eqA_fit.xtc", trajB="all_eqB_fit.xtc",
+                    out="ii.itp", an_cor_file="out_dg.dat",
+                    skip=1, log=False):
+    
+    
     #load trajectories
-    A = md.Universe(args.structA,args.trajA)
-    lig_cand = A.select_atoms("resnum 2 and not (name H*)")
+    A = md.Universe(structA,trajA)
+    #lig_cand = A.select_atoms("resnum 2 and not (name H*)")
+    lig_cand = A.select_atoms("resname MOL and not (name H*)")
 
     lcog=lig_cand.centroid()
 
-    ref = md.Universe(args.ref)
-    lig_ref = ref.select_atoms("resnum 2 and not (name H*)")
+    ref = md.Universe(ref)
+    #lig_ref = ref.select_atoms("resnum 2 and not (name H*)")
+    lig_ref = ref.select_atoms("resname MOL and not (name H*)")
 
-    B = md.Universe(args.structB,args.trajB)
-    prot_cand = B.select_atoms("resnum 1 and not (name H*) and point %f %f %f %f"%(lcog[0], lcog[1], lcog[2], 15.0))
-
+    B = md.Universe(structB,trajB)
+    #prot_cand = B.select_atoms("resnum 1 and not (name H*) and point %f %f %f %f"%(lcog[0], lcog[1], lcog[2], 15.0))
+    prot_cand = B.select_atoms("protein and not (name H*) and point %f %f %f %f"%(lcog[0], lcog[1], lcog[2], 15.0))
+    
 
     #ligand variance in A
     displ_mat_A=[]
     for frame in A.trajectory:                        # go over each frame in state A
-        if(frame.frame%args.skip==0):
+        if(frame.frame%skip==0):
             lig_pos = lig_cand.positions
             lig_ref_pos = lig_ref.positions
             displ_mat_A.append(lig_pos-lig_ref_pos)
@@ -275,7 +259,7 @@ if __name__== "__main__":
 
     displ_mat_B=[]
     for frame in B.trajectory:                        # go over each frame in state B
-        if(frame.frame%args.skip==0):
+        if(frame.frame%skip==0):
             prot_pos = prot_cand.positions
             lig_ref_pos = lig_ref.positions
             displ_mat_B.append(prot_pos[:,np.newaxis,:]-lig_ref_pos[np.newaxis,:,:])
@@ -315,10 +299,10 @@ if __name__== "__main__":
 
     #load the trajectory of relevant atom positions in A to memory so we don't have to read trajectory many times
     relevant = md.core.groups.AtomGroup(P+L, A)
-    relevantpos=np.zeros((int(len(A.trajectory)/args.skip), len(relevant), 3))
+    relevantpos=np.zeros((int(len(A.trajectory)/skip), len(relevant), 3))
     i=0
     for frame in A.trajectory:                        # go over each frame
-        if(frame.frame%args.skip==0):
+        if(frame.frame%skip==0):
             relevantpos[i,:,:]=relevant.positions
             i+=1
 
@@ -340,6 +324,9 @@ if __name__== "__main__":
                                 continue
                             possible_anchors.append([p1,p2,p3,len(P)+l1,len(P)+l2,len(P)+l3])
 
+    if(not possible_anchors):
+        raise ValueError("No potential anchors found.")
+
     #find the most gaussian distributions among the permutations
     last_anchors=[]
     last_Dsum=1e10
@@ -353,14 +340,15 @@ if __name__== "__main__":
 
     #output results and plot fits
     final_anchors=[relevant[i].index for i in last_anchors]
-    print("Final Dsum:%.4f\t final anchors"%last_Dsum, final_anchors)
+    if(log):
+        print("Final Dsum:%.4f\t final anchors"%last_Dsum, final_anchors)
     FCs,eqs=find_distribs(last_anchors, relevantpos, plot=True)
 
     #add 1 to all anchor indices, as gmx indexing starts at 1, not 0.
     final_anchors=[relevant[i].index + 1 for i in last_anchors]
 
     #write restraint topology
-    with open(args.out, "w") as ii:
+    with open(out, "w") as ii:
         print("", file=ii)
         print(" [ intermolecular_interactions ]", file=ii)
         print(" [ bonds ]", file=ii)
@@ -389,11 +377,42 @@ if __name__== "__main__":
 
     #write analytical corection to FE because of restraints
     dg=_calc_restraint_dg_w_gromacs_limits(FCs,eqs)
-    with open(args.an_cor_file, "w") as dgf:
+    with open(an_cor_file, "w") as dgf:
         print('Restraint contribution to free energy (w gmx limits): %3.4f kJ/mol' % dg, file=dgf)
         print('Restraint contribution to free energy (w gmx limits): %3.4f kcal/mol' % (dg/4.184), file=dgf)
-    print('Restraint contribution to free energy (w gmx limits): %3.4f kJ/mol' % dg)
-    print('Restraint contribution to free energy (w gmx limits): %3.4f kcal/mol' % (dg/4.184))
+    if(log):
+        print('Restraint contribution to free energy (w gmx limits): %3.4f kJ/mol' % dg)
+        print('Restraint contribution to free energy (w gmx limits): %3.4f kcal/mol' % (dg/4.184))
+    
+    
+################################################################################
+#start of execution
+if __name__== "__main__":
+    parser = argparse.ArgumentParser(description='Finds best anchor atoms, fits the force constants and writes the restraints itp file.',
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-sA', dest='structA', type=str, default="dumpA.gro",
+                       help='input structure for A')
+    parser.add_argument('-sB', dest='structB', type=str, default="dumpB.gro",
+                       help='input structure for B')
+    parser.add_argument('-r', dest='ref', type=str, default="averageA.gro",
+                       help='input reference average structure of A')
+    parser.add_argument('-fA', dest='trajA', type=str, default="all_eqA_fit.xtc",
+                       help='input trajectory')
+    parser.add_argument('-fB', dest='trajB', type=str, default="all_eqB_fit.xtc",
+                       help='input trajectory')
+    parser.add_argument('--oii', dest='out', type=str, default="ii.itp",
+                       help='output restraint topology')
+    parser.add_argument('-dg', dest='an_cor_file', type=str, default="out_dg.dat",
+                       help='output restraint topology')
+    parser.add_argument('--skip', dest='skip', type=int, default=1,
+                       help='analyse every this many frames')
+
+    args = parser.parse_args()
+
+    find_restraints(args.structA, args.structB, args.ref,
+                    args.trajA, args.trajB, args.out, args.an_cor_file,
+                    args.skip, log=True)
+
 
     exit(0);
 
