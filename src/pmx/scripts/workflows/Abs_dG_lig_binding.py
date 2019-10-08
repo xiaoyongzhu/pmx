@@ -292,8 +292,9 @@ def main(args):
     
     w=Workflow_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
                          basepath=basepath,
-                         mdrun="mdrun_threads_AVX2_256",
-                         mdrun_opts="-pin on -nsteps 1000")
+                         #mdrun="mdrun_threads_AVX2_256",
+                         mdrun="gmx mdrun",
+                         mdrun_opts="-pin on -nsteps 1000 -ntomp 8")
     
     #sanity checks
     w.check_sanity()
@@ -430,6 +431,52 @@ def main(args):
                               mdp=mdppath+"/protein/init.mdp", b=0)
     
     #align vaccum ligand onto apo protein structures
+    def allign_calback(**kwargs):
+        folder = kwargs.get('folder')
+        p = kwargs.get('p')
+        l = kwargs.get('l')
+        states = kwargs.get('states')
+        n_repeats=kwargs.get('n_repeats')
+        n_sampling_sims=kwargs.get('n_sampling_sims')
+        
+        b=kwargs.get('b', 0) #begining of trj to use (ps)
+        stage=kwargs.get('stage','morphs')
+        
+        print(folder)
+        
+        #independent repeats for error analysis
+        for i in range(n_repeats):
+            #sampling simulations in each repeat
+            for m in range(n_sampling_sims):
+                nframes=[]
+                for s in self.states:
+                    frname="frame.gro"
+#                    if(s=="B"):
+#                        frname="frame_apo.gro"
+                    
+                    sim_folder=folder+"/state%s/repeat%d/%s%d"%(s,i,stage,m)
+                    os.makedirs(sim_folder, exist_ok=True)
+                    os.chdir(sim_folder)
+                    os.system("echo 0 | gmx trjconv -s ../npt$d/tpr.tpr "
+                              "-f ./npt$d/traj.trr -o %s "
+                              "-b %d -sep -ur compact -pbc mol > /dev/null 2>&1"%(
+                                      m,m,frname,b) )
+                    os.chdir(basepath)
+                    nframes.append(len(glob.glob1("frame*.gro")))
+                
+                #now make the C state
+                s="C"
+                sim_folder=folder+"/state%s/repeat%d/%s%d"%(s,i,stage,m)
+                os.makedirs(sim_folder, exist_ok=True)
+                os.chdir(sim_folder)
+                
+                
+                
+        
+        
+        
+        #restore base path    
+        os.chdir(basepath)
     
     #run TI
     
