@@ -84,7 +84,8 @@ class Workflow:
                 mydict={'folder':folder,'p':p,'l':l,
                         'states':self.states,
                         'n_repeats':self.n_repeats,
-                        'n_sampling_sims':self.n_sampling_sims}
+                        'n_sampling_sims':self.n_sampling_sims,
+                        'stage':stage}
                 kwargs.update(mydict)
                 callbackfunc(**kwargs)
                 print("\t\tDone")
