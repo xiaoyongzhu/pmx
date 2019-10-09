@@ -127,15 +127,15 @@ class IndexFile:
         instances as values
     """
 
-    def __init__(self, fname=None, names=[], groups=[]):
+    def __init__(self, fname=None, names=[], groups=[], verbose=True):
         self.groups = []
         self.names = []
         self.dic = {}
         if fname is not None:
-            self.parse(fname)
+            self.parse(fname, verbose)
         if groups:
             for g in groups:
-                self.add_group(g)
+                self.add_group(g, verbose)
 
     def __str__(self):
         s = 'Gromacs index file (%d index groups):\n' % len(self.groups)
@@ -149,7 +149,7 @@ class IndexFile:
     def __delitem__(self, item):
         self.delete_group(item)
 
-    def parse(self, fp):
+    def parse(self, fp, verbose=True):
         """Reads an index file.
 
         Parameters
@@ -166,7 +166,7 @@ class IndexFile:
         lines = f.split('\n')
         for name in names:
             idx = IndexGroup().read_index_group(name, lines)
-            self.add_group(idx)
+            self.add_group(idx, verbose)
         return self
 
     def __get_index_groups(self, f):
@@ -195,7 +195,7 @@ class IndexFile:
         for gr in self.groups:
             print('{0}\n'.format(str(gr)), file=fp)
 
-    def add_group(self, group):
+    def add_group(self, group, verbose=True):
         """Adds a group to the IndexFile.
 
         Parameters
@@ -203,7 +203,7 @@ class IndexFile:
         group : IndexGroup
             instance of IndexGroup to add
         """
-        if group.name in self.names:
+        if group.name in self.names and verbose:
             print("IndexFile has group %s !! " % group.name, file=sys.stderr)
             print("Group %s will be replaced !!" % group.name, file=sys.stderr)
             self.delete_group(group.name)

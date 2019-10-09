@@ -1,19 +1,23 @@
 #!/usr/bin/env python
 
 import argparse
+import copy
 import glob
 import numpy as np
 import os
 import shutil as sh
 import sys
 import warnings
+from pmx import ndx, geometry
 from pmx.analysis import read_dgdl_files, plot_work_dist, ks_norm_test
 from pmx.model import Model
 from pmx.scripts.cli import check_unknown_cmd
+from pmx.xtc import Trajectory
 #from pmx.scripts.workflows.Workflow import Workflow, check_file_ready
 from Workflow import Workflow, check_file_ready
 from find_avg import find_avg_struct
 from find_anchors_and_write_ii import find_restraints
+from fit_ligs_multiframes_python3 import fit,rotate_velocities_R,find_last_protein_atom
 
 # Constants
 kb = 0.00831447215   # kJ/(K*mol)
@@ -555,10 +559,67 @@ def main(args):
                 os.makedirs(sim_folder, exist_ok=True)
                 os.chdir(sim_folder)
                 
+                m_A = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
+                m_B = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
+                m_A.a2nm()
+                m_B.a2nm()
+                
+                trj_A = Trajectory(srctraj.format(p,l,"A",i,m))
+                trj_B  = Trajectory(srctraj.format(p,l,"B",i,m))
+                
+                ndx_file = ndx.IndexFile(folder+"/index_prot_mol.ndx")#, verbose=False)
+                p_ndx = np.asarray(ndx_file["Protein"].ids)-1
+                l_ndx = np.asarray(ndx_file["MOL"].ids)-1
+                pl_ndx = np.concatenate((p_ndx, l_ndx), axis=0)
+                
+                #frames are not acessible individually, just in sequence
+                #pmx.xtc.Trajectory is based on __iter__, so we need a custom
+                #"for" loop to simultaneously go through both trajectories
+                #based on https://www.programiz.com/python-programming/iterator
+                iter_A = iter(trj_A)
+                iter_B = iter(trj_B)
+                fridx=0
+                while True:
+                    try:
+                        frame_A = next(iter_A)
+                        frame_B = next(iter_B)
+                    except StopIteration:
+                        break
+                    
+                    print(frame_A)
+                    #print(frame_B)
+                    
+                    if(not os.path.isfile("frame%d.gro"%fridx)):
+                        frame_A.update(m_A)
+                        frame_B.update(m_B)
+                        
+                        # step1: fit prot+lig onto apo protein
+                        (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
+                        # rotate velocities
+                
+                        # step2: ligand in vacuo onto the ligand from prot+lig structure
+                        (v1,v2,R) = fit( m_A, m_B, l_ndx, l_ndx )
+                        # rotate velocities
+                        rotate_velocities_R( m_B, R )
+                
+                        # output
+                        mout = copy.deepcopy(m_B)
+                        #mout.unity = m_B.unity
+                        # combine apo protein and ligand in vacuum
+                        chID,resID = find_last_protein_atom( mout )
+                        molres=mout.residues[resID-1] #resID starts indexing at 1
+                        mout.replace_residue(molres, m_B.residues[0], bKeepResNum=True)
+                        mout.write("frame%d.gro"%fridx)
+                        raise SystemExit()
+                        
+                    fridx+=1
+                            
+                raise SystemExit()
+                
                 #restore base path    
                 os.chdir(basepath)
                 
-                raise SystemExit()
+                
     ###########################################################################
                 
     #align vaccum ligand onto apo protein structures

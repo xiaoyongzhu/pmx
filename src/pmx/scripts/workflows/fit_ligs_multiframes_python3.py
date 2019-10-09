@@ -209,12 +209,6 @@ def main(argv):
 #        sys.exit(0)
 
 
-def allign:
-    mpl = Model(mplName,bPDBTER=True)
-    mp = Model(mpName)
-    ml = Model(mlName,bPDBTER=True)
-
-
 if __name__ == '__main__':
     main( sys.argv )
 
