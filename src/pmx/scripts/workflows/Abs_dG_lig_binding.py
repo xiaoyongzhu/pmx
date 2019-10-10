@@ -521,38 +521,32 @@ def main(args):
         for i in range(n_repeats):
             #sampling simulations in each repeat
             for m in range(n_sampling_sims):
-                nframes=[]
-                for s in states:
-                    frname="frame.gro"
-                    
-                    sim_folder=folder+"/state%s/repeat%d/%s%d"%(s,i,stage,m)
-                    os.makedirs(sim_folder, exist_ok=True)
-                    os.chdir(sim_folder)
-                    
-                    tpr=srctpr.format(p,l,s,i,m)
-                    trj=srctraj.format(p,l,s,i,m)
-                    
-                    #avoid reruning trjconv if inputs aren't new
-                    ready=False
-                    if(os.path.isfile("frame0.gro")):
-                        ready=(os.path.getctime(trj) <
-                               os.path.getctime('frame0.gro') )
-                    if(not ready):
-                        #this is slow
-                        os.system("echo 0 | gmx trjconv -s %s "
-                                  "-f %s -o %s "
-                                  "-b %f -sep -ur compact -pbc mol "
-                                  "> /dev/null 2>&1"%(tpr,trj,frname,b) )
-                    # else:
-                    #     print("\t\tState %s: Previous"%s)
-                    nframes.append(len(glob.glob1(sim_folder, "frame*.gro")))
-                    os.chdir(basepath)
-                    
-                if(nframes[0] != nframes[1]):
-                    raise ValueError("Number of frames defferent between "
-                                     "states A and B. Did the equilibrium "
-                                     "simulations finish?")
+                #generate morphs for A state
+                s="A"
+                frname="frame.gro"
                 
+                sim_folder=folder+"/state%s/repeat%d/%s%d"%(s,i,stage,m)
+                os.makedirs(sim_folder, exist_ok=True)
+                os.chdir(sim_folder)
+                
+                tpr=srctpr.format(p,l,s,i,m)
+                trj=srctraj.format(p,l,s,i,m)
+                
+                #avoid reruning trjconv if inputs aren't new
+                ready=False
+                if(os.path.isfile("frame0.gro")):
+                    ready=(os.path.getctime(trj) <
+                           os.path.getctime('frame0.gro') )
+                if(not ready):
+                    #this is slow
+                    os.system("echo 0 | gmx trjconv -s %s "
+                              "-f %s -o %s "
+                              "-b %f -sep -ur compact -pbc mol "
+                              "> /dev/null 2>&1"%(tpr,trj,frname,b) )
+                # else:
+                #     print("\t\tState %s: Previous"%s)
+                os.chdir(basepath)
+                    
                 #now make the C state
                 s="C"
                 sim_folder=folder+"/state%s/repeat%d/%s%d"%(s,i,stage,m)
@@ -567,7 +561,7 @@ def main(args):
                 trj_A = Trajectory(srctraj.format(p,l,"A",i,m))
                 trj_B  = Trajectory(srctraj.format(p,l,"B",i,m))
                 
-                ndx_file = ndx.IndexFile(folder+"/index_prot_mol.ndx")#, verbose=False)
+                ndx_file = ndx.IndexFile(folder+"/index_prot_mol.ndx", verbose=False)
                 p_ndx = np.asarray(ndx_file["Protein"].ids)-1
                 l_ndx = np.asarray(ndx_file["MOL"].ids)-1
                 pl_ndx = np.concatenate((p_ndx, l_ndx), axis=0)
@@ -586,35 +580,25 @@ def main(args):
                     except StopIteration:
                         break
                     
-                    print(frame_A)
-                    #print(frame_B)
-                    
                     if(not os.path.isfile("frame%d.gro"%fridx)):
                         frame_A.update(m_A)
                         frame_B.update(m_B)
                         
-                        # step1: fit prot+lig onto apo protein
+                        # step1: fit prot from prot+lig onto apo protein
                         (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
                         # rotate velocities
-                
-                        # step2: ligand in vacuo onto the ligand from prot+lig structure
+                        # not needed. We aren't saving m_A
+                                        
+                        # step2: ligand onto the ligand from prot+lig structure
                         (v1,v2,R) = fit( m_A, m_B, l_ndx, l_ndx )
                         # rotate velocities
                         rotate_velocities_R( m_B, R )
                 
-                        # output
-                        mout = copy.deepcopy(m_B)
-                        #mout.unity = m_B.unity
-                        # combine apo protein and ligand in vacuum
-                        chID,resID = find_last_protein_atom( mout )
-                        molres=mout.residues[resID-1] #resID starts indexing at 1
-                        mout.replace_residue(molres, m_B.residues[0], bKeepResNum=True)
-                        mout.write("frame%d.gro"%fridx)
-                        raise SystemExit()
+                        # output                        
+                        m_B.write("frame%d.gro"%fridx)
                         
-                    fridx+=1
-                            
-                raise SystemExit()
+                    fridx+=1                           
+
                 
                 #restore base path    
                 os.chdir(basepath)
@@ -640,6 +624,7 @@ def main(args):
     
     #plot summary
 
+    print("Complete.\n")
 
 
 def entry_point():
