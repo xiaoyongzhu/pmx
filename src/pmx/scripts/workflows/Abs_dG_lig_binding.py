@@ -555,8 +555,10 @@ def main(args):
                 
                 m_A = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
                 m_B = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
+                m_C = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
                 m_A.a2nm()
                 m_B.a2nm()
+                m_C.a2nm()
                 
                 trj_A = Trajectory(srctraj.format(p,l,"A",i,m))
                 trj_B  = Trajectory(srctraj.format(p,l,"B",i,m))
@@ -564,12 +566,11 @@ def main(args):
                 ndx_file = ndx.IndexFile(folder+"/index_prot_mol.ndx", verbose=False)
                 p_ndx = np.asarray(ndx_file["Protein"].ids)-1
                 l_ndx = np.asarray(ndx_file["MOL"].ids)-1
-                pl_ndx = np.concatenate((p_ndx, l_ndx), axis=0)
                 
-                #frames are not acessible individually, just in sequence
+                #Frames are not acessible individually, just in sequence.
                 #pmx.xtc.Trajectory is based on __iter__, so we need a custom
-                #"for" loop to simultaneously go through both trajectories
-                #based on https://www.programiz.com/python-programming/iterator
+                #"for" loop to simultaneously go through both trajectories.
+                #Based on https://www.programiz.com/python-programming/iterator
                 iter_A = iter(trj_A)
                 iter_B = iter(trj_B)
                 fridx=0
@@ -583,6 +584,7 @@ def main(args):
                     if(not os.path.isfile("frame%d.gro"%fridx)):
                         frame_A.update(m_A)
                         frame_B.update(m_B)
+                        frame_B.update(m_C)
                         
                         # step1: fit prot from prot+lig onto apo protein
                         (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
@@ -590,14 +592,19 @@ def main(args):
                         # not needed. We aren't saving m_A
                                         
                         # step2: ligand onto the ligand from prot+lig structure
-                        (v1,v2,R) = fit( m_A, m_B, l_ndx, l_ndx )
+                        (v1,v2,R) = fit( m_A, m_C, l_ndx, l_ndx )
                         # rotate velocities
-                        rotate_velocities_R( m_B, R )
+                        rotate_velocities_R( m_C, R )
+                        
+                        #replace coordinates and velocities of ligand in B with rotated ones from C
+                        for i in l_ndx:
+                            m_B.atoms[i].x = m_C.atoms[i].x
+                            m_B.atoms[i].v = m_C.atoms[i].v
                 
                         # output                        
                         m_B.write("frame%d.gro"%fridx)
                         
-                    fridx+=1                           
+                    fridx+=1
 
                 
                 #restore base path    
