@@ -35,7 +35,7 @@ from pmx.forcefield import Topology
 from pmx.utils import ff_selection
 from pmx.utils import multiple_replace
 from pmx.alchemy import gen_hybrid_top, write_split_top
-from .cli import check_unknown_cmd
+from pmx.scripts.cli import check_unknown_cmd
 
 
 def _change_outfile_format(filename, ext):

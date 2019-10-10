@@ -12,7 +12,7 @@ import numpy as np
 import pickle
 import argparse
 import warnings
-from .cli import check_unknown_cmd
+from pmx.scripts.cli import check_unknown_cmd
 
 # Constants
 kb = 0.00831447215   # kJ/(K*mol)
@@ -608,6 +608,9 @@ def main(args):
                                                                                  p=prec, u=units), quiet=quiet)
 
     _tee(out, ' ========================================================', quiet=quiet)
+    
+    #close the outputfile, forcing a flush to disk, so that the unit test can read it properly
+    out.close()
 
     # -----------------------
     # plot work distributions

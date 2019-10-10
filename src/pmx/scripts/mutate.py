@@ -41,7 +41,7 @@ from pmx.model import Model
 from pmx.parser import read_and_format
 from pmx.utils import get_ff_path, ff_selection
 from pmx.alchemy import mutate
-from .cli import check_unknown_cmd
+from pmx.scripts.cli import check_unknown_cmd
 
 # resinfo
 dna_one_letter = {'A': 'adenosine',
