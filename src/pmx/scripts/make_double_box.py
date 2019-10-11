@@ -2,7 +2,7 @@
 
 import argparse
 from pmx.model import Model, double_box
-from .cli import check_unknown_cmd
+from pmx.scripts.cli import check_unknown_cmd
 
 
 def parse_options():
