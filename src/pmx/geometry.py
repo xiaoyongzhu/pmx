@@ -110,14 +110,24 @@ def bb_super(mol1, mol2, use_orig_mc_coords=True):
     if use_orig_mc_coords:
         atom_set = ['N', 'CA', 'C', 'H', 'O', 'HA', 'HN']
         gly_atom_set = ['N', 'CA', 'C', 'H', 'O', 'HA1', 'HN']
-        if mol1.resname == 'GLY':
-            atoms1 = mol1.fetchm(gly_atom_set)
+        pro_atom_set = ['N', 'CA', 'C', 'O', 'HA']
+
+        # for proline it is different
+        if mol2.resname=='PRO' or mol2.resname == 'PRO' or mol2.resname[:2] == 'P2':
+            atoms1 = mol1.fetchm(pro_atom_set)
+            atoms2 = mol2.fetchm(pro_atom_set)
+
         else:
-            atoms1 = mol1.fetchm(atom_set)
-        if mol2.resname == 'GLY' or mol2.resname[:2] == 'G2':
-            atoms2 = mol2.fetchm(gly_atom_set)
-        else:
-            atoms2 = mol2.fetchm(atom_set)
+            if mol1.resname == 'GLY':
+                atoms1 = mol1.fetchm(gly_atom_set)
+            else:
+                atoms1 = mol1.fetchm(atom_set)
+
+            if mol2.resname == 'GLY' or mol2.resname[:2] == 'G2':
+                atoms2 = mol2.fetchm(gly_atom_set)
+            else:
+                atoms2 = mol2.fetchm(atom_set)
+
         assert len(atoms1) == len(atoms2), "%s -> %s" % ('-'.join(map(lambda a: a.name, atoms1)), '-'.join(map(lambda a: a.name, atoms2)))
         for atom1, atom2 in zip(atoms1, atoms2):
             atom2.x = atom1.x
