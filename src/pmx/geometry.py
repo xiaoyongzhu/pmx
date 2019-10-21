@@ -113,7 +113,7 @@ def bb_super(mol1, mol2, use_orig_mc_coords=True):
         pro_atom_set = ['N', 'CA', 'C', 'O', 'HA']
 
         # for proline it is different
-        if mol2.resname=='PRO' or mol2.resname == 'PRO' or mol2.resname[:2] == 'P2':
+        if mol1.resname=='PRO' or mol2.resname == 'PRO' or mol2.resname[:2] == 'P2':
             atoms1 = mol1.fetchm(pro_atom_set)
             atoms2 = mol2.fetchm(pro_atom_set)
 
