@@ -2,14 +2,14 @@
 ; residue   gromacs  forcefield
   NALA	     H               H1
   NGLY	     H		     H1
-  NSE	     H		     H1
+  NSER       H		     H1
   NTHR	     H		     H1
   NLEU	     H		     H1
   NILE	     H		     H1
   NVAL	     H		     H1
   NASN	     H		     H1
   NGLN	     H		     H1
-  NAR	     H		     H1
+  NARG       H		     H1
   NHID	     H		     H1
   NHIE	     H		     H1
   NHIP	     H		     H1
@@ -531,3 +531,11 @@
 ; ---------------------------------
    HOH  H1    HW1
    HOH  H2    HW2
+; caps
+  ACE        H1              HH31 
+  ACE        H2              HH32
+  ACE        H3              HH33 
+  NME        CA              CH3
+  NME        HA1             HH31
+  NME        HA2             HH32
+  NME        HA3             HH33
