@@ -93,7 +93,7 @@ mutate, and after having passed that mutated structure through pdb2gmx.
                         dest='scale_mass',
                         help='Scale the masses of morphing atoms so that '
                         'dummies have a mass of 1.',
-                        default=False,
+                        default=True,
                         action='store_true')
     parser.add_argument('--norecursive',
                         dest='recursive',
