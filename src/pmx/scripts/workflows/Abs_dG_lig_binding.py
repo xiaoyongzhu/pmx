@@ -102,6 +102,7 @@ class Workflow_inProtein(Workflow):
                           n_repeats, n_sampling_sims, basepath,
                           d, bt, salt_conc, mdrun, mdrun_opts) 
         self.states={"A":"l0", "B":"l1"} #states and suffixes of mdp files
+        self.TIstates={"A":"l0", "C":"l1"} #states and suffixes of mdp files
         
         
     def check_sanity(self):
@@ -307,7 +308,7 @@ class Workflow_inProtein(Workflow):
                 for i in range(self.n_repeats):
                     #sampling simulations in each repeat
                     for m in range(self.n_sampling_sims):
-                        for s in ["A","C"]:
+                        for s in self.TIstates:
                             sim_folder=folder+"/state%s/repeat%d/%s%d"%(s,i,runfolder,m)
                             os.makedirs(sim_folder, exist_ok=True)
                             os.chdir(sim_folder)
@@ -322,7 +323,7 @@ class Workflow_inProtein(Workflow):
                                     continue
                                 
                                 #"../data/mdp/em_{0}.mdp"
-                                mdp=mdp_template.format(self.states[s])#insert the l0/l1 suffix
+                                mdp=mdp_template.format(self.TIstates[s])#insert the l0/l1 suffix
                                 #"prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/frame{5}.gro"
                                 struct=struct_template.format(p,l,s,i,m,o)#insert the s,i, and m suffixes
                                 top_template=folder+"/topol_ions{3}_{4}.top"
@@ -713,7 +714,7 @@ def main(args):
     w.run_TI("TI", mdppath+"/protein/ti_{0}.mdp",
                 basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/frame{5}.gro",
                 n_morphs=21,
-                completition_check=basepath+"prot_{0}/lig_{1}/repeat{3}/GenMorphs{4}/tpr{5}.gro",
+                completition_check=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/tpr{5}.gro",
                 runfolder="GenMorphs")
     
     #analyse dHdl files
