@@ -289,8 +289,82 @@ class Workflow_inProtein(Workflow):
                             
                             #Return to basepath
                             os.chdir(self.basepath)
+            
+                
+    def run_TI(self, stage, mdp_template, struct_template, n_morphs,
+                  posre=None, clean=True, completition_check=None,
+                  runfolder=None):
+
+        if(not runfolder):
+            runfolder=stage
+            
+        print("Running stage "+stage+":")
+        for p in self.proteins:
+            for l in self.ligands:
+                folder = self.gen_folder_name(p,l)
+                
+                #independent repeats for error analysis
+                for i in range(self.n_repeats):
+                    #sampling simulations in each repeat
+                    for m in range(self.n_sampling_sims):
+                        for s in ["A","C"]:
+                            sim_folder=folder+"/state%s/repeat%d/%s%d"%(s,i,runfolder,m)
+                            os.makedirs(sim_folder, exist_ok=True)
+                            os.chdir(sim_folder)
+                            print("\t"+sim_folder)
                             
+                            for o in range(n_morphs):
+                                #don't rerun if already ready
+                                if(completition_check and
+                                   #"prot_{0}/lig_{1}/repeat{3}/GenMorphs{4}/dHdl{5}.xvg"
+                                   os.path.isfile(completition_check.format(p,l,s,i,m,o))):
+                                    print("%dp\t"%o, end = '', flush=True)
+                                    continue
+                                
+                                #"../data/mdp/em_{0}.mdp"
+                                mdp=mdp_template.format(self.states[s])#insert the l0/l1 suffix
+                                #"prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/frame{5}.gro"
+                                struct=struct_template.format(p,l,s,i,m,o)#insert the s,i, and m suffixes
+                                top_template=folder+"/topol_ions{3}_{4}.top"
+                                top=top_template.format(p,l,s,i,m)
+                                
+                                #restraint
+                                r=""
+                                if posre:
+                                    r="-r "+posre.format(p,l,s,i,m)
+                                
+                                #make tpr
+                                tprname = "tpr%d.tpr"%o
+                                os.system("gmx grompp -p %s -c %s %s "
+                                          "-o %s -f %s -v -maxwarn 3 "
+                                          "> prep%d.log 2>&1"%(
+                                              top, struct, r, tprname, mdp, o)
+                                          )
+                                check_file_ready(tprname)
+                                
+                                #run sim
+                                os.system(self.mdrun+(" -deffnm tpr%d "%o)+
+                                          ("-dhdl dHdl%d.xvg "%o)+
+                                          self.mdrun_opts+
+                                          (" > mdrun%d.log 2>&1"%o)
+                                          )
+                                check_file_ready("dHdl%d.xvg"%o)
+                                check_file_ready("tpr%d.gro"%o)
+                                print("%dd\t"%o, end = '', flush=True)
+                                
+                            print("\n\t\tDone")
                             
+                            #clean overwritten files
+                            if(clean):
+                                cleanList = glob.glob(sim_folder+'/#*')
+                                for filePath in cleanList:
+                                    try:
+                                        os.unlink(filePath)
+                                    except:
+                                        print("Error while deleting file: ", filePath)
+                                
+                            #Return to basepath
+                            os.chdir(self.basepath)
  
 # ==============================================================================
 #                           CALLBACK FUNCTIONS
@@ -458,6 +532,7 @@ class Workflow_inProtein(Workflow):
         b=kwargs.get('b', 0) #begining of trj to use (ps)
         srctraj=kwargs.get('srctraj')
         srctpr=kwargs.get('srctpr')
+        n_morphs=kwargs.get('n_morphs')
         
         print("\t"+folder)
         
@@ -478,9 +553,12 @@ class Workflow_inProtein(Workflow):
                 
                 #avoid reruning trjconv if inputs aren't new
                 ready=False
-                if(os.path.isfile("frame0.gro")):
-                    ready=(os.path.getctime(trj) <
-                           os.path.getctime('frame0.gro') )
+                for o in range(n_morphs):
+                    if(os.path.isfile("frame%d.gro"%o)):
+                        ready=(os.path.getctime(trj) <
+                               os.path.getctime('frame0.gro'))
+                        if(not ready):
+                            break
                 if(not ready):
                     #this is slow
                     os.system("echo 0 | gmx trjconv -s %s "
@@ -496,58 +574,67 @@ class Workflow_inProtein(Workflow):
                 os.makedirs(sim_folder, exist_ok=True)
                 os.chdir(sim_folder)
                 
-                m_A = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
-                m_B = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
-                m_C = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
-                m_A.a2nm()
-                m_B.a2nm()
-                m_C.a2nm()
+                ready=False
+                for o in range(n_morphs):
+                    if(os.path.isfile("frame%d.gro"%o)):
+                        ready=(os.path.getctime(trj) <
+                               os.path.getctime('frame0.gro'))
+                        if(not ready):
+                            break
                 
-                trj_A = Trajectory(srctraj.format(p,l,"A",i,m))
-                trj_B  = Trajectory(srctraj.format(p,l,"B",i,m))
-                
-                ndx_file = ndx.IndexFile(folder+"/index_prot_mol.ndx", verbose=False)
-                p_ndx = np.asarray(ndx_file["Protein"].ids)-1
-                l_ndx = np.asarray(ndx_file["MOL"].ids)-1
-                
-                #Frames are not acessible individually, just in sequence.
-                #pmx.xtc.Trajectory is based on __iter__, so we need a custom
-                #"for" loop to simultaneously go through both trajectories.
-                #Based on https://www.programiz.com/python-programming/iterator
-                iter_A = iter(trj_A)
-                iter_B = iter(trj_B)
-                fridx=0
-                while True:
-                    try:
-                        frame_A = next(iter_A)
-                        frame_B = next(iter_B)
-                    except StopIteration:
-                        break
+                if(not ready): # at least one is missing
+                    m_A = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
+                    m_B = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
+                    m_C = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
+                    m_A.a2nm()
+                    m_B.a2nm()
+                    m_C.a2nm()
                     
-                    if(not os.path.isfile("frame%d.gro"%fridx)):
-                        frame_A.update(m_A)
-                        frame_B.update(m_B)
-                        frame_B.update(m_C)
+                    trj_A = Trajectory(srctraj.format(p,l,"A",i,m))
+                    trj_B  = Trajectory(srctraj.format(p,l,"B",i,m))
+                    
+                    ndx_file = ndx.IndexFile(folder+"/index_prot_mol.ndx", verbose=False)
+                    p_ndx = np.asarray(ndx_file["Protein"].ids)-1
+                    l_ndx = np.asarray(ndx_file["MOL"].ids)-1
+                    
+                    #Frames are not acessible individually, just in sequence.
+                    #pmx.xtc.Trajectory is based on __iter__, so we need a custom
+                    #"for" loop to simultaneously go through both trajectories.
+                    #Based on https://www.programiz.com/python-programming/iterator
+                    iter_A = iter(trj_A)
+                    iter_B = iter(trj_B)
+                    fridx=0
+                    while True:
+                        try:
+                            frame_A = next(iter_A)
+                            frame_B = next(iter_B)
+                        except StopIteration:
+                            break
                         
-                        # step1: fit prot from prot+lig onto apo protein
-                        (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
-                        # rotate velocities
-                        # not needed. We aren't saving m_A
-                                        
-                        # step2: ligand onto the ligand from prot+lig structure
-                        (v1,v2,R) = fit( m_A, m_C, l_ndx, l_ndx )
-                        # rotate velocities
-                        rotate_velocities_R( m_C, R )
-                        
-                        #replace coordinates and velocities of ligand in B with rotated ones from C
-                        for i in l_ndx:
-                            m_B.atoms[i].x = m_C.atoms[i].x
-                            m_B.atoms[i].v = m_C.atoms[i].v
-                
-                        # output                        
-                        m_B.write("frame%d.gro"%fridx)
-                        
-                    fridx+=1
+                        if(not os.path.isfile("frame%d.gro"%fridx)):
+                            frame_A.update(m_A)
+                            frame_B.update(m_B)
+                            frame_B.update(m_C)
+                            
+                            # step1: fit prot from prot+lig onto apo protein
+                            (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
+                            # rotate velocities
+                            # not needed. We aren't saving m_A
+                                            
+                            # step2: ligand onto the ligand from prot+lig structure
+                            (v1,v2,R) = fit( m_A, m_C, l_ndx, l_ndx )
+                            # rotate velocities
+                            rotate_velocities_R( m_C, R )
+                            
+                            #replace coordinates and velocities of ligand in B with rotated ones from C
+                            for i in l_ndx:
+                                m_B.atoms[i].x = m_C.atoms[i].x
+                                m_B.atoms[i].v = m_C.atoms[i].v
+                    
+                            # output                        
+                            m_B.write("frame%d.gro"%fridx)
+                            
+                        fridx+=1
     
                 
                 #restore base path    
@@ -615,27 +702,19 @@ def main(args):
                 mdp=mdppath+"/protein/init.mdp",
                 completition_check="restraint_coord_distrib.png",
                 b=0)
-#    w.gen_restr("Restraints", srctpr=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
-#                  srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
-#                  mdp=mdppath+"/protein/init.mdp", b=0)
                     
     #align vaccum ligand onto apo protein structures
     w.run_callback_on_folders("GenMorphs", w.gen_alligned_morphs_callback,
                 srctpr =basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
                 srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
-                b=0)
-#    w.gen_alligned_morphs("GenMorphs", w.gen_alligned_morphs_callback,
-#          srctpr =basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
-#          srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
-#          b=0)
- 
-                
-        
-        
-        
-        
+                b=0, n_morphs=21)
     
     #run TI
+    w.run_TI("TI", mdppath+"/protein/ti_{0}.mdp",
+                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/frame{5}.gro",
+                n_morphs=21,
+                completition_check=basepath+"prot_{0}/lig_{1}/repeat{3}/GenMorphs{4}/tpr{5}.gro",
+                runfolder="GenMorphs")
     
     #analyse dHdl files
     
