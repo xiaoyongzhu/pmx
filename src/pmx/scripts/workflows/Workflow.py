@@ -31,7 +31,24 @@ def check_file_ready(fname):
     if(not os.path.isfile(fname)):
         raise OSError("Failed creating "+fname)
 
+def copy_if_missing(src, trg):
+    """Checks if trg file exists and copies it from src if not.
+    
+    Parameters
+    ----------
+    src : str
+        Path to source file
+    trg : str
+        Path to target file
 
+    Raises:
+    ----------
+    OSError:
+        If trg still doesn't exist failed.
+    """
+    if(not os.path.isfile(trg)):
+        sh.copy(src,trg)
+        check_file_ready(trg)
 
 # ==============================================================================
 #                             Workflow Class
@@ -78,14 +95,16 @@ class Workflow:
                 folder = self.gen_folder_name(p,l)
                 
                 if(completition_check and
-                   os.path.isfile(completition_check)):
+                   os.path.isfile(folder+"/"+completition_check)):
                         print("\t\tPrevious")
                         continue
-                mydict={'folder':folder,'p':p,'l':l,
-                        'states':self.states,
-                        'n_repeats':self.n_repeats,
-                        'n_sampling_sims':self.n_sampling_sims,
-                        'stage':stage}
+                # mydict={'folder':folder,'p':p,'l':l,
+                #         'states':self.states,
+                #         'n_repeats':self.n_repeats,
+                #         'n_sampling_sims':self.n_sampling_sims,
+                #         'stage':stage,
+                #         'basepath':self.basepath}
+                mydict={'folder':folder,'p':p,'l':l,'stage':stage}
                 kwargs.update(mydict)
                 callbackfunc(**kwargs)
                 print("\t\tDone")

@@ -14,7 +14,7 @@ from pmx.model import Model
 from pmx.scripts.cli import check_unknown_cmd
 from pmx.xtc import Trajectory
 #from pmx.scripts.workflows.Workflow import Workflow, check_file_ready
-from Workflow import Workflow, check_file_ready
+from Workflow import Workflow, check_file_ready, copy_if_missing
 from find_avg import find_avg_struct
 from find_anchors_and_write_ii import find_restraints
 from fit_ligs_multiframes_python3 import fit,rotate_velocities_R,find_last_protein_atom
@@ -126,40 +126,47 @@ class Workflow_inProtein(Workflow):
                 os.chdir(folder)
                 
                 #topology
-                sh.copy(self.toppath+"/topol_abs_prot_norestr_amber.top",
+                copy_if_missing(self.toppath+"/topol_abs_prot_norestr_amber.top",
                         folder+"/topol.top")
-                sh.copy(self.toppath+"/ligand/"+l+"/lig.itp",folder+"/")
-                sh.copy(self.toppath+"/proteins/"+p+"/prot.itp",folder+"/")
+                copy_if_missing(self.toppath+"/ligand/"+l+"/lig.itp",folder+"/lig.itp")
+                copy_if_missing(self.toppath+"/proteins/"+p+"/prot.itp",folder+"/prot.itp")
                 
                 #initial coordinates where protein and ligand are bound
-                sh.copy(self.toppath+"/proteins/"+p+"/prot_lig.pdb",
+                copy_if_missing(self.toppath+"/proteins/"+p+"/prot_lig.pdb",
                         folder+"/init.pdb")
                 
                 #generate temporary index file
-                os.system("echo 'q\n' | gmx make_ndx -f init.pdb "
-                          "-o index.ndx > setup.log 2>&1")
+                if(not os.path.isfile("index.ndx")):
+                    os.system("echo 'q\n' | gmx make_ndx -f init.pdb "
+                              "-o index.ndx > setup.log 2>&1")
+                    check_file_ready("index.ndx")
                 
                 #generate restraints for equillibration
                 #TODO: rewrite this to use the pmx Topology class
-                os.system("echo 'Protein\n' | gmx genrestr -f init.pdb "
-                          "-fc 9000 9000 9000 -o prot_posre.itp "
-                          "-n index.ndx >> setup.log 2>&1")
-                check_file_ready("prot_posre.itp")
-                os.system("echo 'Protein\n' | gmx genrestr -f init.pdb "
-                          "-fc 500 500 500 -o prot_posre_soft.itp "
-                          "-n index.ndx >> setup.log 2>&1")
-                check_file_ready("prot_posre_soft.itp")
-                os.system("echo 'MOL\n' | gmx editconf -f init.pdb "
-                          "-o lig.pdb -n index.ndx >> setup.log 2>&1")
-                check_file_ready("index.ndx")
-                os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
-                          "-fc 9000 9000 9000 "
-                          "-o lig_posre.itp >> setup.log  2>&1")
-                check_file_ready("lig_posre.itp")
-                os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
-                          "-fc 500 500 500 "
-                          "-o lig_posre_soft.itp >> setup.log 2>&1")
-                check_file_ready("lig_posre_soft.itp")
+                if(not os.path.isfile("prot_posre.itp")):
+                    os.system("echo 'Protein\n' | gmx genrestr -f init.pdb "
+                              "-fc 9000 9000 9000 -o prot_posre.itp "
+                              "-n index.ndx >> setup.log 2>&1")
+                    check_file_ready("prot_posre.itp")
+                if(not os.path.isfile("prot_posre_soft.itp")):
+                    os.system("echo 'Protein\n' | gmx genrestr -f init.pdb "
+                              "-fc 500 500 500 -o prot_posre_soft.itp "
+                              "-n index.ndx >> setup.log 2>&1")
+                    check_file_ready("prot_posre_soft.itp")
+                if(not os.path.isfile("lig.pdb")):
+                    os.system("echo 'MOL\n' | gmx editconf -f init.pdb "
+                              "-o lig.pdb -n index.ndx >> setup.log 2>&1")
+                    check_file_ready("lig.pdb")
+                if(not os.path.isfile("lig_posre.itp")):
+                    os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
+                              "-fc 9000 9000 9000 "
+                              "-o lig_posre.itp >> setup.log  2>&1")
+                    check_file_ready("lig_posre.itp")
+                if(not os.path.isfile("lig_posre_soft.itp")):
+                    os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
+                              "-fc 500 500 500 "
+                              "-o lig_posre_soft.itp >> setup.log 2>&1")
+                    check_file_ready("lig_posre_soft.itp")
                 
                 #clean overwritten files
                 if(clean):
@@ -282,64 +289,14 @@ class Workflow_inProtein(Workflow):
                             
                             #Return to basepath
                             os.chdir(self.basepath)
-
+                            
+                            
+ 
 # ==============================================================================
-#                               FUNCTIONS
-# ==============================================================================
-    
-def main(args):
-    """Run the main script.
-
-    Parameters
-    ----------
-    args : argparse.Namespace
-        The command line arguments
-    """
-    toppath=os.path.abspath(args.toppath)
-    mdppath=os.path.abspath(args.mdppath)
-    basepath=os.path.abspath(args.basepath)
-    
-    w=Workflow_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
-                         basepath=basepath,
-                         #mdrun="mdrun_threads_AVX2_256",
-                         mdrun="gmx mdrun",
-                         mdrun_opts="-pin on -nsteps 1000 -ntomp 8")
-    
-    #sanity checks
-    w.check_sanity()
-    w.check_inputs()
+#                           CALLBACK FUNCTIONS
+# ==============================================================================                           
         
-    #copy data (*.itp, template topology, ligand and protein structures) to CWD
-    w.gather_inputs()
-    
-    #solvate and generate ions
-    w.prep()
-    
-    #run EM
-    w.run_stage("em", mdppath+"/protein/em_posre_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                completition_check="confout.gro")
-        
-    #run NVT w hard position restraints to prevent protein deformation
-    w.run_stage("nvt_posre", mdppath+"/protein/eq_nvt_posre_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/em{4}/confout.gro",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                completition_check="confout.gro")
-    
-    #run NVT w softer position restraints
-    w.run_stage("nvt_posre_soft", mdppath+"/protein/eq_nvt_posre_soft_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre{4}/confout.gro",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                completition_check="confout.gro")
-    
-    #run NPT to sample starting frames for TI
-    w.run_stage("npt", mdppath+"/protein/eq_npt_test_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre_soft{4}/confout.gro",
-                completition_check="confout.gro")
-    
-    ###########################################################################
-    def gen_restr_calback(**kwargs):
+    def gen_restr_callback(self, **kwargs):
         """Generates Boresh-style restraints by fitting a
         Gaussians to the restraint coordinate distributions.
         
@@ -351,42 +308,39 @@ def main(args):
         
         Please use as a callback function by providing it
         to Workflow.run_callback_on_folders()
-
+    
         Parameters
         ----------
-        
-        b: float
-            start time (in ps) for fit.
-        srctraj: str
-            Source trajectory path string with format keys for protein,
-            ligand, state, repeat, and sim id. Eg.:
-                "/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr"
-        srctpr: str
-            Source tpr path string. Same format as srctraj.
-        mdp: str
-            mdp file that describes the system. Used make a tpr
-            without solvent/ions.
         **kwargs: dict        
-            Generated by Workflow.run_callback_on_folders()        
-        
-
+            Generated by Workflow.run_callback_on_folders()   
+            
+            b: float
+                start time (in ps) for fit.
+            srctraj: str
+                Source trajectory path string with format keys for protein,
+                ligand, state, repeat, and sim id. Eg.:
+                    "/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr"
+            srctpr: str
+                Source tpr path string. Same format as srctraj.
+            mdp: str
+                mdp file that describes the system. Used to make a tpr
+                without solvent/ions.
+    
         Returns
         -------
         None.
-
+    
         """
         folder = kwargs.get('folder')
         p = kwargs.get('p')
         l = kwargs.get('l')
-        states = kwargs.get('states')
-        n_repeats=kwargs.get('n_repeats')
-        n_sampling_sims=kwargs.get('n_sampling_sims')
         
         b=kwargs.get('b', 0) #begining of trj to use (ps)
         srctraj=kwargs.get('srctraj')
         srctpr=kwargs.get('srctpr')
         mdp=kwargs.get('mdp')
-
+        
+    
         print(folder)
         os.chdir(folder)
         
@@ -399,7 +353,7 @@ def main(args):
         #make topology
         os.system("sed 's/SOL/;SOL/g' topol.top > topol_prot_mol.top")
                           
-        for s in states:
+        for s in self.states:
             #make tprs
             if(s == "A"):   #align A to initial structure
                 ref="box.pdb"
@@ -416,9 +370,9 @@ def main(args):
                 print("\tCollecting trajectories for state%s"%s)
                 
                 #independent repeats for error analysis
-                for i in range(n_repeats):
+                for i in range(self.n_repeats):
                     #sampling simulations in each repeat
-                    for m in range(n_sampling_sims):
+                    for m in range(self.n_sampling_sims):
                         if(not os.path.isfile("eq%s%d_%d.xtc"%(s,i,m))):
                             tpr=srctpr.format(p,l,s,i,m)
                             trj=srctraj.format(p,l,s,i,m)
@@ -464,18 +418,11 @@ def main(args):
             check_file_ready("out_dg.dat")
         
         #restore base path    
-        os.chdir(basepath)
-    ###########################################################################
+        os.chdir(self.basepath)
+                            
         
-    #genergate Boresh-style protein-ligand restraints
-    w.run_callback_on_folders("Restraints", gen_restr_calback,
-          srctpr =basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
-          srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
-          mdp=mdppath+"/protein/init.mdp", b=0)
-    
-    
-    ###########################################################################
-    def gen_alligned_morphs_calback(**kwargs):
+                            
+    def gen_alligned_morphs_callback(self, **kwargs):
         """Generates coordinates for bound restrained but decoupled state (C)
         by structure allignemnt of vacuum ligand into apo protein.
         
@@ -484,7 +431,7 @@ def main(args):
         
         Please use as a callback function by providing it
         to Workflow.run_callback_on_folders()
-
+    
         Parameters
         ----------
         b: float
@@ -497,18 +444,15 @@ def main(args):
             Source tpr path string. Same format as srctraj.
         **kwargs: dict        
             Generated by Workflow.run_callback_on_folders()
-
+    
         Returns
         -------
         None.
-
+    
         """
         folder = kwargs.get('folder')
         p = kwargs.get('p')
         l = kwargs.get('l')
-        states = kwargs.get('states')
-        n_repeats=kwargs.get('n_repeats')
-        n_sampling_sims=kwargs.get('n_sampling_sims')
         stage=kwargs.get('stage','morphs')
         
         b=kwargs.get('b', 0) #begining of trj to use (ps)
@@ -518,9 +462,9 @@ def main(args):
         print("\t"+folder)
         
         #independent repeats for error analysis
-        for i in range(n_repeats):
+        for i in range(self.n_repeats):
             #sampling simulations in each repeat
-            for m in range(n_sampling_sims):
+            for m in range(self.n_sampling_sims):
                 #generate morphs for A state
                 s="A"
                 frname="frame.gro"
@@ -543,9 +487,8 @@ def main(args):
                               "-f %s -o %s "
                               "-b %f -sep -ur compact -pbc mol "
                               "> /dev/null 2>&1"%(tpr,trj,frname,b) )
-                # else:
-                #     print("\t\tState %s: Previous"%s)
-                os.chdir(basepath)
+                
+                os.chdir(self.basepath)
                     
                 #now make the C state
                 s="C"
@@ -605,19 +548,86 @@ def main(args):
                         m_B.write("frame%d.gro"%fridx)
                         
                     fridx+=1
-
+    
                 
                 #restore base path    
-                os.chdir(basepath)
-                
-                
-    ###########################################################################
-                
+                os.chdir(self.basepath)
+
+# ==============================================================================
+#                               FUNCTIONS
+# ==============================================================================
+    
+def main(args):
+    """Run the main script.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        The command line arguments
+    """
+    toppath=os.path.abspath(args.toppath)
+    mdppath=os.path.abspath(args.mdppath)
+    basepath=os.path.abspath(args.basepath)
+    
+    w=Workflow_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
+                         basepath=basepath,
+                         #mdrun="mdrun_threads_AVX2_256",
+                         mdrun="gmx mdrun",
+                         mdrun_opts="-pin on -nsteps 1000 -ntomp 8")
+    
+    #sanity checks
+    w.check_sanity()
+    w.check_inputs()
+        
+    #copy data (*.itp, template topology, ligand and protein structures) to CWD
+    w.gather_inputs()
+    
+    #solvate and generate ions
+    w.prep()
+    
+    #run EM
+    w.run_stage("em", mdppath+"/protein/em_posre_{0}.mdp",
+                basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                completition_check="confout.gro")
+        
+    #run NVT w hard position restraints to prevent protein deformation
+    w.run_stage("nvt_posre", mdppath+"/protein/eq_nvt_posre_{0}.mdp",
+                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/em{4}/confout.gro",
+                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                completition_check="confout.gro")
+    
+    #run NVT w softer position restraints
+    w.run_stage("nvt_posre_soft", mdppath+"/protein/eq_nvt_posre_soft_{0}.mdp",
+                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre{4}/confout.gro",
+                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                completition_check="confout.gro")
+    
+    #run NPT to sample starting frames for TI
+    w.run_stage("npt", mdppath+"/protein/eq_npt_test_{0}.mdp",
+                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre_soft{4}/confout.gro",
+                completition_check="confout.gro")
+            
+    #genergate Boresh-style protein-ligand restraints
+    w.run_callback_on_folders("Restraints", w.gen_restr_callback,
+                srctpr =basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
+                srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
+                mdp=mdppath+"/protein/init.mdp",
+                completition_check="restraint_coord_distrib.png",
+                b=0)
+#    w.gen_restr("Restraints", srctpr=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
+#                  srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
+#                  mdp=mdppath+"/protein/init.mdp", b=0)
+                    
     #align vaccum ligand onto apo protein structures
-    w.run_callback_on_folders("GenMorphs", gen_alligned_morphs_calback,
-          srctpr =basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
-          srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
-          b=0)
+    w.run_callback_on_folders("GenMorphs", w.gen_alligned_morphs_callback,
+                srctpr =basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
+                srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
+                b=0)
+#    w.gen_alligned_morphs("GenMorphs", w.gen_alligned_morphs_callback,
+#          srctpr =basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
+#          srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
+#          b=0)
  
                 
         
