@@ -17,7 +17,7 @@ kb = 0.00831447215   # kJ/(K*mol)
 # ==============================================================================
 #                             Workflow Class
 # ==============================================================================
-class Workflow_alligned_inProtein(Workflow):
+class Workflow_alligned_complete(Workflow):
     def __init__(self, toppath, mdppath, hosts=[], ligands=[],
                  n_repeats=3, n_sampling_sims=1, basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,
@@ -73,10 +73,10 @@ def main(args):
     mdppath=os.path.abspath(args.mdppath)
     basepath=os.path.abspath(args.basepath)
     
-    w=Workflow_alligned_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
+    w=Workflow_alligned_complete(toppath, mdppath, ["BRD1"], ["lig"],
                          basepath=basepath,
-                         #mdrun="mdrun_threads_AVX2_256",
-                         mdrun="gmx mdrun",
+                         mdrun="mdrun_threads_AVX2_256",
+                         #mdrun="gmx mdrun",
                          mdrun_opts="-pin on -nsteps 1000 -ntomp 8")
 
     w.run_everything()
