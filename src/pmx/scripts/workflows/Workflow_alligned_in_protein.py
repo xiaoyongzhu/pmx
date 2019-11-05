@@ -5,8 +5,7 @@ import glob
 import numpy as np
 import os
 import shutil as sh
-from pmx import ndx, geometry
-from pmx.analysis import read_dgdl_files, plot_work_dist, ks_norm_test
+from pmx import ndx
 from pmx.model import Model
 from pmx.scripts.cli import check_unknown_cmd
 from pmx.xtc import Trajectory

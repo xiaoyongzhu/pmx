@@ -3,8 +3,6 @@
 import glob
 import os
 import shutil as sh
-from pmx.analysis import read_dgdl_files, plot_work_dist, ks_norm_test
-#from pmx.scripts.workflows.Workflow import Workflow, check_file_ready
 from Workflow import Workflow, check_file_ready, copy_if_missing
 from Workflow_alligned_in_protein import Workflow_alligned_inProtein, parse_options
 
