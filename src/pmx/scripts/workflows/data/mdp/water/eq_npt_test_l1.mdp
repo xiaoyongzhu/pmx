@@ -6,23 +6,21 @@ integrator               = sd
 ; Start time and timestep in ps
 tinit                    = 0
 dt                       = 0.002
-nsteps                   = 1000 ; 2 ps, this isn't enough for proper equillibration
+nsteps                   = 10000 ; 20 ps, this isn't enough for proper equillibration
 
 init_step                = 0
 ; mode for center of mass motion removal
 comm-mode                = Linear
 ; number of steps for center of mass motion removal
 nstcomm                  = 100
-nstcalcenergy            = 1
-
-nstdhdl = 1
+nstcalcenergy            = 100
 
 
 
 ; OUTPUT CONTROL OPTIONS
 ; Output frequency for coords (x), velocities (v) and forces (f)
-nstxout                  = 0
-nstvout                  = 0
+nstxout                  = 50
+nstvout                  = 50
 nstfout                  = 0
 ; Checkpointing helps you continue after crashes
 nstcheckpoint            = 1000
@@ -99,8 +97,8 @@ couple-moltype           = MOL
 couple-lambda0           = vdw-q
 couple-lambda1           = none
 couple-intramol          = no ; intramolecular interaction in ligand remain on
-init-lambda              = 0  ; intermolecular restraints off, inter-mol pot on
-delta-lambda             = 1e-3
+init-lambda              = 1  ; intermolecular restraints on, inter-mol pot off
+delta-lambda             = 0
 sc-alpha                 = 0.3
 sc-sigma                 = 0.25
 sc-power                 = 1

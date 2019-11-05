@@ -54,7 +54,7 @@ def copy_if_missing(src, trg):
 #                             Workflow Class
 # ==============================================================================
 class Workflow:
-    def __init__(self, toppath, mdppath, proteins=[], ligands=[],
+    def __init__(self, toppath, mdppath, hosts=[], ligands=[],
                  n_repeats=3, n_sampling_sims=1, basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,
                  mdrun="gmx mdrun", mdrun_opts=""):
@@ -62,7 +62,7 @@ class Workflow:
         self.mdppath = mdppath
         self.n_repeats = n_repeats
         self.n_sampling_sims = n_sampling_sims
-        self.proteins = proteins
+        self.hosts = hosts
         self.ligands = ligands
         self.basepath = basepath
         self.d = d
@@ -90,7 +90,7 @@ class Workflow:
     def run_callback_on_folders(self, stage, callbackfunc,
                                 completition_check=None, **kwargs):
         print("Running stage "+stage+":")
-        for p in self.proteins:
+        for p in self.hosts:
             for l in self.ligands:
                 folder = self.gen_folder_name(p,l)
                 
