@@ -365,6 +365,17 @@ class Workflow_alligned_inProtein(Workflow):
                             os.chdir(self.basepath)
                             
     def run_everything(self):
+        """Runs the whole workflow.
+        
+        Parameters
+        ----------
+        None.
+    
+        Returns
+        -------
+        None.
+        """
+        
         #sanity checks
         self.check_sanity()
         self.check_inputs()

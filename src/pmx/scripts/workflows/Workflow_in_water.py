@@ -129,6 +129,17 @@ class Workflow_inWater(Workflow_alligned_inProtein):
                 os.chdir(self.basepath)
                 
     def run_everything(self):
+        """Runs the whole workflow.
+        
+        Parameters
+        ----------
+        None.
+    
+        Returns
+        -------
+        None.
+        """
+        
         #sanity checks
         self.check_sanity()
         self.check_inputs()
@@ -168,10 +179,6 @@ class Workflow_inWater(Workflow_alligned_inProtein):
                     n_morphs=21,
                     completition_check=self.basepath+"/{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/tpr{5}.gro",
                     runfolder="GenMorphs")
-        
-        #analyse dHdl files
-        
-        #plot summary
         
         
 # ==============================================================================
