@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 
 import argparse
-import copy
 import glob
 import numpy as np
 import os
 import shutil as sh
-import sys
-import warnings
 from pmx import ndx, geometry
 from pmx.analysis import read_dgdl_files, plot_work_dist, ks_norm_test
 from pmx.model import Model
@@ -17,7 +14,7 @@ from pmx.xtc import Trajectory
 from Workflow import Workflow, check_file_ready, copy_if_missing
 from find_avg import find_avg_struct
 from find_anchors_and_write_ii import find_restraints
-from fit_ligs_multiframes_python3 import fit,rotate_velocities_R,find_last_protein_atom
+from fit_ligs_multiframes_python3 import fit,rotate_velocities_R
 
 # Constants
 kb = 0.00831447215   # kJ/(K*mol)
@@ -366,6 +363,66 @@ class Workflow_alligned_inProtein(Workflow):
                                 
                             #Return to basepath
                             os.chdir(self.basepath)
+                            
+    def run_everything(self):
+        #sanity checks
+        self.check_sanity()
+        self.check_inputs()
+            
+        #copy data (*.itp, template topology, ligand and protein structures) to CWD
+        self.gather_inputs()
+        
+        #solvate and generate ions
+        self.prep()
+        
+        #run EM
+        self.run_stage("em", self.mdppath+"/protein/em_posre_{0}.mdp",
+                    self.basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                    posre=self.basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                    completition_check="confout.gro")
+            
+        #run NVT w hard position restraints to prevent protein deformation
+        self.run_stage("nvt_posre", self.mdppath+"/protein/eq_nvt_posre_{0}.mdp",
+                    self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/em{4}/confout.gro",
+                    posre=self.basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                    completition_check="confout.gro")
+        
+        #run NVT w softer position restraints
+        self.run_stage("nvt_posre_soft", self.mdppath+"/protein/eq_nvt_posre_soft_{0}.mdp",
+                    self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre{4}/confout.gro",
+                    posre=self.basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
+                    completition_check="confout.gro")
+        
+        #run NPT to sample starting frames for TI
+        self.run_stage("npt", self.mdppath+"/protein/eq_npt_test_{0}.mdp",
+                    self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre_soft{4}/confout.gro",
+                    completition_check="confout.gro")
+                
+        #genergate Boresh-style protein-ligand restraints
+        self.run_callback_on_folders("Restraints", self.gen_restr_callback,
+                    srctpr =self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
+                    srctraj=self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
+                    mdp=self.mdppath+"/protein/init.mdp",
+                    completition_check="restraint_coord_distrib.png",
+                    b=0)
+                        
+        #align vaccum ligand onto apo protein structures
+        self.run_callback_on_folders("GenMorphs", self.gen_alligned_morphs_callback,
+                    srctpr =self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
+                    srctraj=self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
+                    b=0, n_morphs=21)
+        
+        #run TI
+        self.run_TI("TI", self.mdppath+"/protein/ti_{0}.mdp",
+                    self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/frame{5}.gro",
+                    n_morphs=21,
+                    completition_check=self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/tpr{5}.gro",
+                    runfolder="GenMorphs")
+        
+        #analyse dHdl files
+        
+        #plot summary
+    
  
 # ==============================================================================
 #                           CALLBACK FUNCTIONS
@@ -659,76 +716,16 @@ def main(args):
     mdppath=os.path.abspath(args.mdppath)
     basepath=os.path.abspath(args.basepath)
     
-    w=Workflow_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
+    w=Workflow_alligned_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
                          basepath=basepath,
                          #mdrun="mdrun_threads_AVX2_256",
                          mdrun="gmx mdrun",
                          mdrun_opts="-pin on -nsteps 1000 -ntomp 8")
-    
-    #sanity checks
-    w.check_sanity()
-    w.check_inputs()
-        
-    #copy data (*.itp, template topology, ligand and protein structures) to CWD
-    w.gather_inputs()
-    
-    #solvate and generate ions
-    w.prep()
-    
-    #run EM
-    w.run_stage("em", mdppath+"/protein/em_posre_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                completition_check="confout.gro")
-        
-    #run NVT w hard position restraints to prevent protein deformation
-    w.run_stage("nvt_posre", mdppath+"/protein/eq_nvt_posre_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/em{4}/confout.gro",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                completition_check="confout.gro")
-    
-    #run NVT w softer position restraints
-    w.run_stage("nvt_posre_soft", mdppath+"/protein/eq_nvt_posre_soft_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre{4}/confout.gro",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                completition_check="confout.gro")
-    
-    #run NPT to sample starting frames for TI
-    w.run_stage("npt", mdppath+"/protein/eq_npt_test_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre_soft{4}/confout.gro",
-                completition_check="confout.gro")
-            
-    #genergate Boresh-style protein-ligand restraints
-    w.run_callback_on_folders("Restraints", w.gen_restr_callback,
-                srctpr =basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
-                srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
-                mdp=mdppath+"/protein/init.mdp",
-                completition_check="restraint_coord_distrib.png",
-                b=0)
-                    
-    #align vaccum ligand onto apo protein structures
-    w.run_callback_on_folders("GenMorphs", w.gen_alligned_morphs_callback,
-                srctpr =basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
-                srctraj=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
-                b=0, n_morphs=21)
-    
-    #run TI
-    w.run_TI("TI", mdppath+"/protein/ti_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/frame{5}.gro",
-                n_morphs=21,
-                completition_check=basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/tpr{5}.gro",
-                runfolder="GenMorphs")
-    
-    #analyse dHdl files
-    
-    #plot summary
+
+    w.run_everything()
 
     print("Complete.\n")
 
-
-def entry_point():
+if __name__ == '__main__':
     args = parse_options()
     main(args)
-
-if __name__ == '__main__':
-    entry_point()

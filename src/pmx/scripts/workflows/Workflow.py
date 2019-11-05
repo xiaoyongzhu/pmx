@@ -1,15 +1,8 @@
 #!/usr/bin/env python
 
-import argparse
-import glob
-import numpy as np
 import os
 import shutil as sh
-import sys
-import warnings
-from pmx.analysis import read_dgdl_files, plot_work_dist, ks_norm_test
-from pmx.model import Model
-from pmx.scripts.cli import check_unknown_cmd
+
 
 # ==============================================================================
 #                            HELPER FUNCTIONS
@@ -109,75 +102,3 @@ class Workflow:
                 callbackfunc(**kwargs)
                 print("\t\tDone")
 
-# ==============================================================================
-#                               FUNCTIONS
-# ==============================================================================
-    
-def main(args):
-    """Run the main script.
-
-    Parameters
-    ----------
-    args : argparse.Namespace
-        The command line arguments
-    """
-    toppath=os.path.abspath(args.toppath)
-    mdppath=os.path.abspath(args.mdppath)
-    basepath=os.getcwd()
-    
-    w=Workflow_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
-                         basepath=basepath,
-                         mdrun="mdrun_threads_AVX2_256",
-                         mdrun_opts="-pin on -nsteps 1000")
-    
-    #sanity checks
-    w.check_sanity()
-    w.check_inputs()
-        
-    #copy data (*.itp, template topology, ligand and protein structures) to CWD
-    w.gather_inputs()
-    
-    #solvate and generate ions
-    w.prep()
-    
-    #run EM
-    w.run_stage("em", mdppath+"/protein/em_posre_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                completition_check="confout.gro")
-        
-    #run NVT w hard position restraints to prevent protein deformation
-    w.run_stage("nvt_posre", mdppath+"/protein/eq_nvt_posre_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/em{4}/confout.gro",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                completition_check="confout.gro")
-    
-    #run NVT w softer position restraints
-    w.run_stage("nvt_posre_soft", mdppath+"/protein/eq_nvt_posre_soft_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre{4}/confout.gro",
-                posre=basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
-                completition_check="confout.gro")
-    
-    #run NPT to sample starting frames for TI
-    w.run_stage("npt", mdppath+"/protein/eq_npt_test_{0}.mdp",
-                basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre_soft{4}/confout.gro",
-                completition_check="confout.gro")
-    
-    #genergate Boresh-style protein-ligand restraints
-    
-    #align vaccum ligand onto apo protein structures
-    
-    #run TI
-    
-    #analyse dHdl files
-    
-    #plot summary
-
-
-
-def entry_point():
-    args = parse_options()
-    main(args)
-
-if __name__ == '__main__':
-    entry_point()
