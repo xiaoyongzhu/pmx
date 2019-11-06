@@ -8,6 +8,7 @@ from Workflow import Workflow
 from Workflow_alligned_in_protein import Workflow_alligned_inProtein, parse_options
 from Workflow_in_water import Workflow_inWater
 
+import numpy as np
 
 
 # Constants
@@ -40,7 +41,6 @@ class Workflow_alligned_complete(Workflow):
                   [self.ww, self.basepath+"/{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/dHdl{5}.xvg"]
                   ]
         
-        #ligand+protein aq.
         for grp in sim_grps:
             for p in grp[0].hosts:
                 for l in self.ligands:
@@ -92,6 +92,80 @@ class Workflow_alligned_complete(Workflow):
                         os.chdir(self.basepath)#reset cwd                    
                     print() #new line at end of folder
                     
+                    
+    def summarize(self):
+        print("Running stage summary:")
+
+        inps={}
+        inws={}
+        anacorrs={}
+
+        #load dG in protein and in water
+        sim_grps=[[self.wp, inps], [self.ww, inws]]
+        for grp in sim_grps:
+            for p in grp[0].hosts:
+                for l in self.ligands:
+                    key=p+' '+l
+                    if(grp[0]==self.ww):
+                        key=l
+                    folder = grp[0].gen_folder_name(p,l)
+                    rs=np.ndarray(self.n_repeats)
+                                            
+                    #independent repeats
+                    for i in range(self.n_repeats):
+                        ana_folder=folder+"/analysis/repeat%d"%i
+                        with open(ana_folder+"/results.txt", 'r') as f:
+                            for l in f:
+                                if "BAR: dG" in l:
+                                    s = l.split()
+                                    rs[i]=float(s[3])
+                                    break
+                                
+                    dGpart = np.mean(rs)
+                    std = np.std(rs)
+                    grp[1].update({key:[dGpart,std]})
+                    
+                    
+        #read analytical corrections for restraints
+        for p in self.hosts:
+            for l in self.ligands:
+                key=p+' '+l
+                folder = self.wp.gen_folder_name(p,l)
+                with open(folder+"/out_dg.dat", 'r') as f:
+                    for l in f:
+                        if("Restraint contribution to free energy (w gmx limits):" in l and
+                           "kJ/mol" in l):
+                            s=l.split()
+                            anacorrs.update({key:float(s[-2])})
+        
+        
+        #print summary table
+        with open("summary.txt", 'w') as sf:
+            
+            print("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^12s}".format(
+                            "host guest","ddG (kJ/mol)","dG in prot" ,
+                            "dG in water", "restraint dG"))
+            sf.write("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^12s}\n".format(
+                            "host guest","ddG (kJ/mol)","dG in prot" ,
+                            "dG in water", "restraint dG"))
+            for p in self.hosts:
+                for l in self.ligands:
+                    key=p+' '+l
+                    ddG = inws[l][0] - inps[key][0] - anacorrs[key] #water - protein - restr corr.
+                    sigma = np.sqrt(inps[key][1]**2 + inws[l][1]**2) #standard dev.
+                    print("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>12.2f}".format(
+                        key, ddG, sigma,
+                        inps[key][0], inps[key][1],
+                        inws[l][0], inws[l][1],
+                        anacorrs[key]) )
+                    sf.write("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>12.2f}\n".format(
+                        key, ddG, sigma,
+                        inps[key][0], inps[key][1],
+                        inws[l][0], inws[l][1],
+                        anacorrs[key]) )
+                    
+                
+                
         
     def run_everything(self):
         """Runs the whole workflow.
@@ -114,7 +188,8 @@ class Workflow_alligned_complete(Workflow):
         #analyse dHdl files
         self.run_analysis(21)
         
-        #plot summary
+        #summarize
+        self.summarize()
 
 # ==============================================================================
 #                               FUNCTIONS

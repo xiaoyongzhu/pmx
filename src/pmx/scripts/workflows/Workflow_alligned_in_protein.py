@@ -428,10 +428,6 @@ class Workflow_alligned_inProtein(Workflow):
                     n_morphs=21,
                     completition_check=self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/tpr{5}.gro",
                     runfolder="GenMorphs")
-        
-        #analyse dHdl files
-        
-        #plot summary
     
  
 # ==============================================================================
