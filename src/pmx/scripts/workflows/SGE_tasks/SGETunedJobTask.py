@@ -1,17 +1,38 @@
+import luigi
 import os
 import subprocess
+import sys
 import time
-from luigi.contrib import sge_runner
+import SGE_tasks.SGETunedRunner as sge_runner
 from luigi.contrib.sge import SGEJobTask, logger, _parse_qstat_state, _build_qsub_command, _parse_qsub_job_id
+
+import pickle
+#try:
+#    import cPickle as pickle
+#except ImportError:
+#    import pickle
+
 
 class SGETunedJobTask(SGEJobTask):
 
 #TODO: Override _track_job() so that:
-#           - It looks for the specific job id not the whole list of jobs
-#           - sge_status == 't' is not nessesarily done
-#           - check if job has left the queue
 #           - support batching for TI
-# see https://luigi.readthedocs.io/en/stable/_modules/luigi/contrib/sge.html#SGEJobTask._track_job
+#           - need resume support in case job runs out of time
+
+    #change default parallel environment
+    parallel_env = luigi.Parameter(default='openmp_fast', significant=False)
+    #poll time in seconds.
+    #Large value is better to avoid overloading the login node.
+    #Needs to be less than time between queue updates.
+    poll_time = luigi.IntParameter(
+        significant=False, default=30,
+        description="specify the wait time to poll qstat for the job status")
+
+    #temp files
+    shared_tmp_dir = luigi.Parameter(default=os.path.join(os.getenv("HOME"), 'temp'), significant=False)
+    dont_remove_tmp_dir = luigi.BoolParameter(
+        significant=True,
+        description="don't delete the temporary directory used (for debugging)")
 
     def _run_job(self):
 
@@ -25,7 +46,7 @@ class SGETunedJobTask(SGEJobTask):
             job_str += ' "--no-tarball"'
 
         #force loading of conda and luigi by sourcing a custom profile
-        job_str = "source ~/.luigi_profile; "+job_str
+        job_str = '"source ~/.luigi_profile; '+job_str+'"'
 
         # Build qsub submit command
         self.outfile = os.path.join(self.tmp_dir, 'job.out')
@@ -35,9 +56,10 @@ class SGETunedJobTask(SGEJobTask):
         logger.debug('qsub command: \n' + submit_cmd)
 
         # Submit the job and grab job ID
-        output = subprocess.check_output(submit_cmd, shell=True)
-        self.job_id = _parse_qsub_job_id(output)
+        output = subprocess.check_output(submit_cmd, shell=True).decode('utf-8')
         logger.debug("Submitted job to qsub with response:\n" + output)
+        self.job_id = _parse_qsub_job_id(output)
+        #logger.debug("Submitted job to qsub with response:\n" + output)
 
         self._track_job()
 
@@ -59,10 +81,12 @@ class SGETunedJobTask(SGEJobTask):
                 logger.info('Job is running...')
             elif sge_status == 'qw':
                 logger.info('Job is pending...')
+            elif sge_status == 't':
+                logger.info('Job is transferring...')
             elif 'E' in sge_status:
                 logger.error('Job has FAILED:\n' + '\n'.join(self._fetch_task_failures()))
                 break
-            elif sge_status == 't' or sge_status == 'u':
+            elif sge_status == 'u':
                 # Then the job could either be failed or done.
                 errors = self._fetch_task_failures()
                 if not errors:
@@ -74,3 +98,16 @@ class SGETunedJobTask(SGEJobTask):
                 logger.info('Job status is UNKNOWN!')
                 logger.info('Status is : %s' % sge_status)
                 raise Exception("job status isn't one of ['r', 'qw', 'E*', 't', 'u']: %s" % sge_status)
+
+    def _dump(self, out_dir=''):
+        """Dump instance to file."""
+        with self.no_unpicklable_properties():
+            self.job_file = os.path.join(out_dir, 'job-instance.pickle')
+            if self.__module__ == '__main__':
+                mod=self.__module__
+                self.__module__= os.path.basename(sys.argv[0]).rsplit('.', 1)[0]
+                pickle.dump(self, open(self.job_file, "wb"))
+                self.__module__=mod
+            else:
+                pickle.dump(self, open(self.job_file, "wb"))
+

@@ -167,6 +167,8 @@ class Sim_PL_EM(SGE_Sim):
                       'used to propagate settings to dependencies')
 
     stage="em"
+    #request 2 cores
+    n_cpu = luigi.IntParameter(default=2, significant=False)
 
     def work(self):
         #set required file names
@@ -193,6 +195,8 @@ class Sim_PL_EM(SGE_Sim):
         return( Prep_PL_folder(p=self.p, l=self.l,
                                study_settings=self.study_settings,
                                folder_path=self.folder_path) )
+                                #no need to pass parallel_env as
+                                #Prep_PL_folder runs on the login node
     def output(self):
         #output() is run before work()
         #so need to set sim_path here
@@ -203,6 +207,9 @@ class Sim_PL_EM(SGE_Sim):
 
 class Sim_PL_NVT_posre(Sim_PL_EM):
     stage="nvt_posre"
+    #request 4 cores
+    n_cpu = luigi.IntParameter(default=4, significant=False)
+
     def work(self):
         #set required file names
         states = self.study_settings['states']
@@ -226,10 +233,14 @@ class Sim_PL_NVT_posre(Sim_PL_EM):
     def requires(self):
         return( Sim_PL_EM(p=self.p, l=self.l, i=self.i, m=self.m, s=self.s,
                           study_settings=self.study_settings,
-                          folder_path=self.folder_path) )
+                          folder_path=self.folder_path,
+                          parallel_env=self.parallel_env) )
 
 class Sim_PL_NVT_posre_soft(Sim_PL_EM):
     stage="nvt_posre_soft"
+    #request 4 cores
+    n_cpu = luigi.IntParameter(default=4, significant=False)
+
     def work(self):
         #set required file names
         states = self.study_settings['states']
@@ -253,10 +264,14 @@ class Sim_PL_NVT_posre_soft(Sim_PL_EM):
     def requires(self):
         return( Sim_PL_NVT_posre(p=self.p, l=self.l, i=self.i, m=self.m, s=self.s,
                           study_settings=self.study_settings,
-                          folder_path=self.folder_path) )
+                          folder_path=self.folder_path,
+                          parallel_env=self.parallel_env) )
 
 class Sim_PL_NPT(Sim_PL_EM):
     stage="nvt_posre_soft"
+    #request 4 cores
+    n_cpu = luigi.IntParameter(default=4, significant=False)
+
     def work(self):
         #set required file names
         states = self.study_settings['states']
@@ -280,7 +295,8 @@ class Sim_PL_NPT(Sim_PL_EM):
     def requires(self):
         return( Sim_PL_NVT_posre_soft(p=self.p, l=self.l, i=self.i, m=self.m, s=self.s,
                           study_settings=self.study_settings,
-                          folder_path=self.folder_path) )
+                          folder_path=self.folder_path,
+                          parallel_env=self.parallel_env) )
 
 # ==============================================================================
 #                             Workflow Class
@@ -304,7 +320,7 @@ class SGE_Workflow_alligned_inProtein(Workflow_alligned_inProtein):
         self.check_inputs()
 
         logger = logging.getLogger('luigi-interface')
-        logger.setLevel(logging.WARNING)
+        #logger.setLevel(logging.WARNING)
 
         self.study_settings={'base_path':self.basepath,
                              'top_path':self.toppath,
@@ -329,7 +345,8 @@ class SGE_Workflow_alligned_inProtein(Workflow_alligned_inProtein):
                             self.tasks.append(Sim_PL_NPT(
                                 p = p, l = l, i = i, m = m, s = s,
                                 study_settings = self.study_settings,
-                                folder_path = folder_path))
+                                folder_path = folder_path,
+                                parallel_env='openmp_fast'))
 
         #genergate Boresh-style protein-ligand restraints
 
@@ -338,7 +355,9 @@ class SGE_Workflow_alligned_inProtein(Workflow_alligned_inProtein):
         #TI
 
         #Run the tasks
-        class SGE_test(LocalSGEJobTask):
+        class SGE_test(LocalSGEJobTask): # will execute on the login node
+
+            my_deps=[]
             def work(self):
                 pass
 
@@ -351,8 +370,9 @@ class SGE_Workflow_alligned_inProtein(Workflow_alligned_inProtein):
         test=SGE_test()
         test.set_deps(self.tasks)
 
-        #luigi.build(self.tasks, local_scheduler=True, workers=2)
-        luigi.build([test], workers=2)
+        #run SGE_test on login node to bypass scheduler
+        luigi.build([test], local_scheduler=True, workers=16)
+        #luigi.build([test], workers=2)
 
 
 
@@ -376,7 +396,7 @@ def main(args):
                          basepath=basepath,
                          #mdrun="mdrun_threads_AVX2_256",
                          mdrun="gmx mdrun",
-                         mdrun_opts="-pin on -nsteps 1000 -ntomp 4")
+                         mdrun_opts="-pin on -nsteps 1000")
 
     w.run_everything()
 

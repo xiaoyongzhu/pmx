@@ -1,10 +1,12 @@
 import glob
 import luigi
 import os
-from luigi.contrib.sge import SGEJobTask, LocalSGEJobTask
+#from luigi.contrib.sge import SGEJobTask, LocalSGEJobTask
+from SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 
 #class SGE_Sim(SGEJobTask):
-class SGE_Sim(LocalSGEJobTask): #test locally
+#class SGE_Sim(LocalSGEJobTask): #test locally
+class SGE_Sim(SGETunedJobTask):
 
     #Parameters:
     study_settings = luigi.DictParameter(description='Dict of study stettings '
@@ -31,13 +33,6 @@ class SGE_Sim(LocalSGEJobTask): #test locally
 
     #Override requires() in Workflow specific implementations
 
-#TODO: Override _track_job() so that:
-#           - It looks for the specific job id not the whole list of jobs
-#           - sge_status == 't' is not nessesarily done
-#           - check if job has left the queue
-#           - support batching for TI
-# see https://luigi.readthedocs.io/en/stable/_modules/luigi/contrib/sge.html#SGEJobTask._track_job
-
     def work(self):
         os.makedirs(self.sim_path, exist_ok=True)
         os.chdir(self.sim_path)
@@ -61,8 +56,9 @@ class SGE_Sim(LocalSGEJobTask): #test locally
                             os.path.join(self.sim_path,"tpr.tpr") )
 
         #run sim
-        os.system(self.mdrun+" -s tpr.tpr "+\
-                  self.mdrun_opts+" > mdrun.log 2>&1")
+        os.system(self.mdrun+" -s tpr.tpr " +\
+                  "-ntomp %d "%self.n_cpu +\
+                  self.mdrun_opts + " > mdrun.log 2>&1")
 
         #clean overwritten files
         cleanList = glob.glob(self.sim_path+'/#*')
