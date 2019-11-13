@@ -2,7 +2,7 @@ import glob
 import luigi
 import os
 #from luigi.contrib.sge import SGEJobTask, LocalSGEJobTask
-from SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
+from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 
 #class SGE_Sim(SGEJobTask):
 #class SGE_Sim(LocalSGEJobTask): #test locally

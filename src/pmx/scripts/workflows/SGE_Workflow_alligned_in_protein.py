@@ -6,9 +6,9 @@ import luigi
 import os
 import shutil as sh
 from luigi.contrib.sge import LocalSGEJobTask
-from Workflow import check_file_ready
-from Workflow_alligned_in_protein import Workflow_alligned_inProtein, parse_options
-from SGE_tasks.Sim import SGE_Sim
+from pmx.scripts.workflows.Workflow import check_file_ready
+from pmx.scripts.workflows.Workflow_alligned_in_protein import Workflow_alligned_inProtein, parse_options
+from pmx.scripts.workflows.SGE_tasks.Sim import SGE_Sim
 
 # ==============================================================================
 #                         Derivative Task Classes
@@ -320,7 +320,7 @@ class SGE_Workflow_alligned_inProtein(Workflow_alligned_inProtein):
         self.check_inputs()
 
         logger = logging.getLogger('luigi-interface')
-        #logger.setLevel(logging.WARNING)
+        logger.setLevel(logging.WARNING)
 
         self.study_settings={'base_path':self.basepath,
                              'top_path':self.toppath,
@@ -368,10 +368,10 @@ class SGE_Workflow_alligned_inProtein(Workflow_alligned_inProtein):
                 return( self.my_deps )
 
         test=SGE_test()
-        test.set_deps(self.tasks)
+        test.set_deps([self.tasks[0]])
 
         #run SGE_test on login node to bypass scheduler
-        luigi.build([test], local_scheduler=True, workers=16)
+        luigi.build([test], local_scheduler=True, retry_count=0, workers=16)
         #luigi.build([test], workers=2)
 
 

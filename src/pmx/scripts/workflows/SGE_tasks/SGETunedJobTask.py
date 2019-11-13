@@ -3,7 +3,7 @@ import os
 import subprocess
 import sys
 import time
-import SGE_tasks.SGETunedRunner as sge_runner
+import pmx.scripts.workflows.SGE_tasks.SGETunedRunner as sge_runner
 from luigi.contrib.sge import SGEJobTask, logger, _parse_qstat_state, _build_qsub_command, _parse_qsub_job_id
 
 import pickle
@@ -30,9 +30,18 @@ class SGETunedJobTask(SGEJobTask):
 
     #temp files
     shared_tmp_dir = luigi.Parameter(default=os.path.join(os.getenv("HOME"), 'temp'), significant=False)
-    dont_remove_tmp_dir = luigi.BoolParameter(
-        significant=True,
-        description="don't delete the temporary directory used (for debugging)")
+    # dont_remove_tmp_dir = luigi.BoolParameter(
+    #     significant=False,
+    #     default=True,
+    #     description="don't delete the temporary directory used (for debugging)")
+
+    #Don't archive luigi. Jobs load it through conda
+    # no_tarball = luigi.BoolParameter(
+    #     significant=False,
+    #     default=True,
+    #     description="don't tarball (and extract) the luigi project files")
+
+    retry_count=0
 
     def _run_job(self):
 
@@ -75,7 +84,7 @@ class SGETunedJobTask(SGEJobTask):
 
             # See what the job's up to
             # ASSUMPTION
-            qstat_out = subprocess.check_output(['qstat'])
+            qstat_out = subprocess.check_output(['qstat']).decode('utf-8')
             sge_status = _parse_qstat_state(qstat_out, self.job_id)
             if sge_status == 'r':
                 logger.info('Job is running...')
@@ -104,10 +113,10 @@ class SGETunedJobTask(SGEJobTask):
         with self.no_unpicklable_properties():
             self.job_file = os.path.join(out_dir, 'job-instance.pickle')
             if self.__module__ == '__main__':
-                mod=self.__module__
-                self.__module__= os.path.basename(sys.argv[0]).rsplit('.', 1)[0]
-                pickle.dump(self, open(self.job_file, "wb"))
-                self.__module__=mod
+                d = pickle.dumps(self)
+                module_name = os.path.basename(sys.argv[0]).rsplit('.', 1)[0]
+                d = d.replace(b'c__main__', b"c" + module_name.encode('utf-8'))
+                open(self.job_file, "wb").write(d)
             else:
                 pickle.dump(self, open(self.job_file, "wb"))
 

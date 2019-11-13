@@ -3,3 +3,5 @@ include README.rst
 include LICENSE
 include versioneer.py
 include src/pmx/_version.py
+
+recursive-exclude src/pmx/scripts/workflows/tes* *

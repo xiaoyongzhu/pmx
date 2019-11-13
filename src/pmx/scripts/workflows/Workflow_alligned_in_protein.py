@@ -10,10 +10,10 @@ from pmx.model import Model
 from pmx.scripts.cli import check_unknown_cmd
 from pmx.xtc import Trajectory
 #from pmx.scripts.workflows.Workflow import Workflow, check_file_ready
-from Workflow import Workflow, check_file_ready, copy_if_missing
-from find_avg import find_avg_struct
-from find_anchors_and_write_ii import find_restraints
-from fit_ligs_multiframes_python3 import fit,rotate_velocities_R
+from pmx.scripts.workflows.Workflow import Workflow, check_file_ready, copy_if_missing
+from pmx.scripts.workflows.find_avg import find_avg_struct
+from pmx.scripts.workflows.find_anchors_and_write_ii import find_restraints
+from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R
 
 # Constants
 kb = 0.00831447215   # kJ/(K*mol)
@@ -77,7 +77,7 @@ def parse_options():
                         type=float,
                         help='Distance (nm) between the solute and the box',
                         default=1.5)
-    
+
 
     args, unknown = parser.parse_known_args()
     check_unknown_cmd(unknown)
@@ -96,48 +96,48 @@ class Workflow_alligned_inProtein(Workflow):
                  mdrun="gmx mdrun", mdrun_opts=""):
         Workflow.__init__(self, toppath, mdppath, hosts, ligands,
                           n_repeats, n_sampling_sims, basepath,
-                          d, bt, salt_conc, mdrun, mdrun_opts) 
+                          d, bt, salt_conc, mdrun, mdrun_opts)
         self.states={"A":"l0", "B":"l1"} #states and suffixes of mdp files
         self.TIstates={"A":"l0", "C":"l1"} #states and suffixes of mdp files
-        
-        
+
+
     def check_sanity(self):
         if(not sh.which('gmx')):
             raise RuntimeError('gmx not found in $PATH!')
         if(not sh.which('perl')):
             raise RuntimeError('perl not found in $PATH!')
-        
+
     def check_inputs(self):
         if(not os.path.isdir(self.toppath)):
             raise RuntimeError('Folder %s provided as toppath'
                                'does not exist'%self.toppath)
-            
+
     def gen_folder_name(self,host,ligand):
         return(self.basepath+'/prot_'+host+'/lig_'+ligand)
-                               
+
     def gather_inputs(self, clean=True):
         for p in self.hosts:
             for l in self.ligands:
                 folder = self.gen_folder_name(p,l)
                 os.makedirs(folder, exist_ok=True)
                 os.chdir(folder)
-                
+
                 #topology
                 copy_if_missing(self.toppath+"/topol_abs_prot_norestr_amber.top",
                         folder+"/topol.top")
                 copy_if_missing(self.toppath+"/ligand/"+l+"/lig.itp",folder+"/lig.itp")
                 copy_if_missing(self.toppath+"/proteins/"+p+"/prot.itp",folder+"/prot.itp")
-                
+
                 #initial coordinates where protein and ligand are bound
                 copy_if_missing(self.toppath+"/proteins/"+p+"/prot_lig.pdb",
                         folder+"/init.pdb")
-                
+
                 #generate temporary index file
                 if(not os.path.isfile("index.ndx")):
                     os.system("echo 'q\n' | gmx make_ndx -f init.pdb "
                               "-o index.ndx > setup.log 2>&1")
                     check_file_ready("index.ndx")
-                
+
                 #generate restraints for equillibration
                 #TODO: rewrite this to use the pmx Topology class
                 if(not os.path.isfile("prot_posre.itp")):
@@ -164,7 +164,7 @@ class Workflow_alligned_inProtein(Workflow):
                               "-fc 500 500 500 "
                               "-o lig_posre_soft.itp >> setup.log 2>&1")
                     check_file_ready("lig_posre_soft.itp")
-                
+
                 #clean overwritten files
                 if(clean):
                     cleanList = glob.glob(folder+'/#*')
@@ -173,16 +173,16 @@ class Workflow_alligned_inProtein(Workflow):
                             os.unlink(filePath)
                         except:
                             print("Error while deleting file: ", filePath)
-                
+
                 #Return to basepath
                 os.chdir(self.basepath)
-                
+
     def prep(self, clean=True):
         for p in self.hosts:
             for l in self.ligands:
                 folder = self.gen_folder_name(p,l)
                 os.chdir(folder)
-                
+
                 #generate the box and solvate
                 if(not os.path.isfile("tpr.tpr")): #skip if it already exists
                     os.system("gmx editconf -f init.pdb -o box.pdb -bt %s -d %f "\
@@ -195,7 +195,7 @@ class Workflow_alligned_inProtein(Workflow):
                               "-f %s/protein/init.mdp -v -maxwarn 2 "\
                               ">> prep.log 2>&1"%self.mdppath)
                     check_file_ready("tpr.tpr")
-                
+
                 #generate ions for each
                 #independent repeat (multiple for confidence estimate)
                 for i in range(self.n_repeats):
@@ -212,7 +212,7 @@ class Workflow_alligned_inProtein(Workflow):
                                   "-o %s >> genion.log 2>&1" %(
                                       top_ions, self.salt_conc, pdb_ions) )
                         check_file_ready(pdb_ions)
-                                        
+
                 #clean overwritten files
                 if(clean):
                     cleanList = glob.glob(folder+'/#*')
@@ -221,17 +221,17 @@ class Workflow_alligned_inProtein(Workflow):
                             os.unlink(filePath)
                         except:
                             print("Error while deleting file: ", filePath)
-                
+
                 #Return to basepath
                 os.chdir(self.basepath)
-                
+
     def run_stage(self, stage, mdp_template, struct_template,
                   posre=None, clean=True, completition_check=None):
         print("Running stage "+stage+":")
         for p in self.hosts:
             for l in self.ligands:
                 folder = self.gen_folder_name(p,l)
-                
+
                 #independent repeats for error analysis
                 for i in range(self.n_repeats):
                     #sampling simulations in each repeat
@@ -246,7 +246,7 @@ class Workflow_alligned_inProtein(Workflow):
                                os.path.isfile(completition_check)):
                                 print("\t\tPrevious")
                                 continue
-                            
+
                             #"../data/mdp/em_{0}.mdp"
                             mdp=mdp_template.format(self.states[s])#insert the l0/l1 suffix
                             #"prot_{0}/lig_{1}/ions{3}_{4}.pdb"
@@ -254,12 +254,12 @@ class Workflow_alligned_inProtein(Workflow):
                             struct=struct_template.format(p,l,s,i,m)#insert the s,i, and m suffixes
                             top_template=folder+"/topol_ions{3}_{4}.top"
                             top=top_template.format(p,l,s,i,m)
-                            
+
                             #restraint
                             r=""
                             if posre:
                                 r="-r "+posre.format(p,l,s,i,m)
-                            
+
                             #make tpr
                             os.system("gmx grompp -p %s -c %s %s "
                                       "-o tpr.tpr -f %s -v -maxwarn 3 "
@@ -267,14 +267,14 @@ class Workflow_alligned_inProtein(Workflow):
                                           top, struct, r, mdp)
                                       )
                             check_file_ready("tpr.tpr")
-                            
+
                             #run sim
                             os.system(self.mdrun+" -s tpr.tpr "+\
                                       self.mdrun_opts+" > mdrun.log 2>&1")
                             check_file_ready("confout.gro")
                             print("\t\tDone")
-                            
-                            
+
+
                             #clean overwritten files
                             if(clean):
                                 cleanList = glob.glob(sim_folder+'/#*')
@@ -283,23 +283,23 @@ class Workflow_alligned_inProtein(Workflow):
                                         os.unlink(filePath)
                                     except:
                                         print("Error while deleting file: ", filePath)
-                            
+
                             #Return to basepath
                             os.chdir(self.basepath)
-            
-                
+
+
     def run_TI(self, stage, mdp_template, struct_template, n_morphs,
                   posre=None, clean=True, completition_check=None,
                   runfolder=None):
 
         if(not runfolder):
             runfolder=stage
-            
+
         print("Running stage "+stage+":")
         for p in self.hosts:
             for l in self.ligands:
                 folder = self.gen_folder_name(p,l)
-                
+
                 #independent repeats for error analysis
                 for i in range(self.n_repeats):
                     #sampling simulations in each repeat
@@ -309,7 +309,7 @@ class Workflow_alligned_inProtein(Workflow):
                             os.makedirs(sim_folder, exist_ok=True)
                             os.chdir(sim_folder)
                             print("\t"+sim_folder)
-                            
+
                             for o in range(n_morphs):
                                 #don't rerun if already ready
                                 if(completition_check and
@@ -317,19 +317,19 @@ class Workflow_alligned_inProtein(Workflow):
                                    os.path.isfile(completition_check.format(p,l,s,i,m,o))):
                                     print("%dp\t"%o, end = '', flush=True)
                                     continue
-                                
+
                                 #"../data/mdp/em_{0}.mdp"
                                 mdp=mdp_template.format(self.TIstates[s])#insert the l0/l1 suffix
                                 #"prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/frame{5}.gro"
                                 struct=struct_template.format(p,l,s,i,m,o)#insert the s,i, and m suffixes
                                 top_template=folder+"/topol_ions{3}_{4}.top"
                                 top=top_template.format(p,l,s,i,m)
-                                
+
                                 #restraint
                                 r=""
                                 if posre:
                                     r="-r "+posre.format(p,l,s,i,m)
-                                
+
                                 #make tpr
                                 tprname = "tpr%d.tpr"%o
                                 os.system("gmx grompp -p %s -c %s %s "
@@ -338,7 +338,7 @@ class Workflow_alligned_inProtein(Workflow):
                                               top, struct, r, tprname, mdp, o)
                                           )
                                 check_file_ready(tprname)
-                                
+
                                 #run sim
                                 os.system(self.mdrun+(" -deffnm tpr%d "%o)+
                                           ("-dhdl dHdl%d.xvg "%o)+
@@ -348,9 +348,9 @@ class Workflow_alligned_inProtein(Workflow):
                                 check_file_ready("dHdl%d.xvg"%o)
                                 check_file_ready("tpr%d.gro"%o)
                                 print("%dd\t"%o, end = '', flush=True)
-                                
+
                             print("\n\t\tDone")
-                            
+
                             #clean overwritten files
                             if(clean):
                                 cleanList = glob.glob(sim_folder+'/#*')
@@ -359,55 +359,55 @@ class Workflow_alligned_inProtein(Workflow):
                                         os.unlink(filePath)
                                     except:
                                         print("Error while deleting file: ", filePath)
-                                
+
                             #Return to basepath
                             os.chdir(self.basepath)
-                            
+
     def run_everything(self):
         """Runs the whole workflow.
-        
+
         Parameters
         ----------
         None.
-    
+
         Returns
         -------
         None.
         """
-        
+
         #sanity checks
         self.check_sanity()
         self.check_inputs()
-            
+
         #copy data (*.itp, template topology, ligand and protein structures) to CWD
         self.gather_inputs()
-        
+
         #solvate and generate ions
         self.prep()
-        
+
         #run EM
         self.run_stage("em", self.mdppath+"/protein/em_posre_{0}.mdp",
                     self.basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
                     posre=self.basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
                     completition_check="confout.gro")
-            
+
         #run NVT w hard position restraints to prevent protein deformation
         self.run_stage("nvt_posre", self.mdppath+"/protein/eq_nvt_posre_{0}.mdp",
                     self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/em{4}/confout.gro",
                     posre=self.basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
                     completition_check="confout.gro")
-        
+
         #run NVT w softer position restraints
         self.run_stage("nvt_posre_soft", self.mdppath+"/protein/eq_nvt_posre_soft_{0}.mdp",
                     self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre{4}/confout.gro",
                     posre=self.basepath+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb",
                     completition_check="confout.gro")
-        
+
         #run NPT to sample starting frames for TI
         self.run_stage("npt", self.mdppath+"/protein/eq_npt_test_{0}.mdp",
                     self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre_soft{4}/confout.gro",
                     completition_check="confout.gro")
-                
+
         #genergate Boresh-style protein-ligand restraints
         self.run_callback_on_folders("Restraints", self.gen_restr_callback,
                     srctpr =self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
@@ -415,43 +415,43 @@ class Workflow_alligned_inProtein(Workflow):
                     mdp=self.mdppath+"/protein/init.mdp",
                     completition_check="restraint_coord_distrib.png",
                     b=0)
-                        
+
         #align vaccum ligand onto apo protein structures
         self.run_callback_on_folders("GenMorphs", self.gen_alligned_morphs_callback,
                     srctpr =self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr",
                     srctraj=self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr",
                     b=0, n_morphs=21)
-        
+
         #run TI
         self.run_TI("TI", self.mdppath+"/protein/ti_{0}.mdp",
                     self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/frame{5}.gro",
                     n_morphs=21,
                     completition_check=self.basepath+"/prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/tpr{5}.gro",
                     runfolder="GenMorphs")
-    
- 
+
+
 # ==============================================================================
 #                           CALLBACK FUNCTIONS
-# ==============================================================================                           
-        
+# ==============================================================================
+
     def gen_restr_callback(self, **kwargs):
         """Generates Boresh-style restraints by fitting a
         Gaussians to the restraint coordinate distributions.
-        
+
         Selects anchor atoms to maximize Gaussianity of
         restraint distributions and maximise the
         correlation between bound ligand and apo protein.
         This is usefull when the binding pocket
         changes shape on binding/unbinding.
-        
+
         Please use as a callback function by providing it
         to Workflow.run_callback_on_folders()
-    
+
         Parameters
         ----------
-        **kwargs: dict        
-            Generated by Workflow.run_callback_on_folders()   
-            
+        **kwargs: dict
+            Generated by Workflow.run_callback_on_folders()
+
             b: float
                 start time (in ps) for fit.
             srctraj: str
@@ -463,34 +463,34 @@ class Workflow_alligned_inProtein(Workflow):
             mdp: str
                 mdp file that describes the system. Used to make a tpr
                 without solvent/ions.
-    
+
         Returns
         -------
         None.
-    
+
         """
         folder = kwargs.get('folder')
         p = kwargs.get('p')
         l = kwargs.get('l')
-        
+
         b=kwargs.get('b', 0) #begining of trj to use (ps)
         srctraj=kwargs.get('srctraj')
         srctpr=kwargs.get('srctpr')
         mdp=kwargs.get('mdp')
-        
-    
+
+
         print(folder)
         os.chdir(folder)
-        
+
         #create prot+MOL index group
         os.system("echo \"1|13\nq\n\" | "
                   "gmx make_ndx -f ions0_0.pdb "
                   "-o index_prot_mol.ndx > /dev/null 2>&1")
         check_file_ready("index_prot_mol.ndx")
-                  
+
         #make topology
         os.system("sed 's/SOL/;SOL/g' topol.top > topol_prot_mol.top")
-                          
+
         for s in self.states:
             #make tprs
             if(s == "A"):   #align A to initial structure
@@ -502,11 +502,11 @@ class Workflow_alligned_inProtein(Workflow):
                       "-maxwarn 2 > grompp%s.log 2>&1"%(
                               ref, mdp, s,s) )
             check_file_ready("tpr%s.tpr"%s)
-              
+
             #collect trjs
             if(not os.path.isfile("all_eq%s_fit.xtc"%s)):
                 print("\tCollecting trajectories for state%s"%s)
-                
+
                 #independent repeats for error analysis
                 for i in range(self.n_repeats):
                     #sampling simulations in each repeat
@@ -522,18 +522,18 @@ class Workflow_alligned_inProtein(Workflow):
                                       "-b %d > /dev/null 2>&1"%(
                                               tpr,trj, s,i,m, b) )
                             check_file_ready("eq%s%d_%d.xtc"%(s,i,m))
-                            
+
                 #concatenate trajectories
                 os.system("gmx trjcat -f eq%s*.xtc -o all_eq%s.xtc -sort "
                           "-cat > /dev/null 2>&1"%(s,s) )
                 check_file_ready("all_eq%s.xtc"%s)
-                          
+
                 #fit to reference structure in tpr files
                 os.system("echo 4 0 | gmx trjconv -s tpr%s.tpr -f all_eq%s.xtc "
                           "-o all_eq%s_fit.xtc -fit rot+trans > /dev/null 2>&1"%(
                                   s,s,s) )
                 check_file_ready("all_eq%s_fit.xtc"%s)
-            
+
             #dump first frame
             if(not os.path.isfile("dump%s.gro"%s)):
                 os.system("echo 0 | gmx trjconv -f all_eq%s_fit.xtc "
@@ -541,37 +541,37 @@ class Workflow_alligned_inProtein(Workflow):
                           "-dump 0 > /dev/null 2>&1"%(
                                   s,s,s) )
                 check_file_ready("dump%s.gro"%s)
-                
+
             #find avg structure of A
             if(s=="A"):
                 if(not os.path.isfile("averageA.gro")):
                     find_avg_struct("dumpA.gro", "all_eqA_fit.xtc",
                                     "averageA.gro")
                     check_file_ready("averageA.gro")
-                    
+
         #generate the restraints
         if(not os.path.isfile("ii.itp")):
             find_restraints(log=False)
             check_file_ready("ii.itp")
             check_file_ready("out_dg.dat")
-        
-        #restore base path    
+
+        #restore base path
         os.chdir(self.basepath)
-                            
-        
-                            
+
+
+
     def gen_alligned_morphs_callback(self, **kwargs):
         """Generates coordinates for bound restrained but decoupled state (C)
         by structure allignemnt of vacuum ligand into apo protein.
         Initial frames for TI in coupled state (A) are generated by
         extracting them from NPT simulations.
-        
+
         Assumes existing equilibrium simulations for states
         A (coupled, unrestrained) and B (decoupled, unrestrained)
-        
+
         Please use as a callback function by providing it
         to Workflow.run_callback_on_folders()
-    
+
         Parameters
         ----------
         b: float
@@ -582,26 +582,26 @@ class Workflow_alligned_inProtein(Workflow):
                 "/prot_{0}/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr"
         srctpr: str
             Source tpr path string. Same format as srctraj.
-        **kwargs: dict        
+        **kwargs: dict
             Generated by Workflow.run_callback_on_folders()
-    
+
         Returns
         -------
         None.
-    
+
         """
         folder = kwargs.get('folder')
         p = kwargs.get('p')
         l = kwargs.get('l')
         stage=kwargs.get('stage','morphs')
-        
+
         b=kwargs.get('b', 0) #begining of trj to use (ps)
         srctraj=kwargs.get('srctraj')
         srctpr=kwargs.get('srctpr')
         n_morphs=kwargs.get('n_morphs')
-        
+
         print("\t"+folder)
-        
+
         #independent repeats for error analysis
         for i in range(self.n_repeats):
             #sampling simulations in each repeat
@@ -609,14 +609,14 @@ class Workflow_alligned_inProtein(Workflow):
                 #generate morphs for A state
                 s="A"
                 frname="frame.gro"
-                
+
                 sim_folder=folder+"/state%s/repeat%d/%s%d"%(s,i,stage,m)
                 os.makedirs(sim_folder, exist_ok=True)
                 os.chdir(sim_folder)
-                
+
                 tpr=srctpr.format(p,l,s,i,m)
                 trj=srctraj.format(p,l,s,i,m)
-                
+
                 #avoid reruning trjconv if inputs aren't new
                 ready=False
                 for o in range(n_morphs):
@@ -631,15 +631,15 @@ class Workflow_alligned_inProtein(Workflow):
                               "-f %s -o %s "
                               "-b %f -sep -ur compact -pbc mol "
                               "> /dev/null 2>&1"%(tpr,trj,frname,b) )
-                
+
                 os.chdir(self.basepath)
-                    
+
                 #now make the C state
                 s="C"
                 sim_folder=folder+"/state%s/repeat%d/%s%d"%(s,i,stage,m)
                 os.makedirs(sim_folder, exist_ok=True)
                 os.chdir(sim_folder)
-                
+
                 ready=False
                 for o in range(n_morphs):
                     if(os.path.isfile("frame%d.gro"%o)):
@@ -647,7 +647,7 @@ class Workflow_alligned_inProtein(Workflow):
                                os.path.getctime('frame0.gro'))
                         if(not ready):
                             break
-                
+
                 if(not ready): # at least one is missing
                     m_A = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
                     m_B = Model(folder+"/ions%d_%d.pdb"%(i,m),bPDBTER=True)
@@ -655,14 +655,14 @@ class Workflow_alligned_inProtein(Workflow):
                     m_A.a2nm()
                     m_B.a2nm()
                     m_C.a2nm()
-                    
+
                     trj_A = Trajectory(srctraj.format(p,l,"A",i,m))
                     trj_B  = Trajectory(srctraj.format(p,l,"B",i,m))
-                    
+
                     ndx_file = ndx.IndexFile(folder+"/index_prot_mol.ndx", verbose=False)
                     p_ndx = np.asarray(ndx_file["Protein"].ids)-1
                     l_ndx = np.asarray(ndx_file["MOL"].ids)-1
-                    
+
                     #Frames are not acessible individually, just in sequence.
                     #pmx.xtc.Trajectory is based on __iter__, so we need a custom
                     #"for" loop to simultaneously go through both trajectories.
@@ -676,40 +676,40 @@ class Workflow_alligned_inProtein(Workflow):
                             frame_B = next(iter_B)
                         except StopIteration:
                             break
-                        
+
                         if(not os.path.isfile("frame%d.gro"%fridx)):
                             frame_A.update(m_A)
                             frame_B.update(m_B)
                             frame_B.update(m_C)
-                            
+
                             # step1: fit prot from prot+lig onto apo protein
                             (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
                             # rotate velocities
                             # not needed. We aren't saving m_A
-                                            
+
                             # step2: ligand onto the ligand from prot+lig structure
                             (v1,v2,R) = fit( m_A, m_C, l_ndx, l_ndx )
                             # rotate velocities
                             rotate_velocities_R( m_C, R )
-                            
+
                             #replace coordinates and velocities of ligand in B with rotated ones from C
                             for i in l_ndx:
                                 m_B.atoms[i].x = m_C.atoms[i].x
                                 m_B.atoms[i].v = m_C.atoms[i].v
-                    
-                            # output                        
+
+                            # output
                             m_B.write("frame%d.gro"%fridx)
-                            
+
                         fridx+=1
-    
-                
-                #restore base path    
+
+
+                #restore base path
                 os.chdir(self.basepath)
 
 # ==============================================================================
 #                               FUNCTIONS
 # ==============================================================================
-    
+
 def main(args):
     """Run the main script.
 
@@ -721,7 +721,7 @@ def main(args):
     toppath=os.path.abspath(args.toppath)
     mdppath=os.path.abspath(args.mdppath)
     basepath=os.path.abspath(args.basepath)
-    
+
     w=Workflow_alligned_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
                          basepath=basepath,
                          #mdrun="mdrun_threads_AVX2_256",
