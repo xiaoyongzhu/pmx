@@ -4,6 +4,7 @@ import logging
 import luigi
 import os
 from luigi.contrib.sge import LocalSGEJobTask
+from luigi.tools.deps_tree import print_tree
 from pmx.scripts.workflows.utils import parse_options
 from pmx.scripts.workflows.Workflow import Workflow
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
@@ -82,6 +83,14 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
         #Run the tasks
         class SGE_test(LocalSGEJobTask): # will execute on the login node
 
+            #avoid Prameter not a string warnings
+            job_name_format = luigi.Parameter(
+                significant=False, default="", description="A string that can be "
+                "formatted with class variables to name the job with qsub.")
+            job_name = luigi.Parameter(
+                significant=False, default="",
+                description="Explicit job name given via qsub.")
+
             my_deps=[]
             def work(self):
                 pass
@@ -94,6 +103,8 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
 
         test=SGE_test()
         test.set_deps(self.tasks)
+
+        print(print_tree(test))
 
         #run SGE_test on login node to bypass scheduler
         n_workers=len(self.hosts)*len(self.ligands)*len(self.states)*\

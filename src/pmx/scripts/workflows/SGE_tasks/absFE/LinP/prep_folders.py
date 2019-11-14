@@ -19,6 +19,14 @@ class Gather_Inputs_PL_folder(LocalSGEJobTask): # will execute on the login node
     study_settings = luigi.DictParameter(description='Dict of study stettings '
                       'used to propagate settings to dependencies')
 
+    #avoid Prameter not a string warnings
+    job_name_format = luigi.Parameter(
+        significant=False, default="", description="A string that can be "
+        "formatted with class variables to name the job with qsub.")
+    job_name = luigi.Parameter(
+        significant=False, default="",
+        description="Explicit job name given via qsub.")
+
     def work(self):
 
         #make folder
@@ -88,6 +96,14 @@ class Prep_PL_folder(LocalSGEJobTask): # will execute on the login node
 
     study_settings = luigi.DictParameter(description='Dict of study stettings '
                       'used to propagate settings to dependencies')
+
+    #avoid Prameter not a string warnings
+    job_name_format = luigi.Parameter(
+        significant=False, default="", description="A string that can be "
+        "formatted with class variables to name the job with qsub.")
+    job_name = luigi.Parameter(
+        significant=False, default="",
+        description="Explicit job name given via qsub.")
 
     def requires(self):
         return( Gather_Inputs_PL_folder(folder_path=self.folder_path,

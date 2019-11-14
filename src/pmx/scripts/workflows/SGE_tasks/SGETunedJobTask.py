@@ -41,7 +41,13 @@ class SGETunedJobTask(SGEJobTask):
     #     default=True,
     #     description="don't tarball (and extract) the luigi project files")
 
-    retry_count=0
+    #avoid Prameter not a string warnings
+    job_name_format = luigi.Parameter(
+        significant=False, default="", description="A string that can be "
+        "formatted with class variables to name the job with qsub.")
+    job_name = luigi.Parameter(
+        significant=False, default="",
+        description="Explicit job name given via qsub.")
 
     def _run_job(self):
 
