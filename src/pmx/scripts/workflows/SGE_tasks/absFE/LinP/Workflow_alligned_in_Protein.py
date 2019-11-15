@@ -17,12 +17,14 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
     def __init__(self, toppath, mdppath, hosts=[], ligands=[],
                  n_repeats=3, n_sampling_sims=1, basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,
-                 mdrun="gmx mdrun", mdrun_opts=""):
+                 mdrun="gmx mdrun", mdrun_opts="",
+                 b=2256.0):
         Workflow.__init__(self, toppath, mdppath, hosts, ligands,
                           n_repeats, n_sampling_sims, basepath,
                           d, bt, salt_conc, mdrun, mdrun_opts)
         self.states={"A":"l0", "B":"l1"} #states and suffixes of mdp files
         self.TIstates={"A":"l0", "C":"l1"} #states and suffixes of mdp files
+        self.b=b
 
     def gen_folder_name(self,host,ligand):
         return(self.basepath+'/prot_'+host+'/lig_'+ligand)
@@ -56,7 +58,8 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
                              'states':self.states,
                              'TIstates':self.TIstates,
                              'mdrun':self.mdrun,
-                             'mdrun_opts':self.mdrun_opts }
+                             'mdrun_opts':self.mdrun_opts,
+                             'b':self.b}
         self.tasks=[]
 
         #run NPT to sample starting frames for TI
@@ -131,10 +134,12 @@ def main(args):
     basepath=os.path.abspath(args.basepath)
 
     w=SGE_Workflow_alligned_in_Protein(toppath, mdppath, ["BRD1"], ["lig"],
-                         basepath=basepath,
+                         basepath=basepath, b=args.b,
                          #mdrun="mdrun_threads_AVX2_256",
                          mdrun="gmx mdrun",
-                         mdrun_opts="-pin on -nsteps 1000")
+                         #mdrun_opts="-pin on -nsteps 1000"
+                         mdrun_opts="-pin on"
+                         )
 
     w.run_everything()
 

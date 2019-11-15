@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import re
 import shutil as sh
 from pmx.scripts.cli import check_unknown_cmd
 
@@ -43,6 +44,30 @@ def copy_if_missing(src, trg):
     if(not os.path.isfile(trg)):
         sh.copy(src,trg)
         check_file_ready(trg)
+
+def read_from_mdp(fname):
+    nsteps=0
+    tinit= 0
+    dt=0.002
+    nstxout=0
+    with open(fname,"r") as f:
+        lineList = f.readlines()
+        for line in lineList:
+            if("nsteps" in line):
+                matchObj = re.match( r'nsteps\s*=\s*(\d+)', line, re.M|re.I)
+                nsteps = matchObj.group(1)
+            elif("tinit" in line):
+                matchObj = re.match( r'tinit\s*=\s*(\d+)', line, re.M|re.I)
+                tinit = matchObj.group(1)
+            elif("dt" in line):
+                matchObj = re.match( r'dt\s*=\s*(\d+)', line, re.M|re.I)
+                dt = matchObj.group(1)
+            elif("nstxout" in line):
+                matchObj = re.match( r'nstxout\s*=\s*(\d+)', line, re.M|re.I)
+                nstxout = matchObj.group(1)
+    end_time=tinit+(nsteps*dt)
+    return(end_time, nstxout)
+
 
 # ==============================================================================
 #                      COMMAND LINE OPTIONS AND MAIN
@@ -97,6 +122,12 @@ def parse_options():
                         type=float,
                         help='Distance (nm) between the solute and the box',
                         default=1.5)
+    parser.add_argument('-b',
+                        dest='b',
+                        type=float,
+                        help='Time (ps) at which to start sampling frames '
+                        'from equilibrium simulations',
+                        default=2256.0)
 
 
     args, unknown = parser.parse_known_args()

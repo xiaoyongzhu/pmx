@@ -125,7 +125,7 @@ class Sim_PL_NVT_posre_soft(Sim_PL_EM):
                           parallel_env=self.parallel_env) )
 
 class Sim_PL_NPT(Sim_PL_EM):
-    stage="nvt_posre_soft"
+    stage="npt"
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)
 

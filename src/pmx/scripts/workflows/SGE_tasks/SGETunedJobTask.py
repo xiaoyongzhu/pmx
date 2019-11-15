@@ -5,12 +5,10 @@ import sys
 import time
 import pmx.scripts.workflows.SGE_tasks.SGETunedRunner as sge_runner
 from luigi.contrib.sge import SGEJobTask, logger, _parse_qstat_state, _build_qsub_command, _parse_qsub_job_id
-
-import pickle
-#try:
-#    import cPickle as pickle
-#except ImportError:
-#    import pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 
 class SGETunedJobTask(SGEJobTask):
