@@ -20,8 +20,9 @@ class Sim_PL_EM(SGE_Sim):
     folder_path = luigi.Parameter(significant=False,
                  description='Path to the protein+ligand folder to set up')
 
-    study_settings = luigi.DictParameter(description='Dict of study stettings '
-                      'used to propagate settings to dependencies')
+    study_settings = luigi.DictParameter(significant=False,
+                 description='Dict of study stettings '
+                 'used to propagate settings to dependencies')
 
     stage="em"
     #request 2 cores

@@ -16,8 +16,9 @@ class Gather_Inputs_PL_folder(LocalSGEJobTask): # will execute on the login node
     p = luigi.Parameter(description='Protein name')
     l = luigi.Parameter(description='Ligand name')
 
-    study_settings = luigi.DictParameter(description='Dict of study stettings '
-                      'used to propagate settings to dependencies')
+    study_settings = luigi.DictParameter(significant=False,
+                 description='Dict of study stettings '
+                 'used to propagate settings to dependencies')
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
@@ -94,8 +95,9 @@ class Prep_PL_folder(LocalSGEJobTask): # will execute on the login node
     p = luigi.Parameter(description='Protein name')
     l = luigi.Parameter(description='Ligand name')
 
-    study_settings = luigi.DictParameter(description='Dict of study stettings '
-                      'used to propagate settings to dependencies')
+    study_settings = luigi.DictParameter(significant=False,
+                 description='Dict of study stettings '
+                 'used to propagate settings to dependencies')
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(

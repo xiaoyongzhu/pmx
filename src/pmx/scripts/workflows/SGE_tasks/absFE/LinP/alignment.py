@@ -27,8 +27,9 @@ class Task_PL_gen_morphes(LocalSGEJobTask):
     folder_path = luigi.Parameter(significant=False,
                  description='Path to the protein+ligand folder to set up')
 
-    study_settings = luigi.DictParameter(description='Dict of study stettings '
-                      'used to propagate settings to dependencies')
+    study_settings = luigi.DictParameter(significant=False,
+                 description='Dict of study stettings '
+                 'used to propagate settings to dependencies')
 
     stage="morphes"
 
@@ -44,7 +45,7 @@ class Task_PL_gen_morphes(LocalSGEJobTask):
         description="Explicit job name given via qsub.")
 
     def __init__(self, *args, **kwargs):
-        super(Task_PL_gen_morphes).__init__(*args, **kwargs)
+        super(Task_PL_gen_morphes, self).__init__(*args, **kwargs)
         self._setupState()
 
         #set variables
@@ -52,8 +53,8 @@ class Task_PL_gen_morphes(LocalSGEJobTask):
         self.sim_path = self.folder_path+"/state%s/repeat%d/%s%d"%(
             self.sTI, self.i, self.stage, self.m)
         self.mdp = self.study_settings['mdp_path'] +\
-            "/protein/eq_nvt_posre_{0}.mdp".format(
-                self.study_settings['states'][self.sTI])
+            "/protein/eq_npt_test_{0}.mdp".format(
+                self.study_settings['TIstates'][self.sTI])
 
     def _setupState(self):
         self.s=self.sTI

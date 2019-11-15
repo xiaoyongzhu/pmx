@@ -6,8 +6,9 @@ from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tun
 class SGE_Sim(SGETunedJobTask):
 
     #Parameters:
-    study_settings = luigi.DictParameter(description='Dict of study stettings '
-                      'used to propagate settings to dependencies')
+    study_settings = luigi.DictParameter(significant=False,
+                 description='Dict of study stettings '
+                 'used to propagate settings to dependencies')
 
     #values to be overwritten by subclasses:
     base_path = "./"

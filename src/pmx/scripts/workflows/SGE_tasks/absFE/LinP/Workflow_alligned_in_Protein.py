@@ -8,6 +8,7 @@ from luigi.tools.deps_tree import print_tree
 from pmx.scripts.workflows.utils import parse_options
 from pmx.scripts.workflows.Workflow import Workflow
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_morphes,Task_PL_align
 
 # ==============================================================================
 #                             Workflow Class
@@ -63,21 +64,40 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
         self.tasks=[]
 
         #run NPT to sample starting frames for TI
-        for p in self.hosts:
-            for l in self.ligands:
-                folder_path = self.gen_folder_name(p,l)
-                for s in self.states:
-                    for i in range(self.n_repeats):
-                        for m in range(self.n_sampling_sims):
-                            self.tasks.append(Sim_PL_NPT(
-                                p = p, l = l, i = i, m = m, s = s,
-                                study_settings = self.study_settings,
-                                folder_path = folder_path,
-                                parallel_env='openmp_fast'))
+        # for p in self.hosts:
+        #     for l in self.ligands:
+        #         folder_path = self.gen_folder_name(p,l)
+        #         for s in self.states:
+        #             for i in range(self.n_repeats):
+        #                 for m in range(self.n_sampling_sims):
+        #                     self.tasks.append(Sim_PL_NPT(
+        #                         p = p, l = l, i = i, m = m, s = s,
+        #                         study_settings = self.study_settings,
+        #                         folder_path = folder_path,
+        #                         parallel_env='openmp_fast'))
 
         #genergate Boresh-style protein-ligand restraints
 
         #align vaccum ligand onto apo protein structures
+        for p in self.hosts:
+            for l in self.ligands:
+                folder_path = self.gen_folder_name(p,l)
+
+                for i in range(self.n_repeats):
+                    for m in range(self.n_sampling_sims):
+                        sTI="A"
+                        self.tasks.append(Task_PL_gen_morphes(
+                            p = p, l = l, i = i, m = m, sTI = sTI,
+                            study_settings = self.study_settings,
+                            folder_path = folder_path,
+                            parallel_env='openmp_fast'))
+
+                        sTI="C"
+                        self.tasks.append(Task_PL_align(
+                            p = p, l = l, i = i, m = m, sTI = sTI,
+                            study_settings = self.study_settings,
+                            folder_path = folder_path,
+                            parallel_env='openmp_fast'))
 
         #TI
 
