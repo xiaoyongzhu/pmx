@@ -322,7 +322,7 @@ class Workflow_alligned_inProtein(Workflow):
                                 mdp=mdp_template.format(self.TIstates[s])#insert the l0/l1 suffix
                                 #"prot_{0}/lig_{1}/state{2}/repeat{3}/GenMorphs{4}/frame{5}.gro"
                                 struct=struct_template.format(p,l,s,i,m,o)#insert the s,i, and m suffixes
-                                top_template=folder+"/topol_ions{3}_{4}.top"
+                                top_template=folder+"/topolTI_ions{3}_{4}.top"
                                 top=top_template.format(p,l,s,i,m)
 
                                 #restraint
@@ -554,6 +554,17 @@ class Workflow_alligned_inProtein(Workflow):
             find_restraints(log=False)
             check_file_ready("ii.itp")
             check_file_ready("out_dg.dat")
+
+        #create a C state topology that holds ligand in place
+        #with the restraint from the ii.itp files
+        for i in range(self.n_repeats):
+            for m in range(self.n_sampling_sims):
+                top_ions="topol_ions%d_%d.top"%(i,m)
+                topAC_ions="topolTI_ions%d_%d.top"%(i,m)
+                topsrc=self.toppath+"/topol_abs_prot_restr_amber.top"
+                os.system("cp {} {} > /dev/null 2>&1".format(top_ions,topAC_ions))
+                os.system("tail -n 3 {} >> {}".format(topsrc,topAC_ions))
+                check_file_ready(topAC_ions)
 
         #restore base path
         os.chdir(self.basepath)

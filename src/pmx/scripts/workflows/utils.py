@@ -57,17 +57,18 @@ def read_from_mdp(fname):
                 matchObj = re.match( r'nsteps\s*=\s*(\d+)', line, re.M|re.I)
                 nsteps = int(matchObj.group(1))
             elif("tinit" in line):
-                matchObj = re.match( r'tinit\s*=\s*(\d+)', line, re.M|re.I)
+                matchObj = re.match( r'tinit\s*=\s*([-+]?[0-9]*\.?[0-9]+)', line, re.M|re.I)
                 tinit = float(matchObj.group(1))
             elif("dt" in line):
-                matchObj = re.match( r'dt\s*=\s*(\d+)', line, re.M|re.I)
+                matchObj = re.match( r'dt\s*=\s*([-+]?[0-9]*\.?[0-9]+)', line, re.M|re.I)
                 dt = float(matchObj.group(1))
             elif("nstxout" in line):
                 #print(fname,":\t",line)
                 matchObj = re.match( r'nstxout\s*=\s*(\d+)', line, re.M|re.I)
                 nstxout = int(matchObj.group(1))
     end_time=tinit+(nsteps*dt)
-    return(end_time, nstxout)
+    dtframe=nstxout*dt
+    return(end_time, dtframe)
 
 
 # ==============================================================================

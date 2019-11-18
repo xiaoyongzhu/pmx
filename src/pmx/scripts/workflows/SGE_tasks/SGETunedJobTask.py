@@ -1,9 +1,13 @@
+import logging
 import luigi
 import os
+import random
 import subprocess
 import sys
 import time
+import pmx
 import pmx.scripts.workflows.SGE_tasks.SGETunedRunner as sge_runner
+from luigi.contrib.hadoop import create_packages_archive
 from luigi.contrib.sge import SGEJobTask, logger, _parse_qstat_state, _build_qsub_command, _parse_qsub_job_id
 try:
     import cPickle as pickle
@@ -33,7 +37,7 @@ class SGETunedJobTask(SGEJobTask):
     #     default=True,
     #     description="don't delete the temporary directory used (for debugging)")
 
-    #Don't archive luigi. Jobs load it through conda
+    #Don't archive luigi or pmx. Jobs load them through conda
     # no_tarball = luigi.BoolParameter(
     #     significant=False,
     #     default=True,
@@ -46,6 +50,33 @@ class SGETunedJobTask(SGEJobTask):
     job_name = luigi.Parameter(
         significant=False, default="",
         description="Explicit job name given via qsub.")
+
+    disable_window=3600*24*7 # 7 days
+    retry_count=0 #no retries within disable_window seconds of previous failure
+
+    def _init_local(self):
+
+        # Set up temp folder in shared directory (trim to max filename length)
+        base_tmp_dir = self.shared_tmp_dir
+        random_id = '%016x' % random.getrandbits(64)
+        folder_name = self.task_id + '-' + random_id
+        self.tmp_dir = os.path.join(base_tmp_dir, folder_name)
+        max_filename_length = os.fstatvfs(0).f_namemax
+        self.tmp_dir = self.tmp_dir[:max_filename_length]
+        logger.info("Tmp dir: %s", self.tmp_dir)
+        os.makedirs(self.tmp_dir)
+
+        # Dump the code to be run into a pickle file
+        logging.debug("Dumping pickled class")
+        self._dump(self.tmp_dir)
+
+        if not self.no_tarball:
+            # Make sure that all the class's dependencies are tarred and available
+            # This is not necessary if luigi is importable from the cluster node
+            logging.debug("Tarballing dependencies")
+            # Grab luigi, the whole of pmx, and the module containing the code to be run
+            packages = [luigi] + [pmx] + [__import__(self.__module__, None, None, 'dummy')]
+            create_packages_archive(packages, os.path.join(self.tmp_dir, "packages.tar"))
 
     def _run_job(self):
 

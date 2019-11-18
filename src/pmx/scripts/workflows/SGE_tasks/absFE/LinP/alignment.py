@@ -8,6 +8,7 @@ from pmx import ndx
 from pmx.model import Model
 from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
 from pmx.scripts.workflows.utils import read_from_mdp
 from pmx.xtc import Trajectory
 
@@ -35,6 +36,7 @@ class Task_PL_gen_morphes(LocalSGEJobTask):
 
     #request 1 cores
     n_cpu = luigi.IntParameter(default=1, significant=False)
+    parallel_env = luigi.Parameter(default='openmp_fast', significant=False)
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
@@ -80,15 +82,16 @@ class Task_PL_gen_morphes(LocalSGEJobTask):
 
 
     def requires(self):
-        return( Sim_PL_NPT(p=self.p, l=self.l, i=self.i, m=self.m, s=self.s,
+        #restraints require both state A & B for all repeats and sampling sims
+        return( Task_PL_gen_restraints(p=self.p, l=self.l,
                           study_settings=self.study_settings,
                           folder_path=self.folder_path,
                           parallel_env=self.parallel_env) )
 
     def output(self):
         #find nframes by reading the mdp file
-        end_time, nstxout = read_from_mdp(self.mdp)
-        nframes=int(end_time/nstxout) - int(self.study_settings['b']/nstxout)
+        end_time, dtframe = read_from_mdp(self.mdp)
+        nframes=int(end_time/dtframe) - int(self.study_settings['b']/dtframe) +1 #first frame counts
 
         targets=[]
         for nf in range(nframes):
@@ -172,4 +175,4 @@ class Task_PL_align(Task_PL_gen_morphes):
             fridx+=1
 
         #restore base path
-        os.chdir(self.basepath)
+        os.chdir(self.base_path)

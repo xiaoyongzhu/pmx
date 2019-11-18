@@ -63,21 +63,6 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
                              'b':self.b}
         self.tasks=[]
 
-        #run NPT to sample starting frames for TI
-        # for p in self.hosts:
-        #     for l in self.ligands:
-        #         folder_path = self.gen_folder_name(p,l)
-        #         for s in self.states:
-        #             for i in range(self.n_repeats):
-        #                 for m in range(self.n_sampling_sims):
-        #                     self.tasks.append(Sim_PL_NPT(
-        #                         p = p, l = l, i = i, m = m, s = s,
-        #                         study_settings = self.study_settings,
-        #                         folder_path = folder_path,
-        #                         parallel_env='openmp_fast'))
-
-        #genergate Boresh-style protein-ligand restraints
-
         #align vaccum ligand onto apo protein structures
         for p in self.hosts:
             for l in self.ligands:
@@ -128,6 +113,7 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
         test.set_deps(self.tasks)
 
         print(print_tree(test))
+        #exit(1)
 
         #run SGE_test on login node to bypass scheduler
         n_workers=len(self.hosts)*len(self.ligands)*len(self.states)*\
@@ -154,7 +140,9 @@ def main(args):
     basepath=os.path.abspath(args.basepath)
 
     w=SGE_Workflow_alligned_in_Protein(toppath, mdppath, ["BRD1"], ["lig"],
-                         basepath=basepath, b=args.b,
+                         basepath=basepath,
+                         #b=args.b,
+                         b=0,
                          #mdrun="mdrun_threads_AVX2_256",
                          mdrun="gmx mdrun",
                          #mdrun_opts="-pin on -nsteps 1000"
