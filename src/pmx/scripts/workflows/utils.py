@@ -46,6 +46,16 @@ def copy_if_missing(src, trg):
         check_file_ready(trg)
 
 def read_from_mdp(fname):
+    """
+    Parse mdp file for expected end time and time between saved frames.
+
+    Returns:
+    ----------
+    end_time: float
+        time of last frame (ps).
+    dtframe: float
+        time between saved frames (ps).
+    """
     nsteps = 0
     tinit = 0.0
     dt = 0.0

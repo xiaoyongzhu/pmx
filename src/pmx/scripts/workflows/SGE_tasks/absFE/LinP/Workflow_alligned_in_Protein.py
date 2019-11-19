@@ -3,7 +3,7 @@
 import logging
 import luigi
 import os
-from luigi.contrib.sge import LocalSGEJobTask
+#from luigi.contrib.sge import LocalSGEJobTask
 from luigi.tools.deps_tree import print_tree
 from pmx.scripts.workflows.utils import parse_options
 from pmx.scripts.workflows.Workflow import Workflow
@@ -89,7 +89,7 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
         #analysis
 
         #Run the tasks
-        class SGE_test(LocalSGEJobTask): # will execute on the login node
+        class SGE_test(luigi.task.WrapperTask):
 
             #avoid Prameter not a string warnings
             job_name_format = luigi.Parameter(
