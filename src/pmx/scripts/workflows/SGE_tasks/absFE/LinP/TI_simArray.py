@@ -3,6 +3,7 @@ import luigi
 import os
 import subprocess
 from pmx.scripts.workflows.SGE_tasks.SGETunedArrayJobTask import SGETunedArrayJobTask #tuned for the owl cluster
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_morphes,Task_PL_align
 from pmx.scripts.workflows.utils import read_from_mdp
 
 
@@ -48,6 +49,24 @@ class Task_TI_simArray(SGETunedArrayJobTask):
 
         #find list of unfinished dHdl ids, this should get pickled
         self.unfinished=self.find_unfinished_dHdl()
+
+    def requires(self):
+        if(self.sTI=='A'):
+            return( Task_PL_gen_morphes(p=self.p, l=self.l,
+                          i=self.i, m=self.m, sTI=self.sTI,
+                          study_settings=self.study_settings,
+                          folder_path=self.folder_path,
+                          parallel_env=self.parallel_env) )
+        elif(self.sTI=='C'):
+            return( Task_PL_align(p=self.p, l=self.l,
+                          i=self.i, m=self.m, sTI=self.sTI,
+                          study_settings=self.study_settings,
+                          folder_path=self.folder_path,
+                          parallel_env=self.parallel_env) )
+        else:
+            raise(Exception("Unsupported TI state detected."))
+
+
 
     def output(self):
         nframes = len(glob.glob1(self.sim_path,"frame*.gro"))
