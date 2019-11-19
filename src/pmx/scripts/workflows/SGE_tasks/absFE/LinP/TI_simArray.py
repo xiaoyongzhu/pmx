@@ -50,6 +50,10 @@ class SGE_TI_simArray(SGETunedJobTask):
     #request 1 core
     n_cpu = luigi.IntParameter(default=1, significant=False)
 
+    job_name = luigi.Parameter(
+        significant=False, default="pmx_{task_family}_p{p}_l{l}_{s}{i}_{m}",
+        description="Explicit job name given via qsub.")
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

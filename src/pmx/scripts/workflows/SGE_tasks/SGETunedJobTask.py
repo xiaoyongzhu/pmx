@@ -48,7 +48,7 @@ class SGETunedJobTask(SGEJobTask):
         significant=False, default="", description="A string that can be "
         "formatted with class variables to name the job with qsub.")
     job_name = luigi.Parameter(
-        significant=False, default="",
+        significant=False, default="pmx_{task_family}",
         description="Explicit job name given via qsub.")
 
     disable_window=3600*24*7 # 7 days

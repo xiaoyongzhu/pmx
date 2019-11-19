@@ -43,7 +43,7 @@ class Task_PL_gen_morphes(LocalSGEJobTask):
         significant=False, default="", description="A string that can be "
         "formatted with class variables to name the job with qsub.")
     job_name = luigi.Parameter(
-        significant=False, default="",
+        significant=False, default="pmx_{task_family}_p{p}_l{l}_{sTI}{i}_{m}",
         description="Explicit job name given via qsub.")
 
     def __init__(self, *args, **kwargs):

@@ -28,6 +28,10 @@ class Sim_PL_EM(SGE_Sim):
     #request 2 cores
     n_cpu = luigi.IntParameter(default=2, significant=False)
 
+    job_name = luigi.Parameter(
+        significant=False, default="pmx_{task_family}_p{p}_l{l}_{s}{i}_{m}",
+        description="Explicit job name given via qsub.")
+
     def work(self):
         #set required file names
 

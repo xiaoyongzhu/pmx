@@ -25,7 +25,7 @@ class Gather_Inputs_PL_folder(LocalSGEJobTask): # will execute on the login node
         significant=False, default="", description="A string that can be "
         "formatted with class variables to name the job with qsub.")
     job_name = luigi.Parameter(
-        significant=False, default="",
+        significant=False, default="pmx_{task_family}_p{p}_l{l}",
         description="Explicit job name given via qsub.")
 
     def work(self):
