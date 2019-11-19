@@ -40,15 +40,40 @@ except ImportError:
     import pickle
 import logging
 import tarfile
+import time
 
 
-def _do_work_on_compute_node(work_dir, tarball=True):
+def _do_work_on_compute_node(work_dir, tarball=True, arrayjob=False):
 
     if tarball:
         # Extract the necessary dependencies
         # This can create a lot of I/O overhead when running many SGEJobTasks,
         # so is optional if the luigi project is accessible from the cluster node
-        _extract_packages_archive(work_dir)
+        if(not arrayjob):
+            _extract_packages_archive(work_dir)
+        else:
+            SGE_TASK_ID = int(os.environ['SGE_TASK_ID'])
+            if(SGE_TASK_ID==1):
+                _extract_packages_archive(work_dir)
+                open(work_dir+'/packages_extracted.touch', 'a').close()
+            else:
+                timeout=60 #s to wait for SGE_TASK_ID 1 to untar deps before crashing
+                while(not os.path.isfile(work_dir+'/packages_extracted.touch')
+                      and timeout>0):
+                    time.sleep(1)
+                    timeout-=1
+
+                if os.path.isfile(work_dir+'/packages_extracted.touch'):
+                    if work_dir not in sys.path:
+                        sys.path.insert(0, work_dir) #make sure we look in the untarred folders
+                else:
+                    JOB_ID = int(os.environ['JOB_ID'])
+                    raise(Exception("{JOB}.{TASK} "
+                                    "timed out while waiting for {JOB}.1 "
+                                    "to untar dependencies.".format(
+                                        JOB=JOB_ID, TASK=SGE_TASK_ID)))
+                    exit(1)
+
 
     # Open up the pickle file with the work to be done
     os.chdir(work_dir)
@@ -82,13 +107,14 @@ def main(args=sys.argv):
     """
     try:
         tarball = "--no-tarball" not in args
+        arrayjob = "--arrayjob" in args
         # Set up logging.
         logging.basicConfig(level=logging.WARN)
         work_dir = args[1]
         assert os.path.exists(work_dir), "First argument to sge_runner.py must be a directory that exists"
         project_dir = args[2]
         sys.path.append(project_dir)
-        _do_work_on_compute_node(work_dir, tarball)
+        _do_work_on_compute_node(work_dir, tarball, arrayjob)
     except Exception as e:
         # Dump encoded data that we will try to fetch using mechanize
         print(e)

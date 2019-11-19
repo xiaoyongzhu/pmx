@@ -33,6 +33,7 @@ class SGETunedJobTask(SGEJobTask):
 
     #temp files
     shared_tmp_dir = luigi.Parameter(default=os.path.join(os.getenv("HOME"), 'temp'), significant=False)
+
     # dont_remove_tmp_dir = luigi.BoolParameter(
     #     significant=False,
     #     default=True,

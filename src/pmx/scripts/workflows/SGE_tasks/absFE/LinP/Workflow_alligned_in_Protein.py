@@ -12,13 +12,13 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_mor
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.TI_simArray import Task_TI_simArray
 
 
-# Scheduler factory that disables reruns
+# # Scheduler factory that disables reruns
 class my_WorkerSchedulerFactory(luigi.interface._WorkerSchedulerFactory):
 
     def create_local_scheduler(self):
         return luigi.scheduler.Scheduler(prune_on_get_work=True,
-                                         record_task_history=False,
-                                         retry_count=0)
+                                          record_task_history=False,
+                                          retry_count=0)
 
 # ==============================================================================
 #                             Workflow Class
@@ -101,12 +101,11 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
                 for sTI in self.TIstates:
                     for i in range(self.n_repeats):
                         for m in range(self.n_sampling_sims):
-                            if(len(self.tasks)<1): #debug
-                                self.tasks.append(Task_TI_simArray(
-                                    p = p, l = l, i = i, m = m, sTI = sTI,
-                                    study_settings = self.study_settings,
-                                    folder_path = folder_path,
-                                    parallel_env='openmp_fast'))
+                            self.tasks.append(Task_TI_simArray(
+                                p = p, l = l, i = i, m = m, sTI = sTI,
+                                study_settings = self.study_settings,
+                                folder_path = folder_path,
+                                parallel_env='openmp_fast'))
         #analysis
 
         #Run the tasks
@@ -139,7 +138,8 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
         #run SGE_test on login node to bypass scheduler
         n_workers=len(self.hosts)*len(self.ligands)*len(self.states)*\
                     self.n_repeats*self.n_sampling_sims
-        luigi.build([test],worker_scheduler_factory=my_WorkerSchedulerFactory(),
+        luigi.build([test],
+                    worker_scheduler_factory=my_WorkerSchedulerFactory(),
                     local_scheduler=True, workers=n_workers)
         #luigi.build([test], workers=2)
 

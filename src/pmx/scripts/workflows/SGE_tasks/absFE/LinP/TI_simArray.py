@@ -1,4 +1,6 @@
+import errno
 import glob
+import logging
 import luigi
 import os
 import subprocess
@@ -19,11 +21,11 @@ def _parse_qsub_job_array_id(qsub_out):
     """
     return int(qsub_out.split()[2].split('.')[0])
 
-def _build_qsub_array_command(cmd, job_name, pe, n_cpu, ndHdl_left):
+def _build_qsub_array_command(cmd, job_name, pe, n_cpu, work_dir, ndHdl_left):
     """Submit array job shell command to SGE queue via `qsub`"""
-    qsub_template = """echo {cmd} | qsub -t 1:{ndHdl_left} -V -r y -pe {pe} {n_cpu} -N {job_name} -cwd """
+    qsub_template = """echo {cmd} | qsub -t 1:{ndHdl_left} -V -r y -pe {pe} {n_cpu} -N {job_name} -wd {work_dir}"""
     return qsub_template.format(
-        cmd=cmd, job_name=job_name,
+        cmd=cmd, job_name=job_name, work_dir=work_dir,
         pe=pe, n_cpu=n_cpu, ndHdl_left=ndHdl_left)
 
 
@@ -39,12 +41,9 @@ class Task_TI_simArray(SGETunedJobTask):
     folder_path = luigi.Parameter(significant=False,
                  description='Path to the protein+ligand folder to set up')
 
-    study_settings = luigi.DictParameter(description='Dict of study stettings '
+    study_settings = luigi.DictParameter(significant=False,
+                 description='Dict of study stettings '
                       'used to propagate settings to dependencies')
-
-    not_finished = luigi.ListParameter(description='List of not finished '
-                      'frame numbers', significant=True,
-                      default=[])
 
     stage="morphes"
     #request 1 core
@@ -67,8 +66,12 @@ class Task_TI_simArray(SGETunedJobTask):
                 self.study_settings['TIstates'][self.sTI])
         self.top = self.folder_path+"/topolTI_ions{3}_{4}.top".format(
             self.p, self.l, self.sTI, self.i, self.m)
+        self.mdrun = self.study_settings['mdrun']
+        self.mdrun_opts = self.study_settings['mdrun_opts']
 
         self.unfinished=[]
+        #find list of unfinished dHdl ids, this should get pickled
+        self.unfinished=self.find_unfinished_dHdl()
 
     def output(self):
         nframes = len(glob.glob1(self.sim_path,"frame*.gro"))
@@ -93,7 +96,7 @@ class Task_TI_simArray(SGETunedJobTask):
         expected_end_time, dtframe = read_from_mdp(self.mdp)
         nframes = len(glob.glob1(self.sim_path,"frame*.gro"))
 
-        self.unfinished=[]
+        unf=[]
         for nf in range(nframes):
             fname=os.path.join(self.sim_path, 'dHdl%d.xvg'%nf)
             if(os.path.isfile(fname)):
@@ -101,10 +104,11 @@ class Task_TI_simArray(SGETunedJobTask):
                     ['tail', '-1', fname]).decode('utf-8')
                 last_time = float(last_line.split()[0])
                 if(last_time == expected_end_time):
-                    next;
+                    continue;
 
             #frame not ready
-            self.unfinished.append(nf)
+            unf.append(nf)
+        return(unf)
 
 
 
@@ -117,17 +121,34 @@ class Task_TI_simArray(SGETunedJobTask):
         job_str = 'python {0} "{1}" "{2}"'.format(
             runner_path, self.tmp_dir, os.getcwd())  # enclose tmp_dir in quotes to protect from special escape chars
         if self.no_tarball:
-            job_str += ' "--no-tarball"'
+            job_str += ' --no-tarball'
+
+            #force loading of dependencies by sourcing a custom profile
+            if(os.path.isfile("~/.luigi_profile")):
+                job_str = '"source ~/.luigi_profile; '+job_str+'"'
+            else:
+                logging.error("Tarballing of dependencies is disabled and "
+                              "~/.luigi_profile does not exist. "
+                              "Will not be able to load all workflow "
+                              "dependencies without it. Please create it and "
+                              "within activate a conda environment containing "
+                              "at least python>3.6, "
+                              "pmx, luigi, MDanalysis, matplotlib, and numpy.")
+                raise FileNotFoundError(errno.ENOENT,
+                              os.strerror(errno.ENOENT), "~/.luigi_profile")
+
+        #tell runner that this is an array job
+        job_str += ' --arrayjob'
 
         #force loading of conda and luigi by sourcing a custom profile
         job_str = '"source ~/.luigi_profile; '+job_str+'"'
 
-        #find list of unfinished dHdl ids, this should get pickled
-        self.find_unfinished_dHdl()
+        self.errfile=""; #no errorfile. mdrun dumps too much into stderr
 
         # Build qsub submit command
         submit_cmd = _build_qsub_array_command(job_str, self.job_name,
                                                self.parallel_env, self.n_cpu,
+                                               self.sim_path,
                                                len(self.unfinished))
         logger.debug('qsub command: \n' + submit_cmd)
 
@@ -147,36 +168,36 @@ class Task_TI_simArray(SGETunedJobTask):
 
 
     def work(self):
+
         os.makedirs(self.sim_path, exist_ok=True)
         os.chdir(self.sim_path)
 
         #find which task this is
-        SGE_TASK_ID = os.environ['SGE_TASK_ID']
+        SGE_TASK_ID = int(os.environ['SGE_TASK_ID'])
 
         #translate it into a non-finished frame ID
-        dHdL_id=self.unfinished[SGE_TASK_ID]
+        print("unfinished:",self.unfinished)
+        dHdL_id=self.unfinished[SGE_TASK_ID-1] #SGE starts counting from 1
 
         #find temp working dir for this job
         TMPDIR = os.environ['TMPDIR']
 
         #make tpr
-        os.system("gmx grompp -p %s -c %s "
-                  "-o %s/ti.tpr -f %s -v -maxwarn 3 "%(
-                      TMPDIR, self.top, "frame%d.gro"%dHdL_id, self.mdp)
-                  )
+        os.system("gmx grompp -p {top} -c frame{_id}.gro "
+                  "-o {D}/ti.tpr -po {D}/mdout.mdp -f {mdp} "
+                  "-v -maxwarn 3 ".format(D=TMPDIR, top=self.top,
+                                          mdp=self.mdp, _id=dHdL_id) )
 
         #run sim
         os.system(self.mdrun+" -s {D}/ti.tpr -dhdl {D}/dgdl.xvg -cpo "
                   "{D}/state.cpt -e {D}/ener.edr -g {D}/md.log -o "
                   "{D}/traj.trr -x {D}/traj.xtc -c {D}/confout.gro "
                   "-ntomp {n_cpu} {opts}".format(
-                      D=TMPDIR, n_cpu=self.n_cpu, opts=self.mdrun_opts)
-                  )
+                      D=TMPDIR, n_cpu=self.n_cpu, opts=self.mdrun_opts) )
 
         #copy dHdl file back
         os.system("rsync {}/dgdl.xvg {}/dHdl{}.xvg".format(
-                      TMPDIR, self.sim_path, dHdL_id)
-                  )
+                      TMPDIR, self.sim_path, dHdL_id) )
 
         #Return to basepath
         os.chdir(self.base_path)
