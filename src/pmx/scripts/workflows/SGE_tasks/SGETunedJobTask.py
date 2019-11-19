@@ -46,10 +46,10 @@ class SGETunedJobTask(SGEJobTask):
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
-        significant=False, default="", description="A string that can be "
+        significant=False, default="pmx_{task_family}", description="A string that can be "
         "formatted with class variables to name the job with qsub.")
     job_name = luigi.Parameter(
-        significant=False, default="pmx_{task_family}",
+        significant=False, default="",
         description="Explicit job name given via qsub.")
 
     disable_window=3600*24*7 # 7 days
@@ -110,7 +110,7 @@ class SGETunedJobTask(SGEJobTask):
         # Build qsub submit command
         self.outfile = os.path.join(self.tmp_dir, 'job.out')
         self.errfile = os.path.join(self.tmp_dir, 'job.err')
-        submit_cmd = _build_qsub_command(job_str, self.task_family, self.outfile,
+        submit_cmd = _build_qsub_command(job_str, self.job_name, self.outfile,
                                          self.errfile, self.parallel_env, self.n_cpu)
         logger.debug('qsub command: \n' + submit_cmd)
 

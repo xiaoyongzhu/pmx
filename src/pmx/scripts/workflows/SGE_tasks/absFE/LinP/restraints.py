@@ -33,10 +33,11 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
-        significant=False, default="", description="A string that can be "
+        significant=False, default="pmx_{task_family}_p{p}_l{l}",
+        description="A string that can be "
         "formatted with class variables to name the job with qsub.")
     job_name = luigi.Parameter(
-        significant=False, default="pmx_{task_family}_p{p}_l{l}",
+        significant=False, default="",
         description="Explicit job name given via qsub.")
 
     extra_packages=[md]

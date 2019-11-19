@@ -27,14 +27,14 @@ def _build_qsub_array_command(cmd, job_name, pe, n_cpu, ndHdl_left):
         pe=pe, n_cpu=n_cpu, ndHdl_left=ndHdl_left)
 
 
-class SGE_TI_simArray(SGETunedJobTask):
+class Task_TI_simArray(SGETunedJobTask):
 
     #Parameters:
     p = luigi.Parameter(description='Protein name')
     l = luigi.Parameter(description='Ligand name')
     i = luigi.IntParameter(description='Repeat number')
     m = luigi.IntParameter(description='Sampling sim number')
-    s = luigi.Parameter(description='Coupling state')
+    sTI = luigi.Parameter(description='Coupling state')
 
     folder_path = luigi.Parameter(significant=False,
                  description='Path to the protein+ligand folder to set up')
@@ -50,9 +50,10 @@ class SGE_TI_simArray(SGETunedJobTask):
     #request 1 core
     n_cpu = luigi.IntParameter(default=1, significant=False)
 
-    job_name = luigi.Parameter(
-        significant=False, default="pmx_{task_family}_p{p}_l{l}_{s}{i}_{m}",
-        description="Explicit job name given via qsub.")
+    job_name_format = luigi.Parameter(
+        significant=False, default="pmx_{task_family}_p{p}_l{l}_{sTI}{i}_{m}",
+        description="A string that can be "
+        "formatted with class variables to name the job with qsub.")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -63,9 +64,9 @@ class SGE_TI_simArray(SGETunedJobTask):
             self.sTI, self.i, self.stage, self.m)
         self.mdp = self.study_settings['mdp_path'] +\
             "/protein/ti_{0}.mdp".format(
-                self.study_settings['states'][self.sTI])
+                self.study_settings['TIstates'][self.sTI])
         self.top = self.folder_path+"/topolTI_ions{3}_{4}.top".format(
-            self.p, self.l, self.s, self.i, self.m)
+            self.p, self.l, self.sTI, self.i, self.m)
 
         self.unfinished=[]
 
@@ -78,8 +79,18 @@ class SGE_TI_simArray(SGETunedJobTask):
                 os.path.join(self.sim_path, 'dHdl%d.xvg'%nf)) )
         return targets
 
+    def complete(self):
+        """
+        Check if all dHdl files exist and are of correct length.
+        """
+        outputs = luigi.task.flatten(self.output())
+        all_exist=all(map(lambda output: output.exists(), outputs))
+
+        return (all_exist and not self.find_unfinished_dHdl())
+
+
     def find_unfinished_dHdl(self):
-        expected_last_time = read_from_mdp(self.mdp)
+        expected_end_time, dtframe = read_from_mdp(self.mdp)
         nframes = len(glob.glob1(self.sim_path,"frame*.gro"))
 
         self.unfinished=[]
@@ -89,7 +100,7 @@ class SGE_TI_simArray(SGETunedJobTask):
                 last_line = subprocess.check_output(
                     ['tail', '-1', fname]).decode('utf-8')
                 last_time = float(last_line.split()[0])
-                if(last_time == expected_last_time):
+                if(last_time == expected_end_time):
                     next;
 
             #frame not ready
@@ -115,7 +126,7 @@ class SGE_TI_simArray(SGETunedJobTask):
         self.find_unfinished_dHdl()
 
         # Build qsub submit command
-        submit_cmd = _build_qsub_array_command(job_str, self.task_family,
+        submit_cmd = _build_qsub_array_command(job_str, self.job_name,
                                                self.parallel_env, self.n_cpu,
                                                len(self.unfinished))
         logger.debug('qsub command: \n' + submit_cmd)
