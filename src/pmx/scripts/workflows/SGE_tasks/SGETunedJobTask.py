@@ -52,10 +52,27 @@ class SGETunedJobTask(SGEJobTask):
         significant=False, default="",
         description="Explicit job name given via qsub.")
 
-    disable_window=3600*24*7 # 7 days
-    retry_count=0 #no retries within disable_window seconds of previous failure
-
     extra_packages=[] #extra packages to be tarballed. Overloaded by subclasses.
+
+    #override scheduler based retry policy
+    _disable_window_seconds=3600*24*7 # 7 days
+    _retry_count=0 #no retries within disable_window seconds of previous failure
+
+    @property
+    def retry_count(self):
+        """
+        Override this positive integer to have different ``retry_count`` at task level
+        Check :ref:`scheduler-config`
+        """
+        return self._retry_count
+
+    @property
+    def disable_window_seconds(self):
+        """
+        Override this positive integer to have different ``disable_window_seconds`` at task level.
+        Check :ref:`scheduler-config`
+        """
+        return self._disable_window_seconds
 
     def _init_local(self):
 
@@ -91,7 +108,7 @@ class SGETunedJobTask(SGEJobTask):
         job_str = 'python {0} "{1}" "{2}"'.format(
             runner_path, self.tmp_dir, os.getcwd())  # enclose tmp_dir in quotes to protect from special escape chars
         if self.no_tarball:
-            job_str += ' "--no-tarball"'
+            job_str += ' --no-tarball'
 
             #force loading of dependencies by sourcing a custom profile
             if(os.path.isfile("~/.luigi_profile")):
