@@ -104,6 +104,8 @@ class Task_PL_gen_morphes(LocalSGEJobTask):
 
 class Task_PL_align(Task_PL_gen_morphes):
 
+    extra_packages=[np]
+
     def _setupState(self):
         if(not self.sTI == "C"):
             raise(ValueError("Aligning morphes for TI "

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import luigi
+import MDAnalysis as md
 import os
 from luigi.contrib.sge import LocalSGEJobTask
 from pmx.scripts.workflows.find_anchors_and_write_ii import find_restraints
@@ -37,6 +38,8 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
     job_name = luigi.Parameter(
         significant=False, default="pmx_{task_family}_p{p}_l{l}",
         description="Explicit job name given via qsub.")
+
+    extra_packages=[md]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

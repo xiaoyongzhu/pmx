@@ -1,11 +1,12 @@
+import errno
 import logging
 import luigi
 import os
+import pmx
 import random
 import subprocess
 import sys
 import time
-import pmx
 import pmx.scripts.workflows.SGE_tasks.SGETunedRunner as sge_runner
 from luigi.contrib.hadoop import create_packages_archive
 from luigi.contrib.sge import SGEJobTask, logger, _parse_qstat_state, _build_qsub_command, _parse_qsub_job_id
@@ -54,6 +55,8 @@ class SGETunedJobTask(SGEJobTask):
     disable_window=3600*24*7 # 7 days
     retry_count=0 #no retries within disable_window seconds of previous failure
 
+    extra_packages=[] #extra packages to be tarballed. Overloaded by subclasses.
+
     def _init_local(self):
 
         # Set up temp folder in shared directory (trim to max filename length)
@@ -75,7 +78,8 @@ class SGETunedJobTask(SGEJobTask):
             # This is not necessary if luigi is importable from the cluster node
             logging.debug("Tarballing dependencies")
             # Grab luigi, the whole of pmx, and the module containing the code to be run
-            packages = [luigi] + [pmx] + [__import__(self.__module__, None, None, 'dummy')]
+            packages = [luigi] + [pmx] + self.extra_packages +\
+                [__import__(self.__module__, None, None, 'dummy')]
             create_packages_archive(packages, os.path.join(self.tmp_dir, "packages.tar"))
 
     def _run_job(self):
@@ -89,8 +93,19 @@ class SGETunedJobTask(SGEJobTask):
         if self.no_tarball:
             job_str += ' "--no-tarball"'
 
-        #force loading of conda and luigi by sourcing a custom profile
-        job_str = '"source ~/.luigi_profile; '+job_str+'"'
+            #force loading of dependencies by sourcing a custom profile
+            if(os.path.isfile("~/.luigi_profile")):
+                job_str = '"source ~/.luigi_profile; '+job_str+'"'
+            else:
+                logging.error("Tarballing of dependencies is disabled and "
+                              "~/.luigi_profile does not exist. "
+                              "Will not be able to load all workflow "
+                              "dependencies without it. Please create it and "
+                              "within activate a conda environment containing "
+                              "at least python>3.6, "
+                              "pmx, luigi, MDanalysis, matplotlib, and numpy.")
+                raise FileNotFoundError(errno.ENOENT,
+                              os.strerror(errno.ENOENT), "~/.luigi_profile")
 
         # Build qsub submit command
         self.outfile = os.path.join(self.tmp_dir, 'job.out')
