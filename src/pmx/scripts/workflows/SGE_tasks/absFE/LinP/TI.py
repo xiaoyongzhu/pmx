@@ -47,9 +47,6 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         self.mdrun = self.study_settings['mdrun']
         self.mdrun_opts = self.study_settings['mdrun_opts']
 
-        #find list of unfinished dHdl ids, this should get pickled
-        self.unfinished=self.find_unfinished_dHdl()
-
     def requires(self):
         if(self.sTI=='A'):
             return( Task_PL_gen_morphes(p=self.p, l=self.l,
@@ -84,10 +81,29 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         outputs = luigi.task.flatten(self.output())
         all_exist=all(map(lambda output: output.exists(), outputs))
 
-        return (all_exist and not self.find_unfinished_dHdl())
+        return (all_exist and not self._find_unfinished())
 
 
-    def find_unfinished_dHdl(self):
+    def _find_unfinished(self):
+        """Finds the list of unfinished jobs in the job array
+        which need to be (re)run.
+
+        Overloads implementation in SGETunedArrayJobTask.
+        Needs to be executed after self.__init__(), where self.mdp is set,
+        but before pickling in SGETunedJobTask._init_local() .
+
+        Will be called in self._init_local() before pickling
+        an instance of this class for execution on the worker nodes
+        so the nodes can map SGE_TASK_ID to the correct jobs.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        List of unfinished dHdl*.xvg ids in the job array.
+        """
         expected_end_time, dtframe = read_from_mdp(self.mdp)
         nframes = len(glob.glob1(self.sim_path,"frame*.gro"))
 
@@ -106,7 +122,6 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         return(unf)
 
     def work(self):
-
         os.makedirs(self.sim_path, exist_ok=True)
         os.chdir(self.sim_path)
 

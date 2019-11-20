@@ -32,6 +32,33 @@ class SGETunedArrayJobTask(SGETunedJobTask):
 
     unfinished=[] #set this in __init__()
 
+    def _find_unfinished(self):
+        """Finds the list of unfinished jobs in the array
+        which need to be (re)run.
+
+        Overload this in subclasses.
+        Will be called in self._init_local() before pickling
+        an instance of this class for execution on the worker nodes
+        so the nodes can map SGE_TASK_ID to the correct job.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        List of unfinished jobs in the array.
+        """
+        return([])
+
+    def _init_local(self):
+        #find previously unfinished tasks before pickling this instance
+        self.unfinished=self._find_unfinished()
+        #pickles the instance
+        super()._init_local()
+
+
+
     def _run_job(self):
 
         # Build a qsub argument that will run sge_runner.py on the directory we've specified
