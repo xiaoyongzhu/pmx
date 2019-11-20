@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import glob
 import luigi
 import numpy as np
 import os
@@ -76,6 +77,13 @@ class Task_PL_gen_morphes(LocalSGEJobTask):
                   "-f %s -o %s "
                   "-b %f -sep -ur compact -pbc mol "
                   "> /dev/null 2>&1"%(tpr,trj,"frame.gro",self.study_settings['b']) )
+
+        cleanList = glob.glob(self.folder_path+'/#*')
+        for filePath in cleanList:
+            try:
+                os.unlink(filePath)
+            except:
+                print("Error while deleting file: ", filePath)
 
         #restore base path
         os.chdir(self.base_path)
