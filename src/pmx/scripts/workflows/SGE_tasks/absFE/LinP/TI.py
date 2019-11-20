@@ -78,10 +78,11 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         """
         Check if all dHdl files exist and are of correct length.
         """
+        reqs_complete = all(r.complete() for r in luigi.task.flatten(self.requires()))
         outputs = luigi.task.flatten(self.output())
         all_exist=all(map(lambda output: output.exists(), outputs))
 
-        return (all_exist and not self._find_unfinished())
+        return (reqs_complete and all_exist and not self._find_unfinished())
 
 
     def _find_unfinished(self):

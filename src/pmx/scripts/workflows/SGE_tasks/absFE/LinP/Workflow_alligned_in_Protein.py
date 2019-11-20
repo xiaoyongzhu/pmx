@@ -12,13 +12,34 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_mor
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.TI import Task_PL_TI_simArray
 
 
-# # Scheduler factory that disables reruns
+# Scheduler factory that tries to disable reruns
 class my_WorkerSchedulerFactory(luigi.interface._WorkerSchedulerFactory):
 
     def create_local_scheduler(self):
         return luigi.scheduler.Scheduler(prune_on_get_work=True,
                                           record_task_history=False,
                                           retry_count=0)
+
+# Wrapper task that executes requested dependencies
+class SGE_test(luigi.task.WrapperTask):
+
+    #avoid Prameter not a string warnings
+    job_name_format = luigi.Parameter(
+        significant=False, default="", description="A string that can be "
+        "formatted with class variables to name the job with qsub.")
+    job_name = luigi.Parameter(
+        significant=False, default="",
+        description="Explicit job name given via qsub.")
+
+    my_deps=[]
+    def work(self):
+        pass
+
+    def set_deps(self, deps):
+        self.my_deps=deps
+
+    def requires(self):
+        return( self.my_deps )
 
 # ==============================================================================
 #                             Workflow Class
@@ -87,26 +108,6 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
                                 parallel_env='openmp_fast'))
 
         #Run the tasks
-        class SGE_test(luigi.task.WrapperTask):
-
-            #avoid Prameter not a string warnings
-            job_name_format = luigi.Parameter(
-                significant=False, default="", description="A string that can be "
-                "formatted with class variables to name the job with qsub.")
-            job_name = luigi.Parameter(
-                significant=False, default="",
-                description="Explicit job name given via qsub.")
-
-            my_deps=[]
-            def work(self):
-                pass
-
-            def set_deps(self, deps):
-                self.my_deps=deps
-
-            def requires(self):
-                return( self.my_deps )
-
         test=SGE_test()
         test.set_deps(self.tasks)
 

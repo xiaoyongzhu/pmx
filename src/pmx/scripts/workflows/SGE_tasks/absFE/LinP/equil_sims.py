@@ -33,8 +33,8 @@ class Sim_PL_EM(SGE_Sim):
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         #set required file names
         self.base_path = self.study_settings['base_path']
@@ -72,8 +72,8 @@ class Sim_PL_NVT_posre(Sim_PL_EM):
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\
@@ -92,8 +92,8 @@ class Sim_PL_NVT_posre_soft(Sim_PL_EM):
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\
@@ -112,8 +112,8 @@ class Sim_PL_NPT(Sim_PL_EM):
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\
