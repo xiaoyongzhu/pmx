@@ -44,21 +44,6 @@ class Gather_Inputs_WL_folder(Gather_Inputs_PL_folder):
                   "-o index.ndx > setup.log 2>&1")
         check_file_ready("index.ndx")
 
-        #generate restraints for equillibration
-        #TODO: rewrite this to use the pmx Topology class
-        sh.copy(self.folder_path+"/init.pdb",
-                self.folder_path+"/lig.pdb")
-        check_file_ready("lig.pdb")
-        os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
-                  "-fc 9000 9000 9000 "
-                  "-o lig_posre.itp >> setup.log  2>&1")
-        check_file_ready("lig_posre.itp")
-        os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
-                  "-fc 500 500 500 "
-                  "-o lig_posre_soft.itp >> setup.log 2>&1")
-        check_file_ready("lig_posre_soft.itp")
-
-
         #clean overwritten files
         cleanList = glob.glob(self.folder_path+'/#*')
         for filePath in cleanList:
@@ -71,8 +56,7 @@ class Gather_Inputs_WL_folder(Gather_Inputs_PL_folder):
         os.chdir(self.study_settings['base_path'])
 
     def output(self):
-        files=["topol.top", "lig.itp", "init.pdb", "index.ndx",
-               "lig_posre.itp", "lig_posre_soft.itp"]
+        files=["topol.top", "lig.itp", "init.pdb", "index.ndx"]
         return [luigi.LocalTarget(os.path.join(self.folder_path, f)) for f in files]
 
 

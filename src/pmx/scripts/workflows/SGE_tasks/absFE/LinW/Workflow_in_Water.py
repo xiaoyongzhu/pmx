@@ -73,7 +73,7 @@ class SGE_Workflow_in_Water(SGE_Workflow_alligned_in_Protein):
         test.set_deps(self.tasks)
 
         print(print_tree(test))
-        exit(1)
+        #exit(1)
 
         #run SGE_test on login node to bypass scheduler
         n_workers=len(self.hosts)*len(self.ligands)*len(self.states)*\

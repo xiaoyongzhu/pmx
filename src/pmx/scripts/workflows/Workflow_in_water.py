@@ -57,16 +57,6 @@ class Workflow_inWater(Workflow_alligned_inProtein):
                     sh.copy(self.folder_path+"/init.pdb",
                             self.folder_path+"/lig.pdb")
                     check_file_ready("lig.pdb")
-                if(not os.path.isfile("lig_posre.itp")):
-                    os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
-                              "-fc 9000 9000 9000 "
-                              "-o lig_posre.itp >> setup.log  2>&1")
-                    check_file_ready("lig_posre.itp")
-                if(not os.path.isfile("lig_posre_soft.itp")):
-                    os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
-                              "-fc 500 500 500 "
-                              "-o lig_posre_soft.itp >> setup.log 2>&1")
-                    check_file_ready("lig_posre_soft.itp")
 
                 #clean overwritten files
                 if(clean):

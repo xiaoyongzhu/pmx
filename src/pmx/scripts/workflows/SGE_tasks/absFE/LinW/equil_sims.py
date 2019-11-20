@@ -29,7 +29,8 @@ class Sim_WL_EM(Sim_PL_EM):
 
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\
-            "/water/em_posre_{0}.mdp".format(self.study_settings['states'][self.s])
+            "/water/em_{0}.mdp".format(self.study_settings['states'][self.s])
+        self.posre = None
 
     def requires(self):
         return( Prep_WL_folder(l=self.l,
@@ -39,7 +40,7 @@ class Sim_WL_EM(Sim_PL_EM):
                                 #Prep_WL_folder runs on the login node
 
 
-class Sim_WL_NVT_posre(Sim_PL_NVT_posre):
+class Sim_WL_NVT(Sim_PL_NVT_posre):
     stage="nvt"
 
     #Parameters:
@@ -55,6 +56,7 @@ class Sim_WL_NVT_posre(Sim_PL_NVT_posre):
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\
             "/water/eq_nvt_{0}.mdp".format(self.study_settings['states'][self.s])
+        self.posre = None
 
     def requires(self):
         return( Sim_WL_EM(l=self.l, i=self.i, m=self.m, s=self.s,
@@ -81,9 +83,10 @@ class Sim_WL_NPT(Sim_PL_NPT):
             "/water/eq_npt_test_{0}.mdp".format(self.study_settings['states'][self.s])
         self.struct = self.folder_path+"/state{2}/repeat{3}/nvt{4}/confout.gro".format(
             self.p, self.l, self.s, self.i, self.m)
+        self.posre = None
 
     def requires(self):
-        return( Sim_WL_NVT_posre(l=self.l, i=self.i, m=self.m, s=self.s,
+        return( Sim_WL_NVT(l=self.l, i=self.i, m=self.m, s=self.s,
                           study_settings=self.study_settings,
                           folder_path=self.folder_path,
                           parallel_env=self.parallel_env) )
