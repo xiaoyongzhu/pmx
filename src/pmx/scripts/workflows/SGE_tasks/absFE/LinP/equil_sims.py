@@ -33,26 +33,25 @@ class Sim_PL_EM(SGE_Sim):
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
 
-    def work(self):
-        #set required file names
+    def __init__(self):
+        super().__init__()
 
-        states = self.study_settings['states']
+        #set required file names
         self.base_path = self.study_settings['base_path']
         self.sim_path = self.folder_path+"/state%s/repeat%d/%s%d"%(
             self.s, self.i, self.stage, self.m)
         self.mdp = self.study_settings['mdp_path'] +\
-            "/protein/em_posre_{0}.mdp".format(states[self.s])
+            "/protein/em_posre_{0}.mdp".format(self.study_settings['states'][self.s])
         self.top = self.folder_path+"/topol_ions{3}_{4}.top".format(
             self.p, self.l, self.s, self.i, self.m)
-        self.struct = self.base_path+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb".format(
+        self.struct = self.folder_path+"/ions{3}_{4}.pdb".format(
             self.p, self.l, self.s, self.i, self.m)
-        self.posre = self.base_path+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb".format(
+        self.posre = self.folder_path+"/ions{3}_{4}.pdb".format(
             self.p, self.l, self.s, self.i, self.m)
         self.mdrun = self.study_settings['mdrun']
         self.mdrun_opts = self.study_settings['mdrun_opts']
 
-        #call work in base class
-        SGE_Sim.work(self)
+    #work(): same as SGE_Sim
 
     def requires(self):
         return( Prep_PL_folder(p=self.p, l=self.l,
@@ -73,25 +72,14 @@ class Sim_PL_NVT_posre(Sim_PL_EM):
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)
 
-    def work(self):
-        #set required file names
-        states = self.study_settings['states']
-        self.base_path = self.study_settings['base_path']
-        self.sim_path = self.folder_path+"/state%s/repeat%d/%s%d"%(
-            self.s, self.i, self.stage, self.m)
-        self.mdp = self.study_settings['mdp_path'] +\
-            "/protein/eq_nvt_posre_{0}.mdp".format(states[self.s])
-        self.top = self.folder_path+"/topol_ions{3}_{4}.top".format(
-            self.p, self.l, self.s, self.i, self.m)
-        self.struct = self.base_path+"/prot_{0}/lig_{1}/state{2}/repeat{3}/em{4}/confout.gro".format(
-            self.p, self.l, self.s, self.i, self.m)
-        self.posre = self.base_path+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb".format(
-            self.p, self.l, self.s, self.i, self.m)
-        self.mdrun = self.study_settings['mdrun']
-        self.mdrun_opts = self.study_settings['mdrun_opts']
+    def __init__(self):
+        super().__init__()
 
-        #call work in base class
-        SGE_Sim.work(self)
+        #override relevant file names
+        self.mdp = self.study_settings['mdp_path'] +\
+            "/protein/eq_nvt_posre_{0}.mdp".format(self.study_settings['states'][self.s])
+        self.struct = self.folder_path+"/state{2}/repeat{3}/em{4}/confout.gro".format(
+            self.p, self.l, self.s, self.i, self.m)
 
     def requires(self):
         return( Sim_PL_EM(p=self.p, l=self.l, i=self.i, m=self.m, s=self.s,
@@ -104,25 +92,14 @@ class Sim_PL_NVT_posre_soft(Sim_PL_EM):
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)
 
-    def work(self):
-        #set required file names
-        states = self.study_settings['states']
-        self.base_path = self.study_settings['base_path']
-        self.sim_path = self.folder_path+"/state%s/repeat%d/%s%d"%(
-            self.s, self.i, self.stage, self.m)
-        self.mdp = self.study_settings['mdp_path'] +\
-            "/protein/eq_nvt_posre_soft_{0}.mdp".format(states[self.s])
-        self.top = self.folder_path+"/topol_ions{3}_{4}.top".format(
-            self.p, self.l, self.s, self.i, self.m)
-        self.struct = self.base_path+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre{4}/confout.gro".format(
-            self.p, self.l, self.s, self.i, self.m)
-        self.posre = self.base_path+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb".format(
-            self.p, self.l, self.s, self.i, self.m)
-        self.mdrun = self.study_settings['mdrun']
-        self.mdrun_opts = self.study_settings['mdrun_opts']
+    def __init__(self):
+        super().__init__()
 
-        #call work in base class
-        SGE_Sim.work(self)
+        #override relevant file names
+        self.mdp = self.study_settings['mdp_path'] +\
+            "/protein/eq_nvt_posre_soft_{0}.mdp".format(self.study_settings['states'][self.s])
+        self.struct = self.folder_path+"/state{2}/repeat{3}/nvt_posre{4}/confout.gro".format(
+            self.p, self.l, self.s, self.i, self.m)
 
     def requires(self):
         return( Sim_PL_NVT_posre(p=self.p, l=self.l, i=self.i, m=self.m, s=self.s,
@@ -135,25 +112,15 @@ class Sim_PL_NPT(Sim_PL_EM):
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)
 
-    def work(self):
-        #set required file names
-        states = self.study_settings['states']
-        self.base_path = self.study_settings['base_path']
-        self.sim_path = self.folder_path+"/state%s/repeat%d/%s%d"%(
-            self.s, self.i, self.stage, self.m)
-        self.mdp = self.study_settings['mdp_path'] +\
-            "/protein/eq_npt_test_{0}.mdp".format(states[self.s])
-        self.top = self.folder_path+"/topol_ions{3}_{4}.top".format(
-            self.p, self.l, self.s, self.i, self.m)
-        self.struct = self.base_path+"/prot_{0}/lig_{1}/state{2}/repeat{3}/nvt_posre_soft{4}/confout.gro".format(
-            self.p, self.l, self.s, self.i, self.m)
-        self.posre = self.base_path+"/prot_{0}/lig_{1}/ions{3}_{4}.pdb".format(
-            self.p, self.l, self.s, self.i, self.m)
-        self.mdrun = self.study_settings['mdrun']
-        self.mdrun_opts = self.study_settings['mdrun_opts']
+    def __init__(self):
+        super().__init__()
 
-        #call work in base class
-        SGE_Sim.work(self)
+        #override relevant file names
+        self.mdp = self.study_settings['mdp_path'] +\
+            "/protein/eq_npt_test_{0}.mdp".format(self.study_settings['states'][self.s])
+        self.struct = self.folder_path+"/state{2}/repeat{3}/nvt_posre_soft{4}/confout.gro".format(
+            self.p, self.l, self.s, self.i, self.m)
+        self.posre = None
 
     def requires(self):
         return( Sim_PL_NVT_posre_soft(p=self.p, l=self.l, i=self.i, m=self.m, s=self.s,

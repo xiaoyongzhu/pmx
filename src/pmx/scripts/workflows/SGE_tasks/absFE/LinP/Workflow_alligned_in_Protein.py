@@ -9,7 +9,7 @@ from pmx.scripts.workflows.utils import parse_options
 from pmx.scripts.workflows.Workflow import Workflow
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_morphes,Task_PL_align
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.TI_simArray import Task_TI_simArray
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.TI_simArray import Task_PL_TI_simArray
 
 
 # # Scheduler factory that disables reruns
@@ -101,7 +101,7 @@ class SGE_Workflow_alligned_in_Protein(Workflow):
                 for sTI in self.TIstates:
                     for i in range(self.n_repeats):
                         for m in range(self.n_sampling_sims):
-                            self.tasks.append(Task_TI_simArray(
+                            self.tasks.append(Task_PL_TI_simArray(
                                 p = p, l = l, i = i, m = m, sTI = sTI,
                                 study_settings = self.study_settings,
                                 folder_path = folder_path,

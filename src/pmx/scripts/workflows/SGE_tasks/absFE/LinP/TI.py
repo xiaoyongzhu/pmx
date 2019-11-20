@@ -7,7 +7,7 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_mor
 from pmx.scripts.workflows.utils import read_from_mdp
 
 
-class Task_TI_simArray(SGETunedArrayJobTask):
+class Task_PL_TI_simArray(SGETunedArrayJobTask):
 
     #Parameters:
     p = luigi.Parameter(description='Protein name')

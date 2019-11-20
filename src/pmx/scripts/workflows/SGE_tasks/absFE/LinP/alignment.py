@@ -7,7 +7,6 @@ from luigi.contrib.sge import LocalSGEJobTask
 from pmx import ndx
 from pmx.model import Model
 from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
 from pmx.scripts.workflows.utils import read_from_mdp
 from pmx.xtc import Trajectory
