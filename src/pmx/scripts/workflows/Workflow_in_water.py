@@ -52,8 +52,10 @@ class Workflow_inWater(Workflow_alligned_inProtein):
                 #generate restraints for equillibration
                 #TODO: rewrite this to use the pmx Topology class
                 if(not os.path.isfile("lig.pdb")):
-                    os.system("echo 'MOL\n' | gmx editconf -f init.pdb "
-                              "-o lig.pdb -n index.ndx >> setup.log 2>&1")
+                    # os.system("echo 'MOL\n' | gmx editconf -f init.pdb "
+                    #           "-o lig.pdb -n index.ndx >> setup.log 2>&1")
+                    sh.copy(self.folder_path+"/init.pdb",
+                            self.folder_path+"/lig.pdb")
                     check_file_ready("lig.pdb")
                 if(not os.path.isfile("lig_posre.itp")):
                     os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
