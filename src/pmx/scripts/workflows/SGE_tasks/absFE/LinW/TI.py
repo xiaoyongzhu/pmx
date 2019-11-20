@@ -27,6 +27,8 @@ class Task_WL_TI_simArray(Task_PL_TI_simArray):
         self.mdp = self.study_settings['mdp_path'] +\
             "/water/ti_{0}.mdp".format(
                 self.study_settings['TIstates'][self.sTI])
+        self.top = self.folder_path+"/topol_ions{3}_{4}.top".format(
+            self.p, self.l, self.sTI, self.i, self.m)
         #self._find_unfinished() is executed later and depends on correct self.mdp
 
     def requires(self):

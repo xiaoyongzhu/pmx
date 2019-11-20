@@ -100,6 +100,8 @@ class Workflow_alligned_inProtein(Workflow):
         self.states={"A":"l0", "B":"l1"} #states and suffixes of mdp files
         self.TIstates={"A":"l0", "C":"l1"} #states and suffixes of mdp files
 
+        self.fmtTItop="/topolTI_ions{3}_{4}.top"
+
 
     def check_sanity(self):
         if(not sh.which('gmx')):
@@ -252,7 +254,7 @@ class Workflow_alligned_inProtein(Workflow):
                             #"prot_{0}/lig_{1}/ions{3}_{4}.pdb"
                             #"prot_{0}/lig_{1}/state{2}/repeat{3}/em{4}/confout.gro"
                             struct=struct_template.format(p,l,s,i,m)#insert the s,i, and m suffixes
-                            top_template=folder+"/topol_ions{3}_{4}.top"
+                            top_template=folder+self.fmtTItop
                             top=top_template.format(p,l,s,i,m)
 
                             #restraint

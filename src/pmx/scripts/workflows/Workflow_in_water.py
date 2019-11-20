@@ -24,6 +24,8 @@ class Workflow_inWater(Workflow_alligned_inProtein):
         self.states={"A":"l0", "B":"l1"} #states and suffixes of mdp files
         self.TIstates=self.states #states and suffixes of mdp files
 
+        self.fmtTItop="/topol_ions{3}_{4}.top"
+
     def gen_folder_name(self,host,ligand):
         return(self.basepath+'/'+host+'/lig_'+ligand)
 
