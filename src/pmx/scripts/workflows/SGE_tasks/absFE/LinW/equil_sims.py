@@ -50,6 +50,11 @@ class Sim_WL_NVT(Sim_PL_NVT_posre):
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)
 
+    job_name_format = luigi.Parameter(
+        significant=False, default="pmx_{task_family}_l{l}_{s}{i}_{m}",
+        description="A string that can be "
+        "formatted with class variables to name the job with qsub.")
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -74,6 +79,11 @@ class Sim_WL_NPT(Sim_PL_NPT):
 
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)
+
+    job_name_format = luigi.Parameter(
+        significant=False, default="pmx_{task_family}_l{l}_{s}{i}_{m}",
+        description="A string that can be "
+        "formatted with class variables to name the job with qsub.")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
