@@ -9,6 +9,7 @@ from pmx.scripts.workflows.utils import parse_options
 from pmx.scripts.workflows.SGE_tasks.absFE.LinW.TI import Task_WL_TI_simArray
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.Workflow_aligned_in_Protein import SGE_Workflow_aligned_in_Protein, my_WorkerSchedulerFactory, SGE_test
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.TI import Task_PL_TI_simArray
+from pmx.scripts.workflows.SGE_tasks.absFE.summary import Task_summary_aligned
 
 # ==============================================================================
 #                             Workflow Class
@@ -48,39 +49,47 @@ class SGE_Workflow_aligned_complete(SGE_Workflow_aligned_in_Protein):
                              'b':self.b}
         self.tasks=[]
 
-        #Ligand in Water
-        p="water"
-        self.study_settings['TIstates']=self.states #uses equil states for TI
-        for l in self.ligands:
-            folder_path = self.basepath+'/'+p+'/lig_'+l
-            for sTI in self.states: #uses equil states for TI
-                for i in range(self.n_repeats):
-                    for m in range(self.n_sampling_sims):
-                        self.tasks.append(Task_WL_TI_simArray(
-                            l = l, i = i, m = m, sTI = sTI,
-                            study_settings = self.study_settings,
-                            folder_path = folder_path,
-                            parallel_env='openmp_fast'))
+        # #Ligand in Water
+        # p="water"
+        # self.study_settings['TIstates']=self.states #uses equil states for TI
+        # for l in self.ligands:
+        #     folder_path = self.basepath+'/'+p+'/lig_'+l
+        #     for sTI in self.states: #uses equil states for TI
+        #         for i in range(self.n_repeats):
+        #             for m in range(self.n_sampling_sims):
+        #                 self.tasks.append(Task_WL_TI_simArray(
+        #                     l = l, i = i, m = m, sTI = sTI,
+        #                     study_settings = self.study_settings,
+        #                     folder_path = folder_path,
+        #                     parallel_env='openmp_fast'))
 
-        #Ligand in Protein
-        self.study_settings['TIstates']=self.TIstates
-        for p in self.hosts:
-            for l in self.ligands:
-                folder_path = self.basepath+'/prot_'+p+'/lig_'+l
-                for sTI in self.TIstates:
-                    for i in range(self.n_repeats):
-                        for m in range(self.n_sampling_sims):
-                            self.tasks.append(Task_PL_TI_simArray(
-                                p = p, l = l, i = i, m = m, sTI = sTI,
-                                study_settings = self.study_settings,
-                                folder_path = folder_path,
-                                parallel_env='openmp_fast'))
+        # #Ligand in Protein
+        # self.study_settings['TIstates']=self.TIstates
+        # for p in self.hosts:
+        #     for l in self.ligands:
+        #         folder_path = self.basepath+'/prot_'+p+'/lig_'+l
+        #         for sTI in self.TIstates:
+        #             for i in range(self.n_repeats):
+        #                 for m in range(self.n_sampling_sims):
+        #                     self.tasks.append(Task_PL_TI_simArray(
+        #                         p = p, l = l, i = i, m = m, sTI = sTI,
+        #                         study_settings = self.study_settings,
+        #                         folder_path = folder_path,
+        #                         parallel_env='openmp_fast'))
+
+        #summary
+
+        self.tasks.append(Task_summary_aligned(
+            hosts = self.hosts, ligands = self.ligands,
+            study_settings = self.study_settings,
+            parallel_env='openmp_fast'))
+
 
         test=SGE_test()
         test.set_deps(self.tasks)
 
         print(print_tree(test))
-        #exit(1)
+        exit(1)
 
         #run SGE_test on login node to bypass scheduler
         n_workers=len(self.hosts)*len(self.ligands)*len(self.states)*\
