@@ -6,8 +6,7 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinW.morphes import Task_WL_gen_morph
 class Task_WL_TI_simArray(Task_PL_TI_simArray):
 
     #Parameters:
-    p = luigi.Parameter(significant=False, default=None,
-        description='Protein name') #disables base class' p
+    p = None #disables base class' p
 
     folder_path = luigi.Parameter(significant=False,
                  description='Path to the water+ligand folder to set up')
@@ -32,7 +31,7 @@ class Task_WL_TI_simArray(Task_PL_TI_simArray):
         #self._find_unfinished() is executed later and depends on correct self.mdp
 
     def requires(self):
-        return( Task_WL_gen_morphes(p=self.p, l=self.l,
+        return( Task_WL_gen_morphes(l=self.l,
                           i=self.i, m=self.m, sTI=self.sTI,
                           study_settings=self.study_settings,
                           folder_path=self.folder_path,

@@ -13,8 +13,7 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinP.prep_folders import Gather_Input
 class Gather_Inputs_WL_folder(Gather_Inputs_PL_folder):
     folder_path = luigi.Parameter(significant=False,
         description='Path to the water+ligand folder to set up')
-    p = luigi.Parameter(significant=False, default=None,
-        description='Protein name') #disables base class' p
+    p = None #disables base class' p
 
     job_name_format = luigi.Parameter(
         significant=False, default="pmx_{task_family}_l{l}",
@@ -63,8 +62,7 @@ class Gather_Inputs_WL_folder(Gather_Inputs_PL_folder):
 class Prep_WL_folder(Prep_PL_folder): # will execute on the login node
     folder_path = luigi.Parameter(significant=False,
         description='Path to the water+ligand folder to set up')
-    p = luigi.Parameter(significant=False, default=None,
-        description='Protein name') #disables base class' p
+    p = None #disables base class' p
 
     job_name_format = luigi.Parameter(
         significant=False, default="pmx_{task_family}_l{l}",

@@ -10,8 +10,7 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_EM, Sim
 class Sim_WL_EM(Sim_PL_EM):
 
     #Parameters:
-    p = luigi.Parameter(significant=False, default=None,
-        description='Protein name') #disables base class' p
+    p = None #disables base class' p
 
     folder_path = luigi.Parameter(significant=False,
                  description='Path to the protein+ligand folder to set up')
@@ -44,8 +43,7 @@ class Sim_WL_NVT(Sim_PL_NVT_posre):
     stage="nvt"
 
     #Parameters:
-    p = luigi.Parameter(significant=False, default=None,
-        description='Protein name') #disables base class' p
+    p = None #disables base class' p
 
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)
@@ -74,8 +72,7 @@ class Sim_WL_NPT(Sim_PL_NPT):
     stage="npt"
 
     #Parameters:
-    p = luigi.Parameter(significant=False, default=None,
-        description='Protein name') #disables base class' p
+    p = None #disables base class' p
 
     #request 4 cores
     n_cpu = luigi.IntParameter(default=4, significant=False)

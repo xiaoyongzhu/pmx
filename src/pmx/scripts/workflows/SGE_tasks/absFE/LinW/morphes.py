@@ -11,8 +11,7 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_mor
 class Task_WL_gen_morphes(Task_PL_gen_morphes):
 
     #Parameters:
-    p = luigi.Parameter(significant=False, default=None,
-        description='Protein name') #disables base class' p
+    p = None
 
     folder_path = luigi.Parameter(significant=False,
                  description='Path to the water+ligand folder to set up')
