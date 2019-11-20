@@ -4,7 +4,7 @@ import glob
 import os
 import shutil as sh
 from pmx.scripts.workflows.Workflow import Workflow, check_file_ready, copy_if_missing
-from pmx.scripts.workflows.Workflow_alligned_in_protein import Workflow_alligned_inProtein, parse_options
+from pmx.scripts.workflows.Workflow_aligned_in_protein import Workflow_aligned_inProtein, parse_options
 
 # Constants
 kb = 0.00831447215   # kJ/(K*mol)
@@ -13,7 +13,7 @@ kb = 0.00831447215   # kJ/(K*mol)
 # ==============================================================================
 #                             Workflow Class
 # ==============================================================================
-class Workflow_inWater(Workflow_alligned_inProtein):
+class Workflow_inWater(Workflow_aligned_inProtein):
     def __init__(self, toppath, mdppath, hosts=["water"], ligands=[],
                  n_repeats=3, n_sampling_sims=1, basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,

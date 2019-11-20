@@ -89,7 +89,7 @@ def parse_options():
 # ==============================================================================
 #                             Workflow Class
 # ==============================================================================
-class Workflow_alligned_inProtein(Workflow):
+class Workflow_aligned_inProtein(Workflow):
     def __init__(self, toppath, mdppath, hosts=[], ligands=[],
                  n_repeats=3, n_sampling_sims=1, basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,
@@ -735,7 +735,7 @@ def main(args):
     mdppath=os.path.abspath(args.mdppath)
     basepath=os.path.abspath(args.basepath)
 
-    w=Workflow_alligned_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
+    w=Workflow_aligned_inProtein(toppath, mdppath, ["BRD1"], ["lig"],
                          basepath=basepath,
                          #mdrun="mdrun_threads_AVX2_256",
                          mdrun="gmx mdrun",
