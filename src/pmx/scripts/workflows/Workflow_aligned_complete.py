@@ -5,7 +5,7 @@ import sys
 #from pmx.analysis import read_dgdl_files, plot_work_dist, ks_norm_test
 import pmx.scripts.analyze_dhdl
 from pmx.scripts.workflows.Workflow import Workflow
-from pmx.scripts.workflows.Workflow_alligned_in_protein import Workflow_alligned_inProtein, parse_options
+from pmx.scripts.workflows.Workflow_aligned_in_protein import Workflow_aligned_inProtein, parse_options
 from pmx.scripts.workflows.Workflow_in_water import Workflow_inWater
 
 import numpy as np
@@ -27,7 +27,7 @@ class Workflow_alligned_complete(Workflow):
                           n_repeats, n_sampling_sims, basepath,
                           d, bt, salt_conc, mdrun, mdrun_opts)
 
-        self.wp = Workflow_alligned_inProtein(toppath, mdppath, hosts, ligands,
+        self.wp = Workflow_aligned_inProtein(toppath, mdppath, hosts, ligands,
                                    n_repeats, n_sampling_sims, basepath,
                                    d, bt, salt_conc, mdrun, mdrun_opts)
         self.ww = Workflow_inWater(toppath, mdppath, ["water"], ligands,
