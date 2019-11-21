@@ -197,195 +197,159 @@ system. In <strong>pmx</strong> you can read, change and write index files with 
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pmx.ndx.IndexGroup">
-<em class="property">class </em><code class="descclassname">pmx.ndx.</code><code class="descname">IndexGroup</code><span class="sig-paren">(</span><em>name=''</em>, <em>ids=[]</em>, <em>atoms=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexGroup" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pmx.ndx.</code><code class="sig-name descname">IndexGroup</code><span class="sig-paren">(</span><em class="sig-param">name=''</em>, <em class="sig-param">ids=[]</em>, <em class="sig-param">atoms=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for storing information about a Gromacs index group.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> (<em>str</em>) – name of the group</li>
-<li><strong>ids</strong> (<em>list</em><em>, </em><em>optional</em>) – list of atom indices</li>
-<li><strong>atoms</strong> (<em>list</em><em>, </em><em>optional</em>) – list of <code class="docutils literal notranslate"><span class="pre">Atom</span></code> instances. If this is provided, the ids will be taken from
-the Atom instances.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the group</p></li>
+<li><p><strong>ids</strong> (<em>list</em><em>, </em><em>optional</em>) – list of atom indices</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>, </em><em>optional</em>) – list of <code class="docutils literal notranslate"><span class="pre">Atom</span></code> instances. If this is provided, the ids will be taken from
+the Atom instances.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="pmx.ndx.IndexGroup.name">
-<code class="descname">name</code><a class="headerlink" href="#pmx.ndx.IndexGroup.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><a class="headerlink" href="#pmx.ndx.IndexGroup.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>name of the group</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.ndx.IndexGroup.ids">
-<code class="descname">ids</code><a class="headerlink" href="#pmx.ndx.IndexGroup.ids" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ids</code><a class="headerlink" href="#pmx.ndx.IndexGroup.ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of atom indices</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="pmx.ndx.IndexFile">
-<em class="property">class </em><code class="descclassname">pmx.ndx.</code><code class="descname">IndexFile</code><span class="sig-paren">(</span><em>fname=None</em>, <em>names=[]</em>, <em>groups=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pmx.ndx.</code><code class="sig-name descname">IndexFile</code><span class="sig-paren">(</span><em class="sig-param">fname=None</em>, <em class="sig-param">names=[]</em>, <em class="sig-param">groups=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for storing <code class="docutils literal notranslate"><span class="pre">ndx</span></code> file information. It can be initialsed as an empty
 index file, or by providing an <code class="docutils literal notranslate"><span class="pre">ndx</span></code> file as input, or by providing a list
 of names and <code class="docutils literal notranslate"><span class="pre">IndexGroup</span></code> instances.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>fname</strong> (<em>str</em><em>, </em><em>optional</em>) – input index file. Default is None.</li>
-<li><strong>names</strong> (<em>list</em><em>, </em><em>optional</em>) – list of the group names.</li>
-<li><strong>groups</strong> (<em>list</em><em>, </em><em>optional</em>) – list of IndexGroup instances.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<em>str</em><em>, </em><em>optional</em>) – input index file. Default is None.</p></li>
+<li><p><strong>names</strong> (<em>list</em><em>, </em><em>optional</em>) – list of the group names.</p></li>
+<li><p><strong>groups</strong> (<em>list</em><em>, </em><em>optional</em>) – list of IndexGroup instances.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="pmx.ndx.IndexFile.groups">
-<code class="descname">groups</code><a class="headerlink" href="#pmx.ndx.IndexFile.groups" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">groups</code><a class="headerlink" href="#pmx.ndx.IndexFile.groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of IndexGroup instances</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.ndx.IndexFile.names">
-<code class="descname">names</code><a class="headerlink" href="#pmx.ndx.IndexFile.names" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">names</code><a class="headerlink" href="#pmx.ndx.IndexFile.names" title="Permalink to this definition">¶</a></dt>
 <dd><p>list if index group names</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pmx.ndx.IndexFile.dic">
-<code class="descname">dic</code><a class="headerlink" href="#pmx.ndx.IndexFile.dic" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dic</code><a class="headerlink" href="#pmx.ndx.IndexFile.dic" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary containg index group names as keys and <code class="docutils literal notranslate"><span class="pre">IndexGroup</span></code>
 instances as values</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#pmx.ndx.IndexFile.add_group" title="pmx.ndx.IndexFile.add_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_group</span></code></a>(group)</td>
-<td>Adds a group to the IndexFile.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.ndx.IndexFile.add_group" title="pmx.ndx.IndexFile.add_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_group</span></code></a>(group)</p></td>
+<td><p>Adds a group to the IndexFile.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pmx.ndx.IndexFile.delete_group" title="pmx.ndx.IndexFile.delete_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_group</span></code></a>(name)</td>
-<td>Removes a group from the IndexFile.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pmx.ndx.IndexFile.delete_group" title="pmx.ndx.IndexFile.delete_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_group</span></code></a>(name)</p></td>
+<td><p>Removes a group from the IndexFile.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pmx.ndx.IndexFile.parse" title="pmx.ndx.IndexFile.parse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse</span></code></a>(fp)</td>
-<td>Reads an index file.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.ndx.IndexFile.parse" title="pmx.ndx.IndexFile.parse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse</span></code></a>(fp)</p></td>
+<td><p>Reads an index file.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pmx.ndx.IndexFile.write" title="pmx.ndx.IndexFile.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>([fn,&nbsp;fp])</td>
-<td>Writes the index file.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pmx.ndx.IndexFile.write" title="pmx.ndx.IndexFile.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>([fn, fp])</p></td>
+<td><p>Writes the index file.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="pmx.ndx.IndexFile.add_group">
-<code class="descname">add_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.add_group" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_group</code><span class="sig-paren">(</span><em class="sig-param">group</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.add_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a group to the IndexFile.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group</strong> (<a class="reference internal" href="#pmx.ndx.IndexGroup" title="pmx.ndx.IndexGroup"><em>IndexGroup</em></a>) – instance of IndexGroup to add</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group</strong> (<a class="reference internal" href="#pmx.ndx.IndexGroup" title="pmx.ndx.IndexGroup"><em>IndexGroup</em></a>) – instance of IndexGroup to add</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pmx.ndx.IndexFile.delete_group">
-<code class="descname">delete_group</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.delete_group" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delete_group</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.delete_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a group from the IndexFile.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) – name of the group to remove</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – name of the group to remove</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pmx.ndx.IndexFile.parse">
-<code class="descname">parse</code><span class="sig-paren">(</span><em>fp</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.parse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">fp</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads an index file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fp</strong> (<em>str|object</em>) – filename of the index file, or the file object of the ndx file
-already opened.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fp</strong> (<em>str|object</em>) – filename of the index file, or the file object of the ndx file
+already opened.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pmx.ndx.IndexFile.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>fn=None</em>, <em>fp=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.write" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">fn=None</em>, <em class="sig-param">fp=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the index file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>fn</strong> (<em>str</em><em>, </em><em>optional</em>) – filename. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>. If both <code class="docutils literal notranslate"><span class="pre">fn</span></code> and <code class="docutils literal notranslate"><span class="pre">fp</span></code> are
-<code class="docutils literal notranslate"><span class="pre">None</span></code>, the index is printed to screen.</li>
-<li><strong>fp</strong> (<em>object</em><em>, </em><em>optional</em>) – file object to write the index to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<em>str</em><em>, </em><em>optional</em>) – filename. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>. If both <code class="docutils literal notranslate"><span class="pre">fn</span></code> and <code class="docutils literal notranslate"><span class="pre">fp</span></code> are
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, the index is printed to screen.</p></li>
+<li><p><strong>fp</strong> (<em>object</em><em>, </em><em>optional</em>) – file object to write the index to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

@@ -187,13 +187,13 @@
 calculations. For equilibrium results, you can analyse the data with the Gromacs
 <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">bar</span></code> command, or with the <a class="reference external" href="https://alchemlyb.readthedocs.io/en/latest/">alchemlyb</a> library.</p>
 <p>The data you need for estimating free energy differences is contained in the
-<a class="reference download internal" download="" href="../_downloads/63fd6458b907ce4547580460ef3e8530/dgdl.tar.gz"><code class="xref download docutils literal notranslate"><span class="pre">dgdl.xvg</span></code></a> files that Gromacs outputs during a non-equilibrium simulation.
+<a class="reference download internal" download="" href="../_downloads/ad555cb40178f507b5c8b7de65b94f2e/dgdl.tar.gz"><code class="xref download docutils literal notranslate"><span class="pre">dgdl.xvg</span></code></a> files that Gromacs outputs during a non-equilibrium simulation.
 The free energy difference can then be estimated using the estimators available in
 <strong>pmx</strong>:</p>
 <ul class="simple">
-<li><a class="reference internal" href="../api/modules.html#pmx.estimators.BAR" title="pmx.estimators.BAR"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bennet</span> <span class="pre">Acceptance</span> <span class="pre">Ratio</span></code></a> (BAR)</li>
-<li><a class="reference internal" href="../api/modules.html#pmx.estimators.Crooks" title="pmx.estimators.Crooks"><code class="xref py py-class docutils literal notranslate"><span class="pre">Crooks</span> <span class="pre">Gaussian</span> <span class="pre">Intersection</span></code></a> (CGI)</li>
-<li><a class="reference internal" href="../api/modules.html#pmx.estimators.Jarz" title="pmx.estimators.Jarz"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jarzynski</span> <span class="pre">equality</span></code></a> (Jarz)</li>
+<li><p><a class="reference internal" href="../api/modules.html#pmx.estimators.BAR" title="pmx.estimators.BAR"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bennet</span> <span class="pre">Acceptance</span> <span class="pre">Ratio</span></code></a> (BAR)</p></li>
+<li><p><a class="reference internal" href="../api/modules.html#pmx.estimators.Crooks" title="pmx.estimators.Crooks"><code class="xref py py-class docutils literal notranslate"><span class="pre">Crooks</span> <span class="pre">Gaussian</span> <span class="pre">Intersection</span></code></a> (CGI)</p></li>
+<li><p><a class="reference internal" href="../api/modules.html#pmx.estimators.Jarz" title="pmx.estimators.Jarz"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jarzynski</span> <span class="pre">equality</span></code></a> (Jarz)</p></li>
 </ul>
 <p>In practice, we would recommend to either use BAR or CGI as they are more robust.
 Furthermore, an advantage of BAR over CGI is that it does not rely on the

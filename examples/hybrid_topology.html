@@ -185,7 +185,7 @@
 <h1>Generate Hybrid Topology<a class="headerlink" href="#generate-hybrid-topology" title="Permalink to this headline">¶</a></h1>
 <p>Example on the use of <strong>pmx</strong> to prepare an hybrid topology. This is after running
 pdb2gmx on the mutant structure and obtaining a topology file from Gromacs.</p>
-<p>The simplest case is the following (<a class="reference download internal" download="" href="../_downloads/cf2944543d28d7e8bc0875314337ff8d/topol.top"><code class="xref download docutils literal notranslate"><span class="pre">topol.top</span></code></a>), where
+<p>The simplest case is the following (<a class="reference download internal" download="" href="../_downloads/b96f987e9f5f4cad9595a0f4ac41e265/topol.top"><code class="xref download docutils literal notranslate"><span class="pre">topol.top</span></code></a>), where
 there are no itp files of other molecules included in the topology.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.forcefield</span> <span class="k">import</span> <span class="n">Topology</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.alchemy</span> <span class="k">import</span> <span class="n">gen_hybrid_top</span>
@@ -198,8 +198,8 @@ there are no itp files of other molecules included in the topology.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pmxtop</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;pmxtop.top&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If the topology file includes different itp files (<a class="reference download internal" download="" href="../_downloads/6479f3672b2b63c767ac82f3e8ec230a/topol2.top"><code class="xref download docutils literal notranslate"><span class="pre">topol2.top</span></code></a>,
-<a class="reference download internal" download="" href="../_downloads/bf8203c259b7749e20551cfdbe3bb993/topol2.itp"><code class="xref download docutils literal notranslate"><span class="pre">topol2.itp</span></code></a>),
+<p>If the topology file includes different itp files (<a class="reference download internal" download="" href="../_downloads/380fee4c2a938f9874db96ad3678668d/topol2.top"><code class="xref download docutils literal notranslate"><span class="pre">topol2.top</span></code></a>,
+<a class="reference download internal" download="" href="../_downloads/9273b7107d0e266da7b5eadf9c36cf8c/topol2.itp"><code class="xref download docutils literal notranslate"><span class="pre">topol2.itp</span></code></a>),
 these too can be modified and returned by setting the <code class="docutils literal notranslate"><span class="pre">recursive</span></code> argument to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># load the topology file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="s1">&#39;topol2.top&#39;</span><span class="p">)</span>

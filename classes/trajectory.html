@@ -195,8 +195,15 @@
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pmx.xtc.Trajectory">
-<em class="property">class </em><code class="descclassname">pmx.xtc.</code><code class="descname">Trajectory</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xtc.Trajectory" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pmx.xtc.</code><code class="sig-name descname">Trajectory</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xtc.Trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>changed Trajectory class to use new XDRFile class and keep old scripts working</p>
+<dl class="method">
+<dt id="pmx.xtc.Trajectory.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.xtc.Trajectory.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the xdr file.
+Call this when you are done reading/writing to avoid a memory leak.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>

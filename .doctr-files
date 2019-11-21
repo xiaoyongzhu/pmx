@@ -1,10 +1,10 @@
-./_downloads/5c7277fcb2fe6e38e176efdbc4312270/dna.pdb
-./_downloads/63fd6458b907ce4547580460ef3e8530/dgdl.tar.gz
-./_downloads/6479f3672b2b63c767ac82f3e8ec230a/topol2.top
-./_downloads/9cc3cde6ca46bd9c06c885edf4101b4e/protein_mut_input.tar.gz
-./_downloads/bf8203c259b7749e20551cfdbe3bb993/topol2.itp
-./_downloads/cf2944543d28d7e8bc0875314337ff8d/topol.top
-./_downloads/dff66ace01ba77a3ab28ec6c7fd94445/peptide.pdb
+./_downloads/016edd2dc1efaaa6aa311e96cb366ac2/peptide.pdb
+./_downloads/380fee4c2a938f9874db96ad3678668d/topol2.top
+./_downloads/8b274d9339af370431a5fbf5f88e1c2c/dna.pdb
+./_downloads/9273b7107d0e266da7b5eadf9c36cf8c/topol2.itp
+./_downloads/ad555cb40178f507b5c8b7de65b94f2e/dgdl.tar.gz
+./_downloads/b96f987e9f5f4cad9595a0f4ac41e265/topol.top
+./_downloads/f13343ac931a4ddfd391a6019daf3479/protein_mut_input.tar.gz
 ./_images/Wdist.png
 ./_images/cycle.png
 ./_images/protein_mut_wdist.png
@@ -35,11 +35,7 @@
 ./_sources/tutorials/ligand_mut.rst.txt
 ./_sources/tutorials/nucleic_mut.rst.txt
 ./_sources/tutorials/protein_mut.rst.txt
-./_static/ajax-loader.gif
 ./_static/basic.css
-./_static/comment-bright.png
-./_static/comment-close.png
-./_static/comment.png
 ./_static/css/badge_only.css
 ./_static/css/jupyter.min.css
 ./_static/css/msmb.css
@@ -47,8 +43,6 @@
 ./_static/custom.css
 ./_static/doctools.js
 ./_static/documentation_options.js
-./_static/down-pressed.png
-./_static/down.png
 ./_static/file.png
 ./_static/fonts/Inconsolata-Bold.ttf
 ./_static/fonts/Inconsolata-Regular.ttf
@@ -86,7 +80,7 @@
 ./_static/fonts/fontawesome-webfont.ttf
 ./_static/fonts/fontawesome-webfont.woff
 ./_static/fonts/fontawesome-webfont.woff2
-./_static/jquery-3.2.1.js
+./_static/jquery-3.4.1.js
 ./_static/jquery.js
 ./_static/js/modernizr.min.js
 ./_static/js/theme.js
@@ -99,9 +93,6 @@
 ./_static/searchtools.js
 ./_static/underscore-1.3.1.js
 ./_static/underscore.js
-./_static/up-pressed.png
-./_static/up.png
-./_static/websupport.js
 ./api/modules.html
 ./classes/atom.html
 ./classes/chain.html
