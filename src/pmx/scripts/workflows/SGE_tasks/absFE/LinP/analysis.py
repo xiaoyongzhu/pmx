@@ -95,7 +95,7 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
         for sTI in self.study_settings['TIstates']:
             for m in range(self.study_settings['n_sampling_sims']):
                 tasks.append(Task_PL_TI_simArray(
-                      p=self.p, l=self.l, i=self.i, m=self.m, sTI=sTI,
+                      p=self.p, l=self.l, i=self.i, m=m, sTI=sTI,
                       study_settings=self.study_settings,
                       folder_path=self.folder_path,
                       parallel_env=self.parallel_env) )

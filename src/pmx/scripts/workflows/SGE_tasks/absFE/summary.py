@@ -18,6 +18,7 @@ class Task_summary_aligned(LocalSGEJobTask):
     hosts = luigi.ListParameter(description='list of protein names to evaluate')
     ligands = luigi.ListParameter(description='list of ligand names to evaluate')
 
+    #TODO: add default
     study_settings = luigi.DictParameter(significant=False,
         description='Dict of study stettings '
         'used to propagate settings to dependencies')
@@ -40,9 +41,11 @@ class Task_summary_aligned(LocalSGEJobTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.WL_settings=copy.deepcopy(self.study_settings)
-        self.WL_settings.update({'TIstates': self.WL_settings['states']})
+        self.WL_settings=copy.deepcopy(self.study_settings.get_wrapped())
+        self.WL_settings['TIstates']=self.WL_settings['states']
         self.PL_settings=self.study_settings
+
+        self.base_path = self.study_settings['base_path']
 
     def work(self):
         #TODO: build summary table
@@ -58,7 +61,7 @@ class Task_summary_aligned(LocalSGEJobTask):
         #Ligand in Water
         p="water"
         for l in self.ligands:
-            folder_path = self.basepath+'/'+p+'/lig_'+l
+            folder_path = self.base_path+'/'+p+'/lig_'+l
             for sTI in self.WL_settings['states']: #uses equil states for TI
                 for i in range(self.WL_settings['n_repeats']):
                     tasks.append(Task_WL_analysis_aligned(
@@ -70,7 +73,7 @@ class Task_summary_aligned(LocalSGEJobTask):
         #Ligand in Protein
         for p in self.hosts:
             for l in self.ligands:
-                folder_path = self.basepath+'/prot_'+p+'/lig_'+l
+                folder_path = self.base_path+'/prot_'+p+'/lig_'+l
                 for sTI in self.PL_settings['TIstates']:
                     for i in range(self.PL_settings['n_repeats']):
                         tasks.append(Task_PL_analysis_aligned(

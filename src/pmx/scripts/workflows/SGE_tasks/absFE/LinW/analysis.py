@@ -30,7 +30,7 @@ class Task_WL_analysis_aligned(Task_PL_analysis_aligned):
         for sTI in self.study_settings['TIstates']:
             for m in range(self.study_settings['n_sampling_sims']):
                 tasks.append(Task_WL_TI_simArray(
-                      l=self.l, i=self.i, m=self.m, sTI=sTI,
+                      l=self.l, i=self.i, m=m, sTI=sTI,
                       study_settings=self.study_settings,
                       folder_path=self.folder_path,
                       parallel_env=self.parallel_env) )
