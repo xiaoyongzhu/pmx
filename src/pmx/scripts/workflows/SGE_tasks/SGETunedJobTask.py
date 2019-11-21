@@ -40,10 +40,10 @@ class SGETunedJobTask(SGEJobTask):
     #     description="don't delete the temporary directory used (for debugging)")
 
     #Don't archive luigi or pmx. Jobs load them through conda
-    # no_tarball = luigi.BoolParameter(
-    #     significant=False,
-    #     default=True,
-    #     description="don't tarball (and extract) the luigi project files")
+    no_tarball = luigi.BoolParameter(
+        significant=False,
+        default=True,
+        description="don't tarball (and extract) the luigi project files")
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
@@ -115,7 +115,8 @@ class SGETunedJobTask(SGEJobTask):
             if(os.path.isfile("~/.luigi_profile")):
                 job_str = '"source ~/.luigi_profile; '+job_str+'"'
             else:
-                logging.error("Tarballing of dependencies is disabled and "
+                mylogger = logging.getLogger(self.__class__.__name__)
+                mylogger.error("Tarballing of dependencies is disabled and "
                               "~/.luigi_profile does not exist. "
                               "Will not be able to load all workflow "
                               "dependencies without it. Please create it and "
