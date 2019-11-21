@@ -34,9 +34,6 @@ class SGE_Workflow_aligned_complete(SGE_Workflow_aligned_in_Protein):
         self.check_sanity()
         self.check_inputs()
 
-        logger = logging.getLogger('luigi-interface')
-        logger.setLevel(logging.WARNING)
-
         self.study_settings={'base_path':self.basepath,
                              'top_path':self.toppath,
                              'mdp_path':self.mdppath,
