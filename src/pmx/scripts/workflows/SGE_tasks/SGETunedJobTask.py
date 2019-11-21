@@ -130,7 +130,7 @@ class SGETunedJobTask(SGEJobTask):
             #                   "pmx, luigi, MDanalysis, matplotlib, and numpy."
             #                   "".format(self.source_conda))
             #     raise FileNotFoundError(errno.ENOENT,
-            #                   os.strerror(errno.ENOENT), "~/.luigi_profile")
+            #                   os.strerror(errno.ENOENT), self.source_conda)
 
         # Build qsub submit command
         self.outfile = os.path.join(self.tmp_dir, 'job.out')
