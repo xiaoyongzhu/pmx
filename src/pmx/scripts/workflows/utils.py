@@ -1,10 +1,20 @@
 #!/usr/bin/env python
 
 import argparse
+import logging
 import os
 import re
 import shutil as sh
 from pmx.scripts.cli import check_unknown_cmd
+
+
+# ==============================================================================
+#                             HELPER CLASSES
+# ==============================================================================
+class NoMissingModuleFilter(logging.Filter):
+    def filter(self, record):
+        keywords=["module without the python package"]
+        return not any(s in record.getMessage() for s in keywords)
 
 # ==============================================================================
 #                            HELPER FUNCTIONS

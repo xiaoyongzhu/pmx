@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
 import logging
+from pmx.scripts.workflows.utils import NoMissingModuleFilter
+if __name__ == '__main__': #mute extraneous missing module warnings from luigi
+    logger = logging.getLogger('luigi-interface')
+    logger.addFilter(NoMissingModuleFilter())
 import luigi
 import os
-#from luigi.contrib.sge import LocalSGEJobTask
 from luigi.tools.deps_tree import print_tree
 from pmx.scripts.workflows.utils import parse_options
 from pmx.scripts.workflows.Workflow import Workflow
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_morphes,Task_PL_align
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.TI import Task_PL_TI_simArray
 
 

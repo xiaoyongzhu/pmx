@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
 import logging
+from pmx.scripts.workflows.utils import NoMissingModuleFilter
+if __name__ == '__main__': #mute extraneous missing module warnings from luigi
+    logger = logging.getLogger('luigi-interface')
+    logger.addFilter(NoMissingModuleFilter())
 import luigi
 import os
-#from luigi.contrib.sge import LocalSGEJobTask
 from luigi.tools.deps_tree import print_tree
 from pmx.scripts.workflows.utils import parse_options
 from pmx.scripts.workflows.SGE_tasks.absFE.LinW.TI import Task_WL_TI_simArray
