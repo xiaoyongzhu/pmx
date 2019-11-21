@@ -42,32 +42,26 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
         self.ana_folder=self.folder_path+"/analysis/repeat%d"%self.i
 
     def work(self):
-        #TODO: implement analysis
-        exit(1)
-
         dHdlA=[]
         dHdlB=[]
 
         os.makedirs(self.ana_folder, exist_ok=True)
         os.chdir(self.ana_folder)
 
+        TIstate_list=[*self.study_settings['TIstates']]
         for m in range(self.study_settings['n_sampling_sims']):
-            self.folder_path+"/state%s/repeat%d/%s%d"%(
-                        self.sTI, self.i, self.stage, self.m)
-            dHdlA.append(glob.glob(self.folder_path +\
+            dHdlA.extend(glob.glob(self.folder_path +\
                         '/state{A}/repeat{i}/morphes{m}/dHdl*.xvg'.format(
-                            A=self.study_settings['TIstates'][0],
-                            i=self.i, m=m)))
-            dHdlB.append(glob.glob(self.folder_path +\
+                            A=TIstate_list[0], i=self.i, m=m)))
+            dHdlB.extend(glob.glob(self.folder_path +\
                         '/state{B}/repeat{i}/morphes{m}/dHdl*.xvg'.format(
-                            B=self.study_settings['TIstates'][1],
-                            i=self.i, m=m)))
+                            B=TIstate_list[1], i=self.i, m=m)))
 
         #set script params and call analyze_dhdl
         orig_argv = sys.argv
         orig_stdout=sys.stdout
         orig_stderr=sys.stderr
-        sys.argv = [['analyze_dhdl.py'],\
+        sys.argv = [['analyze_dhdl.py'],
                     ['-fA'], dHdlA,
                     ['-fB'], dHdlB,
                     ['--nbins', "10"]]
@@ -85,9 +79,9 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
         os.chdir(self.base_path)#reset cwd
         pass
 
-    def outputs(self):
-        files=['wplot.png', 'analysis.log']
-        return([luigi.LocalTarget(os.path.join(self.folder_path, f)) for f in files])
+    def output(self):
+        files=['wplot.png', 'analysis.log', 'integA.dat', 'integB.dat', 'results.txt']
+        return([luigi.LocalTarget(os.path.join(self.ana_folder, f)) for f in files])
 
     def requires(self):
         tasks=[]

@@ -140,7 +140,7 @@ class Workflow_alligned_complete(Workflow):
 
 
         #print summary table
-        with open("summary.txt", 'w') as sf:
+        with open("summary_aligned.txt", 'w') as sf:
 
             print("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^12s}".format(
                             "host guest","ddG (kJ/mol)","dG in prot" ,

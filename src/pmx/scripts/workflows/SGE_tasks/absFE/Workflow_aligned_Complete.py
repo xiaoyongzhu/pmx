@@ -7,13 +7,10 @@ if __name__ == '__main__': #mute extraneous missing module warnings from luigi
     logger.addFilter(NoMissingModuleFilter())
 import luigi
 import os
-#from luigi.contrib.sge import LocalSGEJobTask
 from luigi.tools.deps_tree import print_tree
 from pmx.scripts.workflows.utils import parse_options
-#rom pmx.scripts.workflows.SGE_tasks.absFE.LinW.TI import Task_WL_TI_simArray
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.Workflow_aligned_in_Protein import SGE_Workflow_aligned_in_Protein, my_WorkerSchedulerFactory
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.Workflow_aligned_in_Protein import SGE_test
-#from pmx.scripts.workflows.SGE_tasks.absFE.LinP.TI import Task_PL_TI_simArray
 from pmx.scripts.workflows.SGE_tasks.absFE.summary import Task_summary_aligned
 
 # ==============================================================================
@@ -66,15 +63,12 @@ class SGE_Workflow_aligned_complete(SGE_Workflow_aligned_in_Protein):
         test.set_deps(self.tasks)
 
         print(print_tree(test))
-        exit(1)
 
-        #run SGE_test on login node to bypass scheduler
         n_workers=len(self.hosts)*len(self.ligands)*len(self.states)*\
                     self.n_repeats*self.n_sampling_sims
         luigi.build(self.tasks,
                     worker_scheduler_factory=my_WorkerSchedulerFactory(),
                     local_scheduler=True, workers=n_workers)
-        #luigi.build([test], workers=2)
 
 
 
