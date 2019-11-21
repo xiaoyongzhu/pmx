@@ -22,17 +22,17 @@ class Workflow_alligned_complete(Workflow):
     def __init__(self, toppath, mdppath, hosts=[], ligands=[],
                  n_repeats=3, n_sampling_sims=1, basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,
-                 mdrun="gmx mdrun", mdrun_opts=""):
+                 mdrun="gmx mdrun", mdrun_opts="", b=2256.0):
         Workflow.__init__(self, toppath, mdppath, hosts, ligands,
                           n_repeats, n_sampling_sims, basepath,
-                          d, bt, salt_conc, mdrun, mdrun_opts)
+                          d, bt, salt_conc, mdrun, mdrun_opts, b)
 
         self.wp = Workflow_aligned_inProtein(toppath, mdppath, hosts, ligands,
                                    n_repeats, n_sampling_sims, basepath,
-                                   d, bt, salt_conc, mdrun, mdrun_opts)
+                                   d, bt, salt_conc, mdrun, mdrun_opts, b)
         self.ww = Workflow_inWater(toppath, mdppath, ["water"], ligands,
                                    n_repeats, n_sampling_sims, basepath,
-                                   d, bt, salt_conc, mdrun, mdrun_opts)
+                                   d, bt, salt_conc, mdrun, mdrun_opts, b)
 
     def run_analysis(self, n_morphs):
         print("Running stage analysis:")
@@ -209,14 +209,14 @@ def main(args):
 
     w=Workflow_alligned_complete(toppath, mdppath, ["BRD1"], ["lig"],
                          basepath=basepath,
-                         mdrun="mdrun_threads_AVX2_256",
-                         #mdrun="gmx mdrun",
-                         mdrun_opts="-pin on -nsteps 1000 -ntomp 8")
+                         mdrun="gmx mdrun", #alias whatever is here to the best mdrun for each node
+                         mdrun_opts="-pin on",
+                         b=args.b)
 
     w.run_everything()
 
     print("Complete.\n")
 
 if __name__ == '__main__':
-    args = parse_options()
+    args = parse_options(SGE=True)
     main(args)

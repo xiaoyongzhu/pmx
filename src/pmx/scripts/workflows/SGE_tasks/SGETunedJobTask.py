@@ -19,7 +19,6 @@ except ImportError:
 class SGETunedJobTask(SGEJobTask):
 
 #TODO: Override _track_job() so that:
-#           - support batching for TI
 #           - need resume support in case job runs out of time
 
     #change default parallel environment

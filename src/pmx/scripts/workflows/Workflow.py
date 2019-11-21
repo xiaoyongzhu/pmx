@@ -10,7 +10,7 @@ class Workflow:
     def __init__(self, toppath, mdppath, hosts=[], ligands=[],
                  n_repeats=3, n_sampling_sims=1, basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,
-                 mdrun="gmx mdrun", mdrun_opts=""):
+                 mdrun="gmx mdrun", mdrun_opts="", b=2256.0):
         self.toppath = toppath
         self.mdppath = mdppath
         self.n_repeats = n_repeats
@@ -24,18 +24,20 @@ class Workflow:
         self.mdrun = mdrun
         self.mdrun_opts = mdrun_opts
         self.states=[]
+        self.b = b
 
 
     def check_sanity(self):
         if(not sh.which('gmx')):
             raise RuntimeError('gmx not found in $PATH!')
-        if(not sh.which('perl')):
-            raise RuntimeError('perl not found in $PATH!')
 
     def check_inputs(self):
         if(not os.path.isdir(self.toppath)):
             raise RuntimeError('Folder %s provided as toppath'
                                'does not exist'%self.toppath)
+        if(not os.path.isdir(self.mdppath)):
+            raise RuntimeError('Folder %s provided as mdppath'
+                               'does not exist'%self.mdppath)
 
     def gen_folder_name(self,protein,ligand):
         return(self.basepath+'/prot_'+protein+'/lig_'+ligand)

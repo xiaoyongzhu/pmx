@@ -17,10 +17,10 @@ class Workflow_inWater(Workflow_aligned_inProtein):
     def __init__(self, toppath, mdppath, hosts=["water"], ligands=[],
                  n_repeats=3, n_sampling_sims=1, basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,
-                 mdrun="gmx mdrun", mdrun_opts=""):
+                 mdrun="gmx mdrun", mdrun_opts="", b=2256.0):
         Workflow.__init__(self, toppath, mdppath, hosts, ligands,
                           n_repeats, n_sampling_sims, basepath,
-                          d, bt, salt_conc, mdrun, mdrun_opts)
+                          d, bt, salt_conc, mdrun, mdrun_opts, b)
         self.states={"A":"l0", "B":"l1"} #states and suffixes of mdp files
         self.TIstates=self.states #states and suffixes of mdp files
 
@@ -271,7 +271,8 @@ def main(args):
                          basepath=basepath,
                          #mdrun="mdrun_threads_AVX2_256",
                          mdrun="gmx mdrun",
-                         mdrun_opts="-pin on -nsteps 1000 -ntomp 8")
+                         mdrun_opts="-pin on -nsteps 1000 -ntomp 8",
+                         b=args.b)
 
     w.run_everything()
 
