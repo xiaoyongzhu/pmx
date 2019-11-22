@@ -32,7 +32,7 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
             study_settings = self.study_settings,
             parallel_env=self.pe))
 
-        self.n_workers=len(self.hosts)*len(self.ligands)*len(self.states)*\
+        self.n_workers=2*len(self.hosts)*len(self.ligands)*len(self.states)*\
                     self.n_repeats*self.n_sampling_sims
 
         super().run_everything() #creates the scheduler and runs the workers

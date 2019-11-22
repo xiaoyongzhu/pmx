@@ -19,12 +19,15 @@ def _parse_qsub_job_array_id(qsub_out):
     """
     return int(qsub_out.split()[2].split('.')[0])
 
-def _build_qsub_array_command(cmd, job_name, pe, n_cpu, work_dir, nsubtasks):
+def _build_qsub_array_command(cmd, job_name, pe, n_cpu, work_dir, nsubtasks, runtime=None):
     """Submit array job shell command to SGE queue via `qsub`"""
-    qsub_template = """echo {cmd} | qsub -t 1:{nsubtasks} -V -r y -pe {pe} {n_cpu} -N {job_name} -wd {work_dir}"""
+    h_rt=""
+    if(runtime):
+        h_rt="-l h_rt="+runtime
+    qsub_template = """echo {cmd} | qsub -t 1:{nsubtasks} -V -r y {h_rt} -pe {pe} {n_cpu} -N {job_name} -wd {work_dir}"""
     return qsub_template.format(
         cmd=cmd, job_name=job_name, work_dir=work_dir,
-        pe=pe, n_cpu=n_cpu, nsubtasks=nsubtasks)
+        pe=pe, n_cpu=n_cpu, h_rt=h_rt, nsubtasks=nsubtasks)
 
 
 
@@ -70,6 +73,9 @@ class SGETunedArrayJobTask(SGETunedJobTask):
         if self.no_tarball:
             job_str += ' --no-tarball'
 
+        #tell runner that this is an array job
+        job_str += ' --arrayjob'
+
             # #force loading of dependencies by sourcing a custom profile
             # if(os.path.isfile(self.source_conda)):
             #     job_str = '"source {}; '.format(self.source_conda) + job_str+'"'
@@ -86,19 +92,14 @@ class SGETunedArrayJobTask(SGETunedJobTask):
             #     raise FileNotFoundError(errno.ENOENT,
             #                   os.strerror(errno.ENOENT), self.source_conda)
 
-        #tell runner that this is an array job
-        job_str += ' --arrayjob'
-
-        #force loading of conda and luigi by sourcing a custom profile
-        job_str = '"source ~/.luigi_profile; '+job_str+'"'
-
-        self.errfile=""; #no errorfile. mdrun dumps too much into stderr
+        self.errfile=""; #no errorfile. mdrun dumps too much into stderr.
+        #Let SGE assign a separate one for each job in array
 
         # Build qsub submit command
         submit_cmd = _build_qsub_array_command(job_str, self.job_name,
                                                self.parallel_env, self.n_cpu,
                                                self.sim_path,
-                                               len(self.unfinished))
+                                               len(self.unfinished), self.runtime)
         logger.debug('qsub command: \n' + submit_cmd)
 
         # Submit the job and grab job ID

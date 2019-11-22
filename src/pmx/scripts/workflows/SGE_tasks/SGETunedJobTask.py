@@ -1,4 +1,3 @@
-import errno
 import logging
 import luigi
 import os
@@ -9,11 +8,21 @@ import sys
 import time
 import pmx.scripts.workflows.SGE_tasks.SGETunedRunner as sge_runner
 from luigi.contrib.hadoop import create_packages_archive
-from luigi.contrib.sge import SGEJobTask, logger, _parse_qstat_state, _build_qsub_command, _parse_qsub_job_id
+from luigi.contrib.sge import SGEJobTask, logger, _parse_qstat_state, _parse_qsub_job_id
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
+
+def extended_build_qsub_command(cmd, job_name, outfile, errfile, pe, n_cpu, runtime=None):
+    """Submit shell command to SGE queue via `qsub`"""
+    h_rt=""
+    if(runtime):
+        h_rt="-l h_rt="+runtime
+    qsub_template = """echo {cmd} | qsub -o ":{outfile}" -e ":{errfile}" -V -r y {h_rt} -pe {pe} {n_cpu} -N {job_name}"""
+    return qsub_template.format(
+        cmd=cmd, job_name=job_name, outfile=outfile, errfile=errfile,
+        pe=pe, n_cpu=n_cpu, h_rt=h_rt)
 
 
 class SGETunedJobTask(SGEJobTask):
@@ -57,6 +66,12 @@ class SGETunedJobTask(SGEJobTask):
     job_name = luigi.Parameter(
         significant=False, default="",
         description="Explicit job name given via qsub.")
+
+    #set runtime
+    runtime = luigi.Parameter(
+        significant=False, default="24:00:00",
+        description="Hard realtime limit SGE will let jobs from this task run for. "
+        "Format: hh:mm:ss")
 
     extra_packages=[] #extra packages to be tarballed. Overloaded by subclasses.
 
@@ -135,8 +150,9 @@ class SGETunedJobTask(SGEJobTask):
         # Build qsub submit command
         self.outfile = os.path.join(self.tmp_dir, 'job.out')
         self.errfile = os.path.join(self.tmp_dir, 'job.err')
-        submit_cmd = _build_qsub_command(job_str, self.job_name, self.outfile,
-                                         self.errfile, self.parallel_env, self.n_cpu)
+        submit_cmd = extended_build_qsub_command(job_str, self.job_name,
+                             self.outfile, self.errfile, self.parallel_env,
+                             self.n_cpu, self.runtime)
         logger.debug('qsub command: \n' + submit_cmd)
 
         # Submit the job and grab job ID
