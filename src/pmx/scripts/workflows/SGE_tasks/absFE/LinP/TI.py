@@ -23,6 +23,10 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                  description='Dict of study stettings '
                       'used to propagate settings to dependencies')
 
+    restr_scheme = luigi.Parameter(significant=True,
+                 description='Restraint scheme to use. '
+                 'Aligned, Fitted or Fixed')
+
     stage="morphes"
     #request 1 core
     n_cpu = luigi.IntParameter(default=1, significant=False)
@@ -53,13 +57,15 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                           i=self.i, m=self.m, sTI=self.sTI,
                           study_settings=self.study_settings,
                           folder_path=self.folder_path,
-                          parallel_env=self.parallel_env) )
+                          parallel_env=self.parallel_env,
+                          restr_scheme=self.restr_scheme) )
         elif(self.sTI=='C'):
             return( Task_PL_align(p=self.p, l=self.l,
                           i=self.i, m=self.m, sTI=self.sTI,
                           study_settings=self.study_settings,
                           folder_path=self.folder_path,
-                          parallel_env=self.parallel_env) )
+                          parallel_env=self.parallel_env,
+                          restr_scheme=self.restr_scheme) )
         else:
             raise(Exception("Unsupported TI state detected."))
 

@@ -16,6 +16,10 @@ class Task_WL_gen_morphes(Task_PL_gen_morphes):
     folder_path = luigi.Parameter(significant=False,
                  description='Path to the water+ligand folder to set up')
 
+    restr_scheme = luigi.Parameter(significant=False, default="",
+                 description='Restraint scheme to use. '
+                 'Aligned, Fitted or Fixed')
+
     #request 1 cores
     n_cpu = luigi.IntParameter(default=1, significant=False)
 

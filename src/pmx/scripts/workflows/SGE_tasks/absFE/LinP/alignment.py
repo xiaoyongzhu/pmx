@@ -7,7 +7,7 @@ import os
 from luigi.contrib.sge import LocalSGEJobTask
 from pmx import ndx
 from pmx.model import Model
-from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R
+from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R, find_last_protein_atom
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
 from pmx.scripts.workflows.utils import read_from_mdp
 from pmx.xtc import Trajectory
@@ -31,6 +31,10 @@ class Task_PL_gen_morphes(LocalSGEJobTask):
     study_settings = luigi.DictParameter(significant=False,
                  description='Dict of study stettings '
                  'used to propagate settings to dependencies')
+
+    restr_scheme = luigi.Parameter(significant=True,
+                 description='Restraint scheme to use. '
+                 'Aligned, Fitted or Fixed')
 
     stage="morphes"
 
@@ -94,7 +98,8 @@ class Task_PL_gen_morphes(LocalSGEJobTask):
         return( Task_PL_gen_restraints(p=self.p, l=self.l,
                           study_settings=self.study_settings,
                           folder_path=self.folder_path,
-                          parallel_env=self.parallel_env) )
+                          parallel_env=self.parallel_env,
+                          restr_scheme=self.restr_scheme) )
 
     def output(self):
         #find nframes by reading the mdp file
@@ -114,11 +119,18 @@ class Task_PL_align(Task_PL_gen_morphes):
 
     extra_packages=[np]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if(self.restr_scheme != "Aligned"):
+            raise(Exception("{} should only be used if restraint "
+                            "scheme is {}".format(
+                                self.__class__.__name__ ,"Aligned")))
+
     def _setupState(self):
-        if(not self.sTI == "C"):
-            raise(ValueError("Aligning morphes for TI "
-                     "state{}. ".format(self.sTI) +\
-                     "Task_PL_align should only be done on TI stateC."))
+        if(self.sTI != "C"):
+            raise(ValueError("Aligning morphes for TI state{}. "
+                     "{} should only be done on TI stateC.".format(
+                         self.sTI, self.__class__.__name__)))
             exit(1);
         else:
             self.s="B" # TI stateC depends on NPT sim in stateB
@@ -130,20 +142,29 @@ class Task_PL_align(Task_PL_gen_morphes):
         os.chdir(self.sim_path)
 
         m_A = Model(self.folder_path+"/ions%d_%d.pdb"%(self.i,self.m),bPDBTER=True)
-        m_B = Model(self.folder_path+"/ions%d_%d.pdb"%(self.i,self.m),bPDBTER=True)
-        m_C = Model(self.folder_path+"/ions%d_%d.pdb"%(self.i,self.m),bPDBTER=True)
+        m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
+            self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
+        m_C = Model(self.base_path+"/water/lig_{1}/state{2}/ions{3}_{4}.pdb".format(
+            self.p, self.l, 'B', self.i, self.m),bPDBTER=True) #vacL
         m_A.a2nm()
         m_B.a2nm()
         m_C.a2nm()
 
-        srctraj=self.folder_path+"/state{2}/repeat{3}/npt{4}/traj.trr"
+        chID,resID = find_last_protein_atom( m_B )
 
-        trj_A = Trajectory(srctraj.format(self.p,self.l,"A",self.i,self.m))
-        trj_B  = Trajectory(srctraj.format(self.p,self.l,"B",self.i,self.m))
 
-        ndx_file = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
-        p_ndx = np.asarray(ndx_file["Protein"].ids)-1
-        l_ndx = np.asarray(ndx_file["MOL"].ids)-1
+        trj_A = Trajectory(self.folder_path+"/state{2}/repeat{3}/npt{4}/traj.trr".format(
+            self.p, self.l, 'A', self.i, self.m))
+        trj_B  = Trajectory(self.base_path+"/prot_{0}/apoP/repeat{3}/npt{4}/traj.trr".format(
+            self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
+        trj_C  = Trajectory(self.base_path+"/water/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr".format(
+            self.p, self.l, 'B', self.i, self.m),bPDBTER=True) #vacL
+
+        ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
+        ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{1}/index.ndx", verbose=False)
+        p_ndx = np.asarray(ndx_file_A["Protein"].ids)-1
+        linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
+        l_ndx = np.asarray(ndx_file_C["MOL"].ids)-1
 
         #Frames are not acessible individually, just in sequence.
         #pmx.xtc.Trajectory is based on __iter__, so we need a custom
@@ -151,18 +172,20 @@ class Task_PL_align(Task_PL_gen_morphes):
         #Based on https://www.programiz.com/python-programming/iterator
         iter_A = iter(trj_A)
         iter_B = iter(trj_B)
+        iter_C = iter(trj_C)
         fridx=0
         while True:
             try:
                 frame_A = next(iter_A)
                 frame_B = next(iter_B)
+                frame_C = next(iter_C)
             except StopIteration:
                 break
 
             if(not os.path.isfile("frame%d.gro"%fridx)):
                 frame_A.update(m_A)
                 frame_B.update(m_B)
-                frame_B.update(m_C)
+                frame_C.update(m_C)
 
                 # step1: fit prot from prot+lig onto apo protein
                 (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
@@ -170,17 +193,21 @@ class Task_PL_align(Task_PL_gen_morphes):
                 # not needed. We aren't saving m_A
 
                 # step2: ligand onto the ligand from prot+lig structure
-                (v1,v2,R) = fit( m_A, m_C, l_ndx, l_ndx )
+                (v1,v2,R) = fit( m_A, m_C, linA_ndx, l_ndx )
                 # rotate velocities
                 rotate_velocities_R( m_C, R )
 
-                #replace coordinates and velocities of ligand in B with rotated ones from C
-                for i in l_ndx:
-                    m_B.atoms[i].x = m_C.atoms[i].x
-                    m_B.atoms[i].v = m_C.atoms[i].v
+
+
+                #insert vac ligand into B
+                m_B.insert_residue(resID, m_C.residues[0], chID, newResNum=True)
 
                 # output
                 m_B.write("frame%d.gro"%fridx)
+
+                #m_b needs to be reloaded to have correct # of atoms next iteration
+                m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
+                    self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
 
             fridx+=1
 

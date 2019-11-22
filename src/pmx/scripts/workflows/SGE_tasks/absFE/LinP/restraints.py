@@ -26,6 +26,9 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
                  description='Dict of study stettings '
                  'used to propagate settings to dependencies')
 
+    restr_scheme = luigi.Parameter(significant=True,
+                 description='Restraint scheme to use. '
+                 'Aligned, Fitted or Fixed')
 
     #request 1 cores
     n_cpu = luigi.IntParameter(default=1, significant=False)
@@ -66,7 +69,17 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
         #make topology
         os.system("sed 's/SOL/;SOL/g' topol.top > topol_prot_mol.top")
 
-        for s in self.states:
+        relevant_states=None
+        if(self.restr_scheme=="Aligned"):
+            relevant_states=["A", "ApoProt"]
+        elif(self.restr_scheme=="Fitted"):
+            relevant_states=self.states
+        elif(self.restr_scheme=="Fixed"):
+            raise(Exception("Fixed restraints not yet implemened."))
+        else:
+            raise(Exception("Unrecognized restraint scheme."))
+
+        for s in relevant_states:
             #make tprs
             if(s == "A"):   #align A to initial structure
                 ref="box.pdb"
@@ -78,7 +91,7 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
                               ref, self.mdp, s,s) )
 
             #collect trjs
-            print("\tCollecting trajectories for state%s"%s)
+            #print("\tCollecting trajectories for state%s"%s)
 
             #remove previous log if it exists from a crashed attempt
             if(os.path.isfile("trjconv.log")):
@@ -88,16 +101,27 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
             for i in range(self.study_settings['n_repeats']):
                 #sampling simulations in each repeat
                 for m in range(self.study_settings['n_sampling_sims']):
-                    tpr=srctpr.format(self.p,self.l,s,i,m)
-                    trj=srctraj.format(self.p,self.l,s,i,m)
-                    os.system("echo 4 Protein_MOL | "
+                    if(s=="ApoProt"):
+                        apoP_path=self.base_path+"/prot_{0}/apoP/repeat{3}/npt{4}/"
+                        tpr=apoP_path.format(self.p,self.l,s,i,m)+"tpr.tpr"
+                        trj=apoP_path.format(self.p,self.l,s,i,m)+"traj.trr"
+                        sel="4 Protein"
+                        ndx=self.base_path+"/prot_{0}/apoP/index.ndx".format(self.p)
+                    else:
+                        tpr=srctpr.format(self.p,self.l,s,i,m)
+                        trj=srctraj.format(self.p,self.l,s,i,m)
+                        sel="4 Protein_MOL"
+                        ndx="index_prot_mol.ndx"
+
+                    os.system("echo %s | "
                               "gmx trjconv -s %s -f %s "
                               "-o eq%s%d_%d.xtc "
                               "-sep -ur compact -pbc mol -center "
-                              "-boxcenter zero -n index_prot_mol.ndx "
+                              "-boxcenter zero -n %s "
                               "-b %d >> trjconv.log 2>&1"%(
-                                      tpr,trj, s,i,m,
+                                      sel,tpr,trj, s,i,m, ndx,
                                       self.study_settings['b']) )
+
                     check_file_ready("eq%s%d_%d.xtc"%(s,i,m))
 
                 #concatenate trajectories
@@ -124,7 +148,12 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
                 check_file_ready("averageA.gro")
 
         #generate the restraints
-        find_restraints(log=False)
+        if(self.restr_scheme=="Aligned"):
+            find_restraints(structB= "dumpApoProt.gro",
+                            trajB = "all_eqApoProt_fit.xtc",
+                            log=False)
+        elif(self.restr_scheme=="Fitted"):
+            find_restraints(log=False)
 
         #create a C state topology that holds ligand in place
         #with the restraint from the ii.itp files

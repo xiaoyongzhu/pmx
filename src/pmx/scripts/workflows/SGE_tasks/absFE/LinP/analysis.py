@@ -92,7 +92,8 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
                       p=self.p, l=self.l, i=self.i, m=m, sTI=sTI,
                       study_settings=self.study_settings,
                       folder_path=self.folder_path,
-                      parallel_env=self.parallel_env) )
+                      parallel_env=self.parallel_env,
+                      restr_scheme="Aligned") )
 
         return(tasks)
 

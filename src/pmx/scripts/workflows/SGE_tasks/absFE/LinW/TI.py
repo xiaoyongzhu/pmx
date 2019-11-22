@@ -19,6 +19,10 @@ class Task_WL_TI_simArray(Task_PL_TI_simArray):
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
 
+    restr_scheme = luigi.Parameter(significant=False, default="",
+                 description='Restraint scheme to use. '
+                 'Aligned, Fitted or Fixed')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
