@@ -644,6 +644,8 @@ def main(args):
     stime = time.time()
 
     # input arguments
+    filesAB = []
+    filesBA = []
     statesProvided = 'AB'
     out = open(args.outfn, 'w')
     if (args.iA is None) and (args.iB is None):
@@ -749,15 +751,18 @@ def main(args):
         print(' ========================================================')
         print('                   PROCESSING THE DATA')
         print(' ========================================================')
-        print('  Forward Data')
-        res_ab = parse_dgdl_files(filesAB, lambda0=0,
+        res_ab = []
+        res_ba = []
+        if 'A' in statesProvided:
+            print('  Forward Data')
+            res_ab = parse_dgdl_files(filesAB, lambda0=0,
                                   invert_values=False)
-        print('  Reverse Data')
-        res_ba = parse_dgdl_files(filesBA, lambda0=1,
+            _dump_integ_file(args.oA, filesAB, res_ab)
+        if 'B' in statesProvided:
+            print('  Reverse Data')
+            res_ba = parse_dgdl_files(filesBA, lambda0=1,
                                   invert_values=reverseB)
-
-        _dump_integ_file(args.oA, filesAB, res_ab)
-        _dump_integ_file(args.oB, filesBA, res_ba)
+            _dump_integ_file(args.oB, filesBA, res_ba)
 
     # If work values are given as input instead, read those
     elif args.iA is not None or args.iB is not None:
