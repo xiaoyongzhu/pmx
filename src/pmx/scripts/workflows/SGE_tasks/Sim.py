@@ -1,6 +1,8 @@
 import glob
 import luigi
 import os
+import shutil as sh
+import datetime
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 
 class SGE_Sim(SGETunedJobTask):
@@ -40,12 +42,13 @@ class SGE_Sim(SGETunedJobTask):
         if self.posre:
             r="-r "+self.posre
 
-        #make tpr
-        os.system("gmx grompp -p %s -c %s %s "
-                  "-o tpr.tpr -f %s -v -maxwarn 3 "
-                  "> prep.log 2>&1"%(
-                      self.top, self.struct, r, self.mdp)
-                  )
+        #make tpr (if it wasn't made in past crashed run)
+        if(not os.path.isfile("tpr.tpr")):
+            os.system("gmx grompp -p %s -c %s %s "
+                      "-o tpr.tpr -f %s -v -maxwarn 3 "
+                      "> prep.log 2>&1"%(
+                          self.top, self.struct, r, self.mdp)
+                      )
 
         #don't run mdrun on failure
         if(not os.path.isfile("tpr.tpr")):
@@ -54,9 +57,19 @@ class SGE_Sim(SGETunedJobTask):
                             os.path.join(self.sim_path,"tpr.tpr") )
 
         #run sim
-        os.system(self.mdrun+" -s tpr.tpr " +\
-                  "-ntomp %d "%self.n_cpu +\
-                  self.mdrun_opts + " > mdrun.log 2>&1")
+        if(os.path.isfile('state.cpt')):
+            #checkpoint exists, resume from it
+            date_time = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
+            sh.copy('state.cpt','state_{}_start.cpt'.format(date_time))
+            os.system("{mdrun} -s tpr.tpr -ntomp {n_cpu} -cpi state.cpt "
+                      "{mdrun_opts} > mdrun.log 2>&1".format(
+                          mdrun=self.mdrun, n_cpu=self.n_cpu,
+                          mdrun_opts=self.mdrun_opts))
+        else: #first time
+            os.system("{mdrun} -s tpr.tpr -ntomp {n_cpu} "
+                      "{mdrun_opts} > mdrun.log 2>&1".format(
+                          mdrun=self.mdrun, n_cpu=self.n_cpu,
+                          mdrun_opts=self.mdrun_opts))
 
         #clean overwritten files
         cleanList = glob.glob(self.sim_path+'/#*')
