@@ -9,6 +9,7 @@ from pmx import ndx
 from pmx.model import Model
 from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R, find_last_protein_atom
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
+from pmx.scripts.workflows.SGE_tasks.absFE.LinW.equil_sims import Sim_WL_NPT
 from pmx.scripts.workflows.utils import read_from_mdp
 from pmx.xtc import Trajectory
 
@@ -134,6 +135,23 @@ class Task_PL_align(Task_PL_gen_morphes):
             exit(1);
         else:
             self.s="B" # TI stateC depends on NPT sim in stateB
+
+    def requires(self):
+        #restraints require both state A & B for all repeats and sampling sims
+        tasks=[Task_PL_gen_restraints(p=self.p, l=self.l,
+                          study_settings=self.study_settings,
+                          folder_path=self.folder_path,
+                          parallel_env=self.parallel_env,
+                          restr_scheme=self.restr_scheme)]
+
+        for i in range(self.study_settings['n_repeats']):
+            for m in range(self.study_settings['n_sampling_sims']):
+                tasks.append(Sim_WL_NPT(l=self.l, i=i, m=m, s='B',
+                          study_settings=self.study_settings,
+                          folder_path=self.base_path+"/water/lig_{}".format(self.l),
+                          parallel_env=self.parallel_env))
+
+        return(tasks)
 
 
     def work(self):

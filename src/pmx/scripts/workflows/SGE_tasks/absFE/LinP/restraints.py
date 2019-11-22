@@ -7,6 +7,7 @@ from luigi.contrib.sge import LocalSGEJobTask
 from pmx.scripts.workflows.find_anchors_and_write_ii import find_restraints
 from pmx.scripts.workflows.find_avg import find_avg_struct
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
+from pmx.scripts.workflows.SGE_tasks.absFE.ApoP.equil_sims import Sim_ApoP_NPT
 from pmx.scripts.workflows.utils import check_file_ready
 
 
@@ -177,13 +178,25 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
             #sampling simulations in each repeat
             for m in range(self.study_settings['n_sampling_sims']):
                 #states of equilibrium sims
-                for s in self.states:
-                    reqs.append(
-                        Sim_PL_NPT(p=self.p, l=self.l, i=i, m=m, s=s,
-                                  study_settings=self.study_settings,
-                                  folder_path=self.folder_path,
-                                  parallel_env=self.parallel_env)
-                        )
+                if(self.restr_scheme=="Aligned"):
+                    reqs.append(Sim_PL_NPT(p=self.p, l=self.l, i=i, m=m, s='A',
+                                      study_settings=self.study_settings,
+                                      folder_path=self.folder_path,
+                                      parallel_env=self.parallel_env)
+                            )
+                    reqs.append(Sim_ApoP_NPT(p=self.p, l=self.l, i=i, m=m,
+                          study_settings=self.study_settings,
+                          folder_path=self.base_path+"/prot_{}/apoP".format(self.p),
+                          parallel_env=self.parallel_env))
+                else:
+                    for s in self.states:
+                        reqs.append(
+                            Sim_PL_NPT(p=self.p, l=self.l, i=i, m=m, s=s,
+                                      study_settings=self.study_settings,
+                                      folder_path=self.folder_path,
+                                      parallel_env=self.parallel_env)
+                            )
+
 
         return(reqs)
 
