@@ -39,6 +39,7 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
                     for m in range(self.study_settings['n_sampling_sims']):
                         self.tasks.append(Sim_ApoP_NPT(
                             p=p, i=i, m=m,
+                            folder_path=self.basepath+"/prot_{}/apoP".format(p),
                             study_settings = self.study_settings,
                             parallel_env=self.pe))
 

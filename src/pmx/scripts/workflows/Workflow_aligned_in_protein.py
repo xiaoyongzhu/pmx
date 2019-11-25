@@ -131,7 +131,7 @@ class Workflow_aligned_inProtein(Workflow):
                 copy_if_missing(self.toppath+"/proteins/"+p+"/prot.itp",folder+"/prot.itp")
 
                 #initial coordinates where protein and ligand are bound
-                copy_if_missing(self.toppath+"/proteins/"+p+"/prot_lig.pdb",
+                copy_if_missing(self.toppath+"/proteins/"+p+"/prot_"+l+".pdb",
                         folder+"/init.pdb")
 
                 #generate temporary index file

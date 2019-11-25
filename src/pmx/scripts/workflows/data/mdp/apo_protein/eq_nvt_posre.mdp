@@ -79,7 +79,7 @@ ref-p                    = 1
 ; INITIAL TEMP
 gen-vel                  = no
 ; Type of annealing for each temperature group (no/single/periodic)
-annealing                = single single single
+annealing                = single single
 ; Number of time points to use for specifying annealing in each group
 annealing_npoints        = 2 2
 ; List of times at the annealing points for each group
@@ -102,14 +102,4 @@ lincs-warnangle          = 30
 
 
 ; Free energy control stuff
-free-energy              = yes
-couple-moltype           = MOL
-couple-lambda0           = vdw-q
-couple-lambda1           = none
-couple-intramol          = no ; intramolecular interaction in ligand remain on
-init-lambda              = 0  ; intermolecular restraints off, inter-mol pot on
-delta-lambda             = 0
-sc-alpha                 = 0.3
-sc-sigma                 = 0.25
-sc-power                 = 1
-sc-coul = yes
+free-energy              = no

@@ -69,6 +69,10 @@ class Prep_WL_folder(Prep_PL_folder): # will execute on the login node
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.init_mdp="{}/water/init.mdp".format(self.study_settings['mdp_path'])
+
     def requires(self):
         return( Gather_Inputs_WL_folder(folder_path=self.folder_path,
                                         l=self.l,

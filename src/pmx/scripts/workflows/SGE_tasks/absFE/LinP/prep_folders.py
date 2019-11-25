@@ -108,6 +108,11 @@ class Prep_PL_folder(LocalSGEJobTask): # will execute on the login node
         significant=False, default="",
         description="Explicit job name given via qsub.")
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.init_mdp="{}/protein/init.mdp".format(self.study_settings['mdp_path'])
+
+
     def requires(self):
         return( Gather_Inputs_PL_folder(folder_path=self.folder_path,
                                         p=self.p, l=self.l,
@@ -124,8 +129,8 @@ class Prep_PL_folder(LocalSGEJobTask): # will execute on the login node
                   "-cs spc216.gro -p topol_solvated.top >> prep.log 2>&1")
         check_file_ready("water.pdb")
         os.system("gmx grompp -p topol_solvated.top -c water.pdb -o tpr.tpr "\
-                  "-f %s/protein/init.mdp -v -maxwarn 2 "\
-                  ">> prep.log 2>&1"%self.study_settings['mdp_path'])
+                  "-f {} -v -maxwarn 2 "\
+                  ">> prep.log 2>&1".format(self.init_mdp))
         check_file_ready("tpr.tpr")
 
         #generate ions for each

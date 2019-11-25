@@ -92,14 +92,4 @@ lincs-warnangle          = 30
 
 
 ; Free energy control stuff
-free-energy              = yes
-couple-moltype           = MOL
-couple-lambda0           = vdw-q
-couple-lambda1           = none
-couple-intramol          = no ; intramolecular interaction in ligand remain on
-init-lambda              = 0  ; intermolecular restraints off, inter-mol pot on
-delta-lambda             = 0
-sc-alpha                 = 0.3
-sc-sigma                 = 0.25
-sc-power                 = 1
-sc-coul = yes
+free-energy              = no
