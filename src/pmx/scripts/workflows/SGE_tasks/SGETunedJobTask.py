@@ -211,3 +211,17 @@ class SGETunedJobTask(SGEJobTask):
             else:
                 pickle.dump(self, open(self.job_file, "wb"))
 
+
+
+class SGETunedLocalJobTask(SGETunedJobTask):
+    """A local version of SGETunedJobTask, for easier debugging.
+
+    This version skips the ``qsub`` steps and simply runs ``work()``
+    on the local node, so you don't need to be on an SGE cluster to
+    use your Task in a test workflow.
+
+    Copied from luigi.contrib.sge.SGELocalJobTask to allow for consistent
+    retry policy management in the current file.
+    """
+    def run(self):
+        self.work()

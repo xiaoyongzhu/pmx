@@ -3,7 +3,7 @@
 import luigi
 import MDAnalysis as md
 import os
-from luigi.contrib.sge import LocalSGEJobTask
+from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedLocalJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.find_anchors_and_write_ii import find_restraints
 from pmx.scripts.workflows.find_avg import find_avg_struct
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
@@ -14,7 +14,7 @@ from pmx.scripts.workflows.utils import check_file_ready
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Task_PL_gen_restraints(LocalSGEJobTask):
+class Task_PL_gen_restraints(SGETunedLocalJobTask):
 
     #Parameters:
     p = luigi.Parameter(description='Protein name')
@@ -51,8 +51,14 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
 
         #set variables
         self.base_path = self.study_settings['base_path']
-        self.states = self.study_settings['states']
-        self.mdp = self.study_settings['mdp_path'] + "/protein/init.mdp"
+
+        if(self.restr_scheme=="Aligned" or self.restr_scheme=="Fitted"):
+            self.states=["A", "ApoProt"]
+        elif(self.restr_scheme=="Fixed"):
+            raise(Exception("Fixed restraints not yet implemened."))
+            self.states = self.study_settings['states']
+        else:
+            raise(Exception("Unrecognized restraint scheme."))
 
     def work(self):
         #generate morphs for A state
@@ -67,32 +73,32 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
                   "gmx make_ndx -f ions0_0.pdb "
                   "-o index_prot_mol.ndx > /dev/null 2>&1")
 
-        #make topology
+        #make topology for prot+MOL
         os.system("sed 's/SOL/;SOL/g' topol.top > topol_prot_mol.top")
 
-        relevant_states=None
-        if(self.restr_scheme=="Aligned"):
-            relevant_states=["A", "ApoProt"]
-        elif(self.restr_scheme=="Fitted"):
-            relevant_states=self.states
-        elif(self.restr_scheme=="Fixed"):
-            raise(Exception("Fixed restraints not yet implemened."))
-        else:
-            raise(Exception("Unrecognized restraint scheme."))
+        #make topology for ApoP
+        os.system("sed 's/SOL/;SOL/g' {base}/prot_{p}/apoP/topol.top "
+                  "> topol_prot.top".format(base=self.base_path, p=self.p))
 
-        for s in relevant_states:
+        for s in self.states:
             #make tprs
             if(s == "A"):   #align A to initial structure
                 ref="box.pdb"
+                ref_top="topol_prot_mol.top"
+                mdp = self.study_settings['mdp_path'] + "/protein/init.mdp"
             else:           #align B to average of A
-                ref="averageA.gro"
-            os.system("gmx grompp -p topol_prot_mol.top -c %s "
-                      "-f %s -o tpr%s.tpr "
-                      "-maxwarn 2 > grompp%s.log 2>&1"%(
-                              ref, self.mdp, s,s) )
+                ref="averageA_prot_only.gro"
+                ref_top="topol_prot.top"
+                mdp = self.study_settings['mdp_path'] + "/apo_protein/init.mdp"
+
+
+            os.system("gmx grompp -p {ref_top} -c {ref} -f {mdp} "
+                      "-o tpr{s}.tpr -maxwarn 2 > grompp{s}.log 2>&1".format(
+                          ref_top=ref_top, ref=ref, mdp=mdp, s=s) )
+            check_file_ready("tpr{}.tpr".format(s))
 
             #collect trjs
-            #print("\tCollecting trajectories for state%s"%s)
+            # print("\tCollecting trajectories for state%s"%s)
 
             #remove previous log if it exists from a crashed attempt
             if(os.path.isfile("trjconv.log")):
@@ -125,16 +131,16 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
 
                     check_file_ready("eq%s%d_%d.xtc"%(s,i,m))
 
-                #concatenate trajectories
-                os.system("gmx trjcat -f eq%s*.xtc -o all_eq%s.xtc -sort "
-                          "-cat >> trjconv.log 2>&1"%(s,s) )
-                check_file_ready("all_eq%s.xtc"%s)
+            #concatenate trajectories
+            os.system("gmx trjcat -f eq%s*.xtc -o all_eq%s.xtc -sort "
+                      "-cat >> trjconv.log 2>&1"%(s,s) )
+            check_file_ready("all_eq%s.xtc"%s)
 
-                #fit to reference structure in tpr files
-                os.system("echo 4 0 | gmx trjconv -s tpr%s.tpr -f all_eq%s.xtc "
-                          "-o all_eq%s_fit.xtc -fit rot+trans "
-                          ">> trjconv.log 2>&1"%(s,s,s) )
-                check_file_ready("all_eq%s_fit.xtc"%s)
+            #fit to reference structure in tpr files
+            os.system("echo 4 0 | gmx trjconv -s tpr%s.tpr -f all_eq%s.xtc "
+                      "-o all_eq%s_fit.xtc -fit rot+trans "
+                      ">> trjconv.log 2>&1"%(s,s,s) )
+            check_file_ready("all_eq%s_fit.xtc"%s)
 
             #dump first frame
             os.system("echo 0 | gmx trjconv -f all_eq%s_fit.xtc "
@@ -144,12 +150,20 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
 
             #find avg structure of A
             if(s=="A"):
+                # print("\tFinding average structure")
                 find_avg_struct("dumpA.gro", "all_eqA_fit.xtc",
                                 "averageA.gro")
                 check_file_ready("averageA.gro")
+                # print("\tExtracting prot. only")
+
+                os.system("echo Protein | gmx trjconv -s tprA.tpr -f averageA.gro "
+                          "-o averageA_prot_only.gro >> trjconv.log 2>&1" )
+                check_file_ready("averageA_prot_only.gro")
+
 
         #generate the restraints
-        if(self.restr_scheme=="Aligned"):
+        # print("\tGenerating the restraints")
+        if(self.restr_scheme=="Aligned" or self.restr_scheme=="Fitted"):
             find_restraints(structB= "dumpApoProt.gro",
                             trajB = "all_eqApoProt_fit.xtc",
                             log=False)
@@ -178,7 +192,7 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
             #sampling simulations in each repeat
             for m in range(self.study_settings['n_sampling_sims']):
                 #states of equilibrium sims
-                if(self.restr_scheme=="Aligned"):
+                if(self.restr_scheme=="Aligned" or self.restr_scheme=="Fitted"):
                     reqs.append(Sim_PL_NPT(p=self.p, l=self.l, i=i, m=m, s='A',
                                       study_settings=self.study_settings,
                                       folder_path=self.folder_path,

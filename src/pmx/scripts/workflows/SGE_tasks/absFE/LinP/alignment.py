@@ -4,7 +4,7 @@ import glob
 import luigi
 import numpy as np
 import os
-from luigi.contrib.sge import LocalSGEJobTask
+from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedLocalJobTask #tuned for the owl cluster
 from pmx import ndx
 from pmx.model import Model
 from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R, find_last_protein_atom
@@ -17,7 +17,7 @@ from pmx.xtc import Trajectory
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Task_PL_gen_morphes(LocalSGEJobTask):
+class Task_PL_gen_morphes(SGETunedLocalJobTask):
 
     #Parameters:
     p = luigi.Parameter(description='Protein name')
