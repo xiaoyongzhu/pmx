@@ -9,6 +9,7 @@ import os
 from pmx.scripts.workflows.utils import parse_options
 from pmx.scripts.workflows.SGE_tasks.SGEWorkflow import SGE_Workflow
 from pmx.scripts.workflows.SGE_tasks.absFE.summary import Task_summary_aligned
+from pmx.scripts.workflows.SGE_tasks.absFE.ApoP.equil_sims import Sim_ApoP_NPT
 
 # ==============================================================================
 #                             Workflow Class
@@ -27,10 +28,19 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
         None.
         """
 
-        self.tasks.append(Task_summary_aligned(
-            hosts = self.hosts, ligands = self.ligands,
-            study_settings = self.study_settings,
-            parallel_env=self.pe))
+        # self.tasks.append(Task_summary_aligned(
+        #     hosts = self.hosts, ligands = self.ligands,
+        #     study_settings = self.study_settings,
+        #     parallel_env=self.pe))
+
+        for p in self.hosts:
+            for l in self.ligands:
+                for i in range(self.study_settings['n_repeats']):
+                    for m in range(self.study_settings['n_sampling_sims']):
+                        self.tasks.append(Sim_ApoP_NPT(
+                            p=p, i=i, m=m,
+                            study_settings = self.study_settings,
+                            parallel_env=self.pe))
 
         self.n_workers=2*len(self.hosts)*len(self.ligands)*len(self.states)*\
                     self.n_repeats*self.n_sampling_sims

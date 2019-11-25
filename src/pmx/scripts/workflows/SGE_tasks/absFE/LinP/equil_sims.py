@@ -60,10 +60,6 @@ class Sim_PL_EM(SGE_Sim):
                                 #no need to pass parallel_env as
                                 #Prep_PL_folder runs on the login node
     def output(self):
-        #output() is run before work()
-        #so need to set sim_path here
-        self.sim_path = self.folder_path+"/state%s/repeat%d/%s%d"%(
-            self.s, self.i, self.stage, self.m)
         return luigi.LocalTarget(os.path.join(self.sim_path, 'confout.gro'))
 
 

@@ -42,7 +42,7 @@ class Gather_Inputs_PL_folder(LocalSGEJobTask): # will execute on the login node
         sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.itp",self.folder_path+"/prot.itp")
 
         #initial coordinates where protein and ligand are bound
-        sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_lig.pdb",
+        sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_"+self.l+".pdb",
                 self.folder_path+"/init.pdb")
 
         #generate temporary index file

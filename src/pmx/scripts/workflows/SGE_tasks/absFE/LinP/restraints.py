@@ -184,7 +184,7 @@ class Task_PL_gen_restraints(LocalSGEJobTask):
                                       folder_path=self.folder_path,
                                       parallel_env=self.parallel_env)
                             )
-                    reqs.append(Sim_ApoP_NPT(p=self.p, l=self.l, i=i, m=m,
+                    reqs.append(Sim_ApoP_NPT(p=self.p, i=i, m=m,
                           study_settings=self.study_settings,
                           folder_path=self.base_path+"/prot_{}/apoP".format(self.p),
                           parallel_env=self.parallel_env))
