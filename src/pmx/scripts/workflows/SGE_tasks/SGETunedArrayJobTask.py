@@ -73,20 +73,20 @@ class SGETunedArrayJobTask(SGETunedJobTask):
         if self.no_tarball:
             job_str += ' --no-tarball'
 
-            #force loading of dependencies by sourcing a custom profile
-            if(os.path.isfile(self.source_conda)):
-                job_str = '"source {}; '.format(self.source_conda) + job_str+'"'
-            else:
-                mylogger = logging.getLogger(self.__class__.__name__)
-                mylogger.error("Tarballing of dependencies is disabled and "
-                              "{} does not exist. "
-                              "Will not be able to load all workflow "
-                              "dependencies without it. Please create it and "
-                              "within activate a conda environment containing "
-                              "at least python>3.6, "
-                              "pmx, luigi, MDanalysis, matplotlib, and numpy."
-                              "".format(self.source_conda))
-                raise Exception("Could not source " + self.source_conda)
+            # #force loading of dependencies by sourcing a custom profile
+            # if(os.path.isfile(self.source_conda)):
+            #     job_str = '"source {}; '.format(self.source_conda) + job_str+'"'
+            # else:
+            #     mylogger = logging.getLogger(self.__class__.__name__)
+            #     mylogger.error("Tarballing of dependencies is disabled and "
+            #                   "{} does not exist. "
+            #                   "Will not be able to load all workflow "
+            #                   "dependencies without it. Please create it and "
+            #                   "within activate a conda environment containing "
+            #                   "at least python>3.6, "
+            #                   "pmx, luigi, MDanalysis, matplotlib, and numpy."
+            #                   "".format(self.source_conda))
+            #     raise Exception("Could not source " + self.source_conda)
 
         #tell runner that this is an array job
         job_str += ' --arrayjob'
