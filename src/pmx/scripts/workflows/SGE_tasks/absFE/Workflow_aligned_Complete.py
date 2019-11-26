@@ -9,8 +9,6 @@ import os
 from pmx.scripts.workflows.utils import parse_options
 from pmx.scripts.workflows.SGE_tasks.SGEWorkflow import SGE_Workflow
 from pmx.scripts.workflows.SGE_tasks.absFE.summary import Task_summary_aligned
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_align
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
 
 # ==============================================================================
 #                             Workflow Class
@@ -29,29 +27,10 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
         None.
         """
 
-        # self.tasks.append(Task_summary_aligned(
-        #     hosts = self.hosts, ligands = self.ligands,
-        #     study_settings = self.study_settings,
-        #     parallel_env=self.pe))
-
-        for p in self.hosts:
-            for l in self.ligands:
-
-                # self.tasks.append(Task_PL_gen_restraints(p=p, l=l,
-                #           study_settings=self.study_settings,
-                #           folder_path=self.basepath+"/prot_{}/lig_{}".format(p,l),
-                #           parallel_env=self.pe,
-                #           restr_scheme="Aligned" ))
-
-                for i in range(self.study_settings['n_repeats']):
-                    for m in range(self.study_settings['n_sampling_sims']):
-                        self.tasks.append(Task_PL_align(p=p, l=l,
-                          i=i, m=m, sTI="C",
-                          study_settings=self.study_settings,
-                          folder_path=self.basepath+"/prot_{}/lig_{}".format(p,l),
-                          parallel_env=self.pe,
-                          restr_scheme="Aligned" ))
-
+        self.tasks.append(Task_summary_aligned(
+            hosts = self.hosts, ligands = self.ligands,
+            study_settings = self.study_settings,
+            parallel_env=self.pe))
 
         self.n_workers=2*len(self.hosts)*len(self.ligands)*len(self.states)*\
                     self.n_repeats*self.n_sampling_sims
