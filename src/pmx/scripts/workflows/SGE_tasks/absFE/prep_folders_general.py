@@ -130,6 +130,20 @@ class Prep_folder(SGETunedLocalJobTask): # will execute on the login node
         significant=False, default="",
         description="Explicit job name given via qsub.")
 
+    def solvate(self):
+        """Solvates the system.
+
+        Subclasses can override this to set a custom number of water molecules
+
+        Returns
+        -------
+        None.
+
+        """
+        os.system("gmx solvate -scale 1.0 -cp box.pdb -o water.pdb "\
+                  "-cs spc216.gro -p topol_solvated.top >> prep.log 2>&1")
+
+
     def work(self):
         os.chdir(self.folder_path)
 
@@ -147,8 +161,7 @@ class Prep_folder(SGETunedLocalJobTask): # will execute on the login node
             orig_GMXLIB = ""
         os.environ["GMXLIB"] = os.path.join(os.path.dirname(pmx.__file__),
                   "data/mutff/") + os.pathsep + orig_GMXLIB
-        os.system("gmx solvate -scale 1.0 -cp box.pdb -o water.pdb "\
-                  "-cs spc216.gro -p topol_solvated.top >> prep.log 2>&1")
+        self.solvate()
         os.environ["GMXLIB"] = orig_GMXLIB
 
         check_file_ready("water.pdb")
