@@ -34,7 +34,7 @@ class Task_WL_gen_morphes(Task_PL_gen_morphes):
 
         #overwrite relevant variables
         self.mdp = self.study_settings['mdp_path'] +\
-            "/water/eq_npt_test_{0}.mdp".format(
+            "/water/eq_npt_{0}.mdp".format(
                 self.study_settings['TIstates'][self.sTI])
 
     def requires(self):
