@@ -87,7 +87,7 @@ class Sim_WL_NPT(Sim_PL_NPT):
 
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\
-            "/water/eq_npt_test_{0}.mdp".format(self.study_settings['states'][self.s])
+            "/water/eq_npt_{0}.mdp".format(self.study_settings['states'][self.s])
         self.struct = self.folder_path+"/state{2}/repeat{3}/nvt{4}/confout.gro".format(
             self.p, self.l, self.s, self.i, self.m)
         self.posre = None

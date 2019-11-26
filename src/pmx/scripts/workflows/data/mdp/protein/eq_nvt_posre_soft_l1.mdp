@@ -6,7 +6,7 @@ integrator               = sd
 ; Start time and timestep in ps
 tinit                    = 0
 dt                       = 0.002
-nsteps                   = 5000 ; 10 ps, this isn't enough for proper equillibration
+nsteps                   = 25000 ; 50 ps
 
 init_step                = 0
 ; mode for center of mass motion removal

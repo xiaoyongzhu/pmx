@@ -113,7 +113,7 @@ class Sim_PL_NPT(Sim_PL_EM):
 
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\
-            "/protein/eq_npt_test_{0}.mdp".format(self.study_settings['states'][self.s])
+            "/protein/eq_npt_{0}.mdp".format(self.study_settings['states'][self.s])
         self.struct = self.folder_path+"/state{2}/repeat{3}/nvt_posre_soft{4}/confout.gro".format(
             self.p, self.l, self.s, self.i, self.m)
         self.posre = None
