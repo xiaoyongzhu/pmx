@@ -6,12 +6,20 @@ import os
 import pmx
 import shutil as sh
 from pmx.scripts.workflows.utils import check_file_ready
-from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedLocalJobTask #tuned for the owl cluster
+from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Gather_Inputs_folder(SGETunedLocalJobTask): # will execute on the login node
+class Gather_Inputs_folder(SGETunedJobTask):
+    #run on the login node
+    run_locally = luigi.BoolParameter(
+        default = True,
+        significant=False,
+        parsing=luigi.BoolParameter.EXPLICIT_PARSING,
+        description="run locally instead of on the cluster")
+
+    #Parameters:
     folder_path = luigi.Parameter(significant=False,
                       description='Path to the protein+ligand folder to set up')
     p = luigi.Parameter(description='Protein name')
@@ -29,6 +37,10 @@ class Gather_Inputs_folder(SGETunedLocalJobTask): # will execute on the login no
     job_name = luigi.Parameter(
         significant=False, default="",
         description="Explicit job name given via qsub.")
+
+    #request 1 cores
+    n_cpu = luigi.IntParameter(default=1, significant=False)
+    parallel_env = luigi.Parameter(default='openmp_fast', significant=False)
 
     #variables to be overwriten in sub class' __init__()
     srctop=""
@@ -112,7 +124,15 @@ class Gather_Inputs_folder(SGETunedLocalJobTask): # will execute on the login no
         return [luigi.LocalTarget(os.path.join(self.folder_path, f)) for f in files]
 
 
-class Prep_folder(SGETunedLocalJobTask): # will execute on the login node
+class Prep_folder(SGETunedJobTask):
+    #run on the login node
+    run_locally = luigi.BoolParameter(
+        default = True,
+        significant=False,
+        parsing=luigi.BoolParameter.EXPLICIT_PARSING,
+        description="run locally instead of on the cluster")
+
+    #Parameters:
     folder_path = luigi.Parameter(significant=False,
                          description='Path to the protein+ligand folder to set up')
     p = luigi.Parameter(description='Protein name')
@@ -129,6 +149,10 @@ class Prep_folder(SGETunedLocalJobTask): # will execute on the login node
     job_name = luigi.Parameter(
         significant=False, default="",
         description="Explicit job name given via qsub.")
+
+    #request 1 cores
+    n_cpu = luigi.IntParameter(default=1, significant=False)
+    parallel_env = luigi.Parameter(default='openmp_fast', significant=False)
 
     def solvate(self):
         """Solvates the system.

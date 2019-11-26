@@ -5,7 +5,7 @@ import luigi
 import os
 import numpy as np
 #import matplotlib as plt
-from luigi.contrib.sge import LocalSGEJobTask
+from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.analysis import Task_PL_analysis_aligned
 from pmx.scripts.workflows.SGE_tasks.absFE.LinW.analysis import Task_WL_analysis_aligned
 
@@ -13,7 +13,13 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinW.analysis import Task_WL_analysis
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Task_summary_aligned(LocalSGEJobTask):
+class Task_summary_aligned(SGETunedJobTask):
+    #run on the login node
+    run_locally = luigi.BoolParameter(
+        default = True,
+        significant=False,
+        parsing=luigi.BoolParameter.EXPLICIT_PARSING,
+        description="run locally instead of on the cluster")
 
     #Parameters:
     hosts = luigi.ListParameter(description='list of protein names to evaluate')

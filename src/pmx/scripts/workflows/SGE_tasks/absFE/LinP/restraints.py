@@ -3,7 +3,7 @@
 import luigi
 import MDAnalysis as md
 import os
-from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedLocalJobTask #tuned for the owl cluster
+from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.find_anchors_and_write_ii import find_restraints
 from pmx.scripts.workflows.find_avg import find_avg_struct
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
@@ -14,7 +14,7 @@ from pmx.scripts.workflows.utils import check_file_ready
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Task_PL_gen_restraints(SGETunedLocalJobTask):
+class Task_PL_gen_restraints(SGETunedJobTask):
 
     #Parameters:
     p = luigi.Parameter(description='Protein name')
