@@ -15,8 +15,8 @@ class Sim_WL_EM(Sim_PL_EM):
     folder_path = luigi.Parameter(significant=False,
                  description='Path to the protein+ligand folder to set up')
 
-    #request 2 cores
-    n_cpu = luigi.IntParameter(default=2, significant=False)
+    #request 1 cores
+    n_cpu = luigi.IntParameter(default=1, significant=False)
 
     job_name_format = luigi.Parameter(
         significant=False, default="pmx_{task_family}_l{l}_{s}{i}_{m}",
@@ -45,8 +45,8 @@ class Sim_WL_NVT(Sim_PL_NVT_posre):
     #Parameters:
     p = None #disables base class' p
 
-    #request 4 cores
-    n_cpu = luigi.IntParameter(default=4, significant=False)
+    #request 1 cores
+    n_cpu = luigi.IntParameter(default=1, significant=False)
 
     job_name_format = luigi.Parameter(
         significant=False, default="pmx_{task_family}_l{l}_{s}{i}_{m}",
@@ -74,8 +74,8 @@ class Sim_WL_NPT(Sim_PL_NPT):
     #Parameters:
     p = None #disables base class' p
 
-    #request 4 cores
-    n_cpu = luigi.IntParameter(default=4, significant=False)
+    #request 1 core
+    n_cpu = luigi.IntParameter(default=1, significant=False)
 
     job_name_format = luigi.Parameter(
         significant=False, default="pmx_{task_family}_l{l}_{s}{i}_{m}",

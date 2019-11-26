@@ -3,6 +3,7 @@
 import glob
 import luigi
 import os
+import pmx
 import shutil as sh
 from luigi.contrib.sge import LocalSGEJobTask
 from pmx.scripts.workflows.utils import check_file_ready
@@ -125,8 +126,20 @@ class Prep_PL_folder(LocalSGEJobTask): # will execute on the login node
                   "> prep.log 2>&1"%(self.study_settings['bt'], self.study_settings['d']))
         check_file_ready("box.pdb")
         sh.copy("topol.top","topol_solvated.top")
+
+        #solvate using old VdW radii (found in mutff). This needs pmx's mutff
+        #to be the first entry in GMXLIB. It contains the old version of
+        #vdwradii.dat which produces better water density.
+        if "GMXLIB" in os.environ.keys():
+            orig_GMXLIB = os.environ["GMXLIB"]
+        else:
+            orig_GMXLIB = ""
+        os.environ["GMXLIB"] = os.path.join(os.path.dirname(pmx.__file__),
+                  "data/mutff/") + os.pathsep + orig_GMXLIB
         os.system("gmx solvate -scale 1.0 -cp box.pdb -o water.pdb "\
                   "-cs spc216.gro -p topol_solvated.top >> prep.log 2>&1")
+        os.environ["GMXLIB"] = orig_GMXLIB
+
         check_file_ready("water.pdb")
         os.system("gmx grompp -p topol_solvated.top -c water.pdb -o tpr.tpr "\
                   "-f {} -v -maxwarn 2 "\

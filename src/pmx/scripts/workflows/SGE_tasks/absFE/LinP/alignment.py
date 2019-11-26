@@ -162,7 +162,7 @@ class Task_PL_align(Task_PL_gen_morphes):
         m_A = Model(self.folder_path+"/ions%d_%d.pdb"%(self.i,self.m),bPDBTER=True)
         m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
             self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
-        m_C = Model(self.base_path+"/water/lig_{1}/state{2}/ions{3}_{4}.pdb".format(
+        m_C = Model(self.base_path+"/water/lig_{1}/ions{3}_{4}.pdb".format(
             self.p, self.l, 'B', self.i, self.m),bPDBTER=True) #vacL
         m_A.a2nm()
         m_B.a2nm()
@@ -174,12 +174,12 @@ class Task_PL_align(Task_PL_gen_morphes):
         trj_A = Trajectory(self.folder_path+"/state{2}/repeat{3}/npt{4}/traj.trr".format(
             self.p, self.l, 'A', self.i, self.m))
         trj_B  = Trajectory(self.base_path+"/prot_{0}/apoP/repeat{3}/npt{4}/traj.trr".format(
-            self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
+            self.p, self.l, None, self.i, self.m)) #apoP
         trj_C  = Trajectory(self.base_path+"/water/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr".format(
-            self.p, self.l, 'B', self.i, self.m),bPDBTER=True) #vacL
+            self.p, self.l, 'B', self.i, self.m)) #vacL
 
         ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
-        ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{1}/index.ndx", verbose=False)
+        ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
         p_ndx = np.asarray(ndx_file_A["Protein"].ids)-1
         linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
         l_ndx = np.asarray(ndx_file_C["MOL"].ids)-1
@@ -205,6 +205,7 @@ class Task_PL_align(Task_PL_gen_morphes):
                 frame_B.update(m_B)
                 frame_C.update(m_C)
 
+                # m_A.write("m_A1.gro")
                 # step1: fit prot from prot+lig onto apo protein
                 (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
                 # rotate velocities
@@ -215,10 +216,8 @@ class Task_PL_align(Task_PL_gen_morphes):
                 # rotate velocities
                 rotate_velocities_R( m_C, R )
 
-
-
                 #insert vac ligand into B
-                m_B.insert_residue(resID, m_C.residues[0], chID, newResNum=True)
+                m_B.insert_residue(resID, m_C.residues[0], chID)
 
                 # output
                 m_B.write("frame%d.gro"%fridx)
@@ -226,6 +225,7 @@ class Task_PL_align(Task_PL_gen_morphes):
                 #m_b needs to be reloaded to have correct # of atoms next iteration
                 m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
                     self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
+                m_B.a2nm()
 
             fridx+=1
 

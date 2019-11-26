@@ -17,7 +17,7 @@ class Sim_ApoP_EM(Sim_PL_EM):
                  description='Path to the protein+ligand folder to set up')
 
     #request 2 cores
-    n_cpu = luigi.IntParameter(default=2, significant=False)
+    n_cpu = luigi.IntParameter(default=4, significant=False)
 
     job_name_format = luigi.Parameter(
         significant=False, default="pmx_{task_family}_p{p}_{i}_{m}",

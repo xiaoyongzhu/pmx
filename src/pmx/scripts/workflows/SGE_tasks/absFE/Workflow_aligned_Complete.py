@@ -37,20 +37,20 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
         for p in self.hosts:
             for l in self.ligands:
 
-                self.tasks.append(Task_PL_gen_restraints(p=p, l=l,
-                          study_settings=self.study_settings,
-                          folder_path=self.basepath+"/prot_{}/lig_{}".format(p,l),
-                          parallel_env=self.pe,
-                          restr_scheme="Aligned" ))
-
-                # for i in range(self.study_settings['n_repeats']):
-                #     for m in range(self.study_settings['n_sampling_sims']):
-                #         self.tasks.append(Task_PL_align(p=p, l=l,
-                #           i=i, m=m, sTI="C",
+                # self.tasks.append(Task_PL_gen_restraints(p=p, l=l,
                 #           study_settings=self.study_settings,
                 #           folder_path=self.basepath+"/prot_{}/lig_{}".format(p,l),
                 #           parallel_env=self.pe,
                 #           restr_scheme="Aligned" ))
+
+                for i in range(self.study_settings['n_repeats']):
+                    for m in range(self.study_settings['n_sampling_sims']):
+                        self.tasks.append(Task_PL_align(p=p, l=l,
+                          i=i, m=m, sTI="C",
+                          study_settings=self.study_settings,
+                          folder_path=self.basepath+"/prot_{}/lig_{}".format(p,l),
+                          parallel_env=self.pe,
+                          restr_scheme="Aligned" ))
 
 
         self.n_workers=2*len(self.hosts)*len(self.ligands)*len(self.states)*\
