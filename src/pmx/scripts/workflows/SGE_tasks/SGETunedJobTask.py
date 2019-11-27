@@ -73,6 +73,11 @@ class SGETunedJobTask(SGEJobTask):
         description="Hard realtime limit SGE will let jobs from this task run for. "
         "Format: hh:mm:ss")
 
+    end_wait_buffer = luigi.IntParameter(
+        significant=False, default=60,
+        description="Number of seconds to wait for the (remote) file system "
+        "to sync output files at end of task before declaring task as failed.")
+
     extra_packages=[] #extra packages to be tarballed. Overloaded by subclasses.
 
     #override scheduler based retry policy
@@ -94,6 +99,29 @@ class SGETunedJobTask(SGEJobTask):
         Check :ref:`scheduler-config`
         """
         return self._disable_window_seconds
+
+    def run(self):
+        """
+        Sometimes writing to the network drives isn't finished before the next
+        task starts checking for unfulfilled dependencies. In such cases we
+        should wait for the file system to sync before continuing.
+        """
+        super().run()
+
+        #make sure output files actually exist and are acessible for next tasks
+        waitbuffer = self.end_wait_buffer;
+        while(waitbuffer>0 and not self.complete()):
+            time.sleep(1)
+            waitbuffer-=1
+
+        if(waitbuffer<=0 and not self.complete()):
+            errmsg = "Task "+self.__class__.__name__
+            errmsg+= " with significant parameters "
+            pars = [t for t in self.get_params() if t[1].significant]
+            errmsg+= str(dict((y, x) for x, y in pars))
+            errmsg+= " Failed due to being incomplete."
+            raise(Exception(errmsg))
+
 
     def _init_local(self):
 
