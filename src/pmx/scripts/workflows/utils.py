@@ -123,7 +123,7 @@ def parse_options(SGE=False):
             'for calculation of free energy of ligand binding '\
             'using a single instance of the ligand per box, '\
             'optimized Boresh-style restraints, '\
-            'and non-equilibrium .',
+            'and the non-equilibrium method.',
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument('--toppath',

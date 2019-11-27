@@ -65,8 +65,8 @@ class SGE_Workflow(Workflow):
                              'b':self.b}
 
         #set luigi logger level to mimimize clutter
-        logger = logging.getLogger('luigi-interface')
-        logger.setLevel(logging.WARNING)
+        #logger = logging.getLogger('luigi-interface')
+        #logger.setLevel(logging.WARNING)
 
         #sanity checks
         self.check_sanity()
