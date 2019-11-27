@@ -58,8 +58,8 @@ def main(args):
 
     w=SGE_Workflow_aligned_complete(
             toppath=toppath, mdppath=mdppath,
-            hosts=["BRD1"],
-            ligands=["lig"],
+            #hosts=["BRD1", "BAZ2A", "BRD9", "FALZ"], ligands=["lig"],
+            hosts=["BRD1"], ligands=["l0"],
             basepath=basepath,
             #b=args.b,
             b=0,
