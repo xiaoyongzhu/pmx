@@ -26,13 +26,13 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
         -------
         None.
         """
-
-        self.tasks.append(Task_summary_aligned(
+        summary=Task_summary_aligned(
             #hosts = self.hosts, ligands = self.ligands,
             study_settings = self.study_settings,
-            parallel_env=self.pe))
+            parallel_env=self.pe)
+        self.tasks.append(summary)
 
-        self.n_workers=2*len(self.hosts)*len(self.ligands)*len(self.states)*\
+        self.n_workers=2*len(summary.hosts)*len(summary.ligands)*len(self.states)*\
                     self.n_repeats*self.n_sampling_sims
 
         super().run_everything() #creates the scheduler and runs the workers
