@@ -351,9 +351,10 @@ class Model(Atomselection):
         prevAtomName = ' '
         prevResID = 0
         prevResName = ' '
-        usedChainIDs = ''
+        usedChainIDs = []
         atomcount = 1
         prevCatom = None
+        
         for line in l:
 	    if 'TER' in line:
 		bNewChain = True
@@ -383,6 +384,7 @@ class Model(Atomselection):
                     prevCatom = a
 		if bNewChain==True:
 		    if (a.chain_id==' ') or (a.chain_id==chainID) or (a.chain_id in usedChainIDs):
+                        #print a.chain_id,a,chainID,usedChainIDs
 			# find a new chain id
 			bFound = False
 			while bFound==False:
@@ -390,18 +392,42 @@ class Model(Atomselection):
 			    chainIDstring = chainIDstring.lstrip(chainIDstring[0])
 			    if foo not in usedChainIDs:
 				bFound=True
-				usedChainIDs = usedChainIDs+foo
 				chainID = foo
 				if bNoNewID==True:
 				    chainID = "pmx"+foo
+				usedChainIDs.append(chainID)
 		    else:
 			chainID = a.chain_id
-			usedChainIDs = usedChainIDs + chainID
+			usedChainIDs.append(chainID)
 		a.chain_id = chainID
                 self.atoms.append(a)
 		bNewChain = False
             if line[:6] == 'CRYST1':
                 self.box = _p.box_from_cryst1( line )
+
+        ##### now fix chain IDs that have been newly created #####
+        newChainDict = {}
+        chainIDstring = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoprstuvwxyz123456789'
+        for a in self.atoms:
+            # chain with a new ID
+            if 'pmx' in a.chain_id:
+                # this ID has already been encountered
+                if a.chain_id in newChainDict.keys():
+                    a.chain_id = newChainDict[a.chain_id]
+                # ID not yet encountered
+                else:
+                    # find a suitable ID
+                    bFound = False
+                    while bFound==False:
+                        foo = chainIDstring[0]
+                        chainIDstring = chainIDstring.lstrip(chainIDstring[0])
+                        # found
+                        if foo not in usedChainIDs:
+                            bFound=True
+                            usedChainIDs.append(foo)
+                            newChainDict[a.chain_id] = foo
+                            a.chain_id = foo
+
         self.make_chains()
         self.make_residues()
         self.unity  = 'A'
