@@ -966,7 +966,7 @@ def main(args):
     # -----------------------
     # plot work distributions
     # -----------------------
-    if args.wplot.lower() is not 'none':
+    if args.wplot.lower() != 'none':
         print('\n   Plotting histograms......')
         # hierarchy of estimators: BAR > Crooks > Jarz
         if 'bar' in locals():
