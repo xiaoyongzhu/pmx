@@ -28,7 +28,7 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
         """
 
         self.tasks.append(Task_summary_aligned(
-            hosts = self.hosts, ligands = self.ligands,
+            #hosts = self.hosts, ligands = self.ligands,
             study_settings = self.study_settings,
             parallel_env=self.pe))
 
@@ -59,10 +59,10 @@ def main(args):
     w=SGE_Workflow_aligned_complete(
             toppath=toppath, mdppath=mdppath,
             #hosts=["BRD1", "BAZ2A", "BRD9", "FALZ"], ligands=["lig"],
-            hosts=["BRD1"], ligands=["l0"],
+            #hosts=["BRD1"], ligands=["l0"],
             basepath=basepath,
-            #b=args.b,
-            b=0,
+            b=args.b,
+            #b=0,
             mdrun=args.mdrun,
             mdrun_opts=args.mdrun_opts,
             pe=args.pe,

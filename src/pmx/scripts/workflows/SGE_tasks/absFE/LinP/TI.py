@@ -2,6 +2,7 @@ import glob
 import luigi
 import os
 import subprocess
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedArrayJobTask import SGETunedArrayJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_morphes,Task_PL_align
 from pmx.scripts.workflows.utils import read_from_mdp
@@ -17,9 +18,11 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
     sTI = luigi.Parameter(description='Coupling state')
 
     folder_path = luigi.Parameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Path to the protein+ligand folder to set up')
 
     study_settings = luigi.DictParameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Dict of study stettings '
                       'used to propagate settings to dependencies')
 
@@ -29,9 +32,11 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
 
     stage="morphes"
     #request 1 core
-    n_cpu = luigi.IntParameter(default=1, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=1, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_l{l}_{sTI}{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")

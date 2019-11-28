@@ -5,6 +5,7 @@ import luigi
 import os
 import numpy as np
 #import matplotlib as plt
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.analysis import Task_PL_analysis_aligned
 from pmx.scripts.workflows.SGE_tasks.absFE.LinW.analysis import Task_WL_analysis_aligned
@@ -27,23 +28,20 @@ class Task_summary_aligned(SGETunedJobTask):
 
     #TODO: add default
     study_settings = luigi.DictParameter(significant=False,
+        visibility=ParameterVisibility.HIDDEN,
         description='Dict of study stettings '
         'used to propagate settings to dependencies')
 
-    #change default parallel environment
-    parallel_env = luigi.Parameter(default='openmp_fast', significant=False)
-
     #request 1 core
-    n_cpu = luigi.IntParameter(default=1, significant=False)
+    n_cpu = luigi.IntParameter(default=1, significant=False,
+                               visibility=ParameterVisibility.HIDDEN)
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
-    job_name = luigi.Parameter(
-        significant=False, default="",
-        description="Explicit job name given via qsub.")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

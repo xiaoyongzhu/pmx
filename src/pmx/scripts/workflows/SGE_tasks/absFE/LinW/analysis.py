@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import luigi
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.analysis import Task_PL_analysis_aligned
 from pmx.scripts.workflows.SGE_tasks.absFE.LinW.TI import Task_WL_TI_simArray
 
@@ -14,12 +15,15 @@ class Task_WL_analysis_aligned(Task_PL_analysis_aligned):
     p = None #disables base class' p
 
     folder_path = luigi.Parameter(significant=False,
+        visibility=ParameterVisibility.HIDDEN,
         description='Path to the water+ligand folder to set up')
 
     #request 1 core
-    n_cpu = luigi.IntParameter(default=1, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=1, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_l{l}_{i}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")

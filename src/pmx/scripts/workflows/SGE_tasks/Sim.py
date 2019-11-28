@@ -3,12 +3,14 @@ import luigi
 import os
 import shutil as sh
 import datetime
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 
 class SGE_Sim(SGETunedJobTask):
 
     #Parameters:
     study_settings = luigi.DictParameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Dict of study stettings '
                  'used to propagate settings to dependencies')
 

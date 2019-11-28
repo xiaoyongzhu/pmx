@@ -7,6 +7,7 @@ import subprocess
 import sys
 import time
 import pmx.scripts.workflows.SGE_tasks.SGETunedRunner as sge_runner
+from luigi.parameter import ParameterVisibility
 from luigi.contrib.hadoop import create_packages_archive
 from luigi.contrib.sge import SGEJobTask, logger, _parse_qstat_state, _parse_qsub_job_id
 try:
@@ -35,16 +36,23 @@ class SGETunedJobTask(SGEJobTask):
 #           - need resume support in case job runs out of time
 
     #change default parallel environment
-    parallel_env = luigi.Parameter(default='openmp_fast', significant=False)
+    parallel_env = luigi.Parameter(
+        default='openmp_fast',
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False)
     #poll time in seconds.
     #Large value is better to avoid overloading the login node.
     #Needs to be less than time between queue updates.
     poll_time = luigi.IntParameter(
         significant=False, default=30,
+        visibility=ParameterVisibility.HIDDEN,
         description="specify the wait time to poll qstat for the job status")
 
     #temp files
-    shared_tmp_dir = luigi.Parameter(default=os.path.join(os.getenv("HOME"), 'temp'), significant=False)
+    shared_tmp_dir = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
+        default=os.path.join(os.getenv("HOME"), 'temp'),
+        significant=False)
 
     # dont_remove_tmp_dir = luigi.BoolParameter(
     #     significant=False,
@@ -55,30 +63,37 @@ class SGETunedJobTask(SGEJobTask):
     no_tarball = luigi.BoolParameter(
         significant=False,
         default=True,
+        visibility=ParameterVisibility.HIDDEN,
         description="don't tarball (and extract) the luigi project files")
 
     source_conda = luigi.Parameter(significant=False,
         default=os.path.join(os.getenv("HOME"),".luigi_profile"),
+        visibility=ParameterVisibility.HIDDEN,
         description="File to source to load an appropriate conda environment "
         "in case tarballing of required python packages is disabled "
         "for performance.")
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
-        significant=False, default="pmx_{task_family}", description="A string that can be "
+        significant=False,
+        visibility=ParameterVisibility.HIDDEN,
+        default="pmx_{task_family}", description="A string that can be "
         "formatted with class variables to name the job with qsub.")
     job_name = luigi.Parameter(
         significant=False, default="",
+        visibility=ParameterVisibility.HIDDEN,
         description="Explicit job name given via qsub.")
 
     #set runtime
     runtime = luigi.Parameter(
         significant=False, default="24:00:00",
+        visibility=ParameterVisibility.HIDDEN,
         description="Hard realtime limit SGE will let jobs from this task run for. "
         "Format: hh:mm:ss")
 
     end_wait_buffer = luigi.IntParameter(
         significant=False, default=60,
+        visibility=ParameterVisibility.HIDDEN,
         description="Number of seconds to wait for the (remote) file system "
         "to sync output files at end of task before declaring task as failed.")
 

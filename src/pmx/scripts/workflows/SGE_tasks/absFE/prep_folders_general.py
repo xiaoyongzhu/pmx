@@ -5,6 +5,7 @@ import luigi
 import os
 import pmx
 import shutil as sh
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.utils import check_file_ready
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 
@@ -14,6 +15,7 @@ from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tun
 class Gather_Inputs_folder(SGETunedJobTask):
     #run on the login node
     run_locally = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
         default = True,
         significant=False,
         parsing=luigi.BoolParameter.EXPLICIT_PARSING,
@@ -21,26 +23,26 @@ class Gather_Inputs_folder(SGETunedJobTask):
 
     #Parameters:
     folder_path = luigi.Parameter(significant=False,
+                      visibility=ParameterVisibility.HIDDEN,
                       description='Path to the protein+ligand folder to set up')
     p = luigi.Parameter(description='Protein name')
     l = luigi.Parameter(description='Ligand name')
 
     study_settings = luigi.DictParameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Dict of study stettings '
                  'used to propagate settings to dependencies')
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_l{l}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
-    job_name = luigi.Parameter(
-        significant=False, default="",
-        description="Explicit job name given via qsub.")
 
     #request 1 cores
-    n_cpu = luigi.IntParameter(default=1, significant=False)
-    parallel_env = luigi.Parameter(default='openmp_fast', significant=False)
+    n_cpu = luigi.IntParameter(default=1, significant=False,
+                               visibility=ParameterVisibility.HIDDEN)
 
     #variables to be overwriten in sub class' __init__()
     srctop=""
@@ -127,6 +129,7 @@ class Gather_Inputs_folder(SGETunedJobTask):
 class Prep_folder(SGETunedJobTask):
     #run on the login node
     run_locally = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
         default = True,
         significant=False,
         parsing=luigi.BoolParameter.EXPLICIT_PARSING,
@@ -134,25 +137,25 @@ class Prep_folder(SGETunedJobTask):
 
     #Parameters:
     folder_path = luigi.Parameter(significant=False,
+                         visibility=ParameterVisibility.HIDDEN,
                          description='Path to the protein+ligand folder to set up')
     p = luigi.Parameter(description='Protein name')
     l = luigi.Parameter(description='Ligand name')
 
     study_settings = luigi.DictParameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Dict of study stettings '
                  'used to propagate settings to dependencies')
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="", description="A string that can be "
         "formatted with class variables to name the job with qsub.")
-    job_name = luigi.Parameter(
-        significant=False, default="",
-        description="Explicit job name given via qsub.")
 
     #request 1 cores
-    n_cpu = luigi.IntParameter(default=1, significant=False)
-    parallel_env = luigi.Parameter(default='openmp_fast', significant=False)
+    n_cpu = luigi.IntParameter(default=1, significant=False,
+                               visibility=ParameterVisibility.HIDDEN)
 
     def solvate(self):
         """Solvates the system.

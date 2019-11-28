@@ -4,6 +4,7 @@ import luigi
 import os
 import shutil as sh
 import subprocess
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.absFE.prep_folders_general import Gather_Inputs_folder, Prep_folder
 from pmx.scripts.workflows.SGE_tasks.absFE.ApoP.prep_folders import Prep_ApoP_folder
 
@@ -14,6 +15,7 @@ class Gather_Inputs_PL_folder(Gather_Inputs_folder):
 
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_l{l}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
@@ -28,6 +30,7 @@ class Prep_PL_folder(Prep_folder): # will execute on the login node
 
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_l{l}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")

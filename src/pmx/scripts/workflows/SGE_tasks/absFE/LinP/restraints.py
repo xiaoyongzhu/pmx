@@ -3,6 +3,7 @@
 import luigi
 import MDAnalysis as md
 import os
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.find_anchors_and_write_ii import find_restraints
 from pmx.scripts.workflows.find_avg import find_avg_struct
@@ -21,9 +22,11 @@ class Task_PL_gen_restraints(SGETunedJobTask):
     l = luigi.Parameter(description='Ligand name')
 
     folder_path = luigi.Parameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Path to the protein+ligand folder to set up')
 
     study_settings = luigi.DictParameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Dict of study stettings '
                  'used to propagate settings to dependencies')
 
@@ -32,17 +35,15 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                  'Aligned, Fitted or Fixed')
 
     #request 1 cores
-    n_cpu = luigi.IntParameter(default=1, significant=False)
-    parallel_env = luigi.Parameter(default='openmp_fast', significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=1, significant=False)
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_l{l}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
-    job_name = luigi.Parameter(
-        significant=False, default="",
-        description="Explicit job name given via qsub.")
 
     extra_packages=[md]
 

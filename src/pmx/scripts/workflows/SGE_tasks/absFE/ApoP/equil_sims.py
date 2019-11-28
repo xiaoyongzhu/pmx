@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import luigi
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.absFE.ApoP.prep_folders import Prep_ApoP_folder
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_EM, Sim_PL_NVT_posre, Sim_PL_NVT_posre_soft, Sim_PL_NPT
 
@@ -14,12 +15,15 @@ class Sim_ApoP_EM(Sim_PL_EM):
     s = None
 
     folder_path = luigi.Parameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Path to the protein+ligand folder to set up')
 
     #request 2 cores
-    n_cpu = luigi.IntParameter(default=4, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=2, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
@@ -57,9 +61,11 @@ class Sim_ApoP_NVT_posre(Sim_PL_NVT_posre):
     s = None
 
     #request 4 cores
-    n_cpu = luigi.IntParameter(default=4, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=4, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
@@ -97,9 +103,11 @@ class Sim_ApoP_NVT_posre_soft(Sim_PL_NVT_posre_soft):
     s = None
 
     #request 4 cores
-    n_cpu = luigi.IntParameter(default=4, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=4, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
@@ -138,9 +146,11 @@ class Sim_ApoP_NPT(Sim_PL_NPT):
     s = None
 
     #request 4 cores
-    n_cpu = luigi.IntParameter(default=4, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=4, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import luigi
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.absFE.LinW.equil_sims import Sim_WL_NPT
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_morphes
 
@@ -14,6 +15,7 @@ class Task_WL_gen_morphes(Task_PL_gen_morphes):
     p = None
 
     folder_path = luigi.Parameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Path to the water+ligand folder to set up')
 
     restr_scheme = luigi.Parameter(significant=False, default="",
@@ -21,10 +23,12 @@ class Task_WL_gen_morphes(Task_PL_gen_morphes):
                  'Aligned, Fitted or Fixed')
 
     #request 1 cores
-    n_cpu = luigi.IntParameter(default=1, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=1, significant=False)
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_l{l}_{sTI}{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")

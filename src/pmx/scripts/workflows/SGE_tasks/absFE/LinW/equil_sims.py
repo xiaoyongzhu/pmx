@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import luigi
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.absFE.LinW.prep_folders import Prep_WL_folder
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_EM, Sim_PL_NVT_posre, Sim_PL_NPT
 
@@ -13,12 +14,15 @@ class Sim_WL_EM(Sim_PL_EM):
     p = None #disables base class' p
 
     folder_path = luigi.Parameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Path to the protein+ligand folder to set up')
 
     #request 1 cores
-    n_cpu = luigi.IntParameter(default=1, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=1, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_l{l}_{s}{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
@@ -46,9 +50,11 @@ class Sim_WL_NVT(Sim_PL_NVT_posre):
     p = None #disables base class' p
 
     #request 1 cores
-    n_cpu = luigi.IntParameter(default=1, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=1, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_l{l}_{s}{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
@@ -75,9 +81,11 @@ class Sim_WL_NPT(Sim_PL_NPT):
     p = None #disables base class' p
 
     #request 1 core
-    n_cpu = luigi.IntParameter(default=1, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=1, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_l{l}_{s}{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")

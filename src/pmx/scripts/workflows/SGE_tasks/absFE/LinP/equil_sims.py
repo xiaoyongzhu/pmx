@@ -2,6 +2,7 @@
 
 import luigi
 import os
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.Sim import SGE_Sim
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.prep_folders import Prep_PL_folder
 
@@ -18,17 +19,21 @@ class Sim_PL_EM(SGE_Sim):
     s = luigi.Parameter(description='Coupling state')
 
     folder_path = luigi.Parameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Path to the protein+ligand folder to set up')
 
     study_settings = luigi.DictParameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
                  description='Dict of study stettings '
                  'used to propagate settings to dependencies')
 
     stage="em"
     #request 2 cores
-    n_cpu = luigi.IntParameter(default=2, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=2, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_l{l}_{s}{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
@@ -66,7 +71,8 @@ class Sim_PL_EM(SGE_Sim):
 class Sim_PL_NVT_posre(Sim_PL_EM):
     stage="nvt_posre"
     #request 4 cores
-    n_cpu = luigi.IntParameter(default=4, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=4, significant=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -85,8 +91,9 @@ class Sim_PL_NVT_posre(Sim_PL_EM):
 
 class Sim_PL_NVT_posre_soft(Sim_PL_EM):
     stage="nvt_posre_soft"
-    #request 4 cores
-    n_cpu = luigi.IntParameter(default=4, significant=False)
+    #request 2 cores
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=2, significant=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -106,7 +113,8 @@ class Sim_PL_NVT_posre_soft(Sim_PL_EM):
 class Sim_PL_NPT(Sim_PL_EM):
     stage="npt"
     #request 4 cores
-    n_cpu = luigi.IntParameter(default=4, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=4, significant=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

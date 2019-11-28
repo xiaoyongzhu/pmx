@@ -5,6 +5,7 @@ import luigi
 import os
 import sys
 import pmx.scripts.analyze_dhdl
+from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.TI import Task_PL_TI_simArray
 
@@ -20,16 +21,20 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
     i = luigi.IntParameter(description='Repeat number')
 
     folder_path = luigi.Parameter(significant=False,
+        visibility=ParameterVisibility.HIDDEN,
         description='Path to the protein+ligand folder to set up')
 
     study_settings = luigi.DictParameter(significant=False,
+        visibility=ParameterVisibility.HIDDEN,
         description='Dict of study stettings '
         'used to propagate settings to dependencies')
 
     #request 1 core
-    n_cpu = luigi.IntParameter(default=1, significant=False)
+    n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=1, significant=False)
 
     job_name_format = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_l{l}_{i}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
