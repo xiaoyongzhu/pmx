@@ -27,13 +27,29 @@ def extended_build_qsub_command(cmd, job_name, outfile, errfile, pe, n_cpu, runt
 
 
 class SGETunedJobTask(SGEJobTask):
-    # run_locally = luigi.BoolParameter(
-    #     default=True,
-    #     significant=False,
-    #     description="run locally instead of on the cluster")
+    run_locally = luigi.BoolParameter(
+        default=False,
+        significant=False,
+        description="run locally instead of on the cluster")
 
-#TODO: Override _track_job() so that:
-#           - need resume support in case job runs out of time
+    #temp files
+    #Don't archive luigi or pmx. Jobs load them by copying env vars from login node
+    no_tarball = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False,
+        default=True,
+        description="don't tarball (and extract) the luigi project files")
+
+    shared_tmp_dir = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
+        default=os.path.join(os.getenv("HOME"), 'temp'),
+        significant=False)
+
+    dont_remove_tmp_dir = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False,
+        default=True,
+        description="don't delete the temporary directory used (for debugging)")
 
     #change default parallel environment
     parallel_env = luigi.Parameter(
@@ -47,24 +63,6 @@ class SGETunedJobTask(SGEJobTask):
         significant=False, default=30,
         visibility=ParameterVisibility.HIDDEN,
         description="specify the wait time to poll qstat for the job status")
-
-    #temp files
-    shared_tmp_dir = luigi.Parameter(
-        visibility=ParameterVisibility.HIDDEN,
-        default=os.path.join(os.getenv("HOME"), 'temp'),
-        significant=False)
-
-    # dont_remove_tmp_dir = luigi.BoolParameter(
-    #     significant=False,
-    #     default=True,
-    #     description="don't delete the temporary directory used (for debugging)")
-
-    #Don't archive luigi or pmx. Jobs load them through conda
-    no_tarball = luigi.BoolParameter(
-        significant=False,
-        default=True,
-        visibility=ParameterVisibility.HIDDEN,
-        description="don't tarball (and extract) the luigi project files")
 
     source_conda = luigi.Parameter(significant=False,
         default=os.path.join(os.getenv("HOME"),".luigi_profile"),
