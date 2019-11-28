@@ -91,11 +91,11 @@ class Gather_Inputs_folder(SGETunedJobTask):
                 os.system("echo 'MOL\n' | gmx editconf -f init.pdb "
                           "-o lig.pdb -n index.ndx >> setup.log 2>&1")
                 check_file_ready("lig.pdb")
-                os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
+                os.system("echo '2\n' | gmx genrestr -f lig.pdb "
                           "-fc 9000 9000 9000 "
                           "-o lig_posre.itp >> setup.log  2>&1")
                 check_file_ready("lig_posre.itp")
-                os.system("echo 'MOL\n' | gmx genrestr -f lig.pdb "
+                os.system("echo '2\n' | gmx genrestr -f lig.pdb "
                           "-fc 500 500 500 "
                           "-o lig_posre_soft.itp >> setup.log 2>&1")
                 check_file_ready("lig_posre_soft.itp")

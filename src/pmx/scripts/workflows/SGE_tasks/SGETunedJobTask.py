@@ -26,6 +26,10 @@ def extended_build_qsub_command(cmd, job_name, outfile, errfile, pe, n_cpu, runt
 
 
 class SGETunedJobTask(SGEJobTask):
+    # run_locally = luigi.BoolParameter(
+    #     default=True,
+    #     significant=False,
+    #     description="run locally instead of on the cluster")
 
 #TODO: Override _track_job() so that:
 #           - need resume support in case job runs out of time
@@ -114,11 +118,10 @@ class SGETunedJobTask(SGEJobTask):
             time.sleep(1)
             waitbuffer-=1
 
-        if(waitbuffer<=0 and not self.complete()):
+        if(not self.complete()):
             errmsg = "Task "+self.__class__.__name__
-            errmsg+= " with significant parameters "
-            pars = [t for t in self.get_params() if t[1].significant]
-            errmsg+= str(dict((y, x) for x, y in pars))
+            pars = [(t[0], getattr(self, t[0])) for t in self.get_params() if t[1].significant]
+            errmsg+= str(dict((x, y) for x, y in pars))
             errmsg+= " Failed due to being incomplete."
             raise(Exception(errmsg))
 
