@@ -61,7 +61,7 @@ class SGE_Sim(SGETunedJobTask):
         #run sim
         if(os.path.isfile('state.cpt')):
             #checkpoint exists, resume from it
-            date_time = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
+            date_time = datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
             sh.copy('state.cpt','state_{}_start.cpt'.format(date_time))
             os.system("{mdrun} -s tpr.tpr -ntomp {n_cpu} -cpi state.cpt "
                       "{mdrun_opts} > mdrun.log 2>&1".format(
