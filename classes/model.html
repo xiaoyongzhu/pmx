@@ -199,7 +199,7 @@ acts on this object.</p>
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pmx.model.Model">
-<em class="property">class </em><code class="sig-prename descclassname">pmx.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param">filename=None</em>, <em class="sig-param">pdbline=None</em>, <em class="sig-param">renumber_atoms=True</em>, <em class="sig-param">renumber_residues=True</em>, <em class="sig-param">rename_atoms=False</em>, <em class="sig-param">scale_coords=None</em>, <em class="sig-param">bPDBTER=True</em>, <em class="sig-param">bNoNewID=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pmx.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param">filename=None</em>, <em class="sig-param">pdbline=None</em>, <em class="sig-param">renumber_atoms=True</em>, <em class="sig-param">renumber_residues=True</em>, <em class="sig-param">rename_atoms=False</em>, <em class="sig-param">scale_coords=None</em>, <em class="sig-param">bPDBTER=True</em>, <em class="sig-param">bNoNewID=True</em>, <em class="sig-param">bPDBGAP=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Model Class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -217,11 +217,12 @@ like operate on nm coordinates, then select “nm”. Viceversa, if you
 read a GRO file but would like to work on A coordinates, select “A”.
 Note that if you read a PDB file in A coordinates and select “A”,
 nothing happens (same for GRO and “nm” selection).</p></li>
-<li><p><strong>bPDBTER</strong> (<em>bool</em><em>(</em><em>?</em><em>)</em>) – whether to recognize TER lines and other chain breaks, e.g.
+<li><p><strong>bPDBTER</strong> (<em>bool</em>) – whether to recognize TER lines and other chain breaks, e.g.
 discontinuous residue indices(?). Default is True.</p></li>
-<li><p><strong>bNoNewID</strong> (<em>bool</em><em>(</em><em>?</em><em>)</em>) – whether to assign new chain IDs? If True, new chain IDs starting
+<li><p><strong>bNoNewID</strong> (<em>bool</em>) – whether to assign new chain IDs? If True, new chain IDs starting
 with ‘pmx’ will be assigned(?). Only relevant if bPDBTER is True.
 Default is True.</p></li>
+<li><p><strong>bPDBGAP</strong> (<em>bool</em>) – whether search for gaps in the chain to assign new chain IDs.</p></li>
 </ul>
 </dd>
 </dl>
@@ -321,7 +322,7 @@ a mix of molecules are in the system.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.model.Model.read" title="pmx.model.Model.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(filename[, bPDBTER, bNoNewID])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.model.Model.read" title="pmx.model.Model.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(filename[, bPDBTER, bNoNewID, bPDBGAP])</p></td>
 <td><p>PDB/GRO file reader.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pmx.model.Model.write" title="pmx.model.Model.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(fn[, title, nr, bPDBTER, bAssignChainIDs])</p></td>
@@ -458,7 +459,7 @@ with resnames different from those in key.</p></li>
 
 <dl class="method">
 <dt id="pmx.model.Model.read">
-<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">bPDBTER=False</em>, <em class="sig-param">bNoNewID=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.read" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">bPDBTER=False</em>, <em class="sig-param">bNoNewID=True</em>, <em class="sig-param">bPDBGAP=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDB/GRO file reader.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -468,6 +469,7 @@ with resnames different from those in key.</p></li>
 <li><p><strong>bNoNewID</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to assign new chain IDs. If True, new chain IDs starting
 with ‘pmx’ will be assigned(?). Only relevant if bPDBTER is also
 True. Default is True.</p></li>
+<li><p><strong>bPDBGAP</strong> (<em>bool</em>) – whether search for gaps in the chain to assign new chain IDs.</p></li>
 </ul>
 </dd>
 </dl>

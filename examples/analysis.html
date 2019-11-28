@@ -200,9 +200,9 @@ Furthermore, an advantage of BAR over CGI is that it does not rely on the
 Gaussian assumption for the distribution of the work values.</p>
 <p>To get the free energy estimate, you first need to recover the work values by
 integrating the data.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">glob</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.analysis</span> <span class="k">import</span> <span class="n">read_dgdl_files</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.estimators</span> <span class="k">import</span> <span class="n">BAR</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.analysis</span> <span class="kn">import</span> <span class="n">read_dgdl_files</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.estimators</span> <span class="kn">import</span> <span class="n">BAR</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get dgdl.xvg files for the forward and reverse transitions</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ff</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="s1">&#39;for*.xvg&#39;</span><span class="p">)</span>  <span class="c1"># forward</span>
@@ -252,7 +252,7 @@ the uncertainty.</p>
 </div>
 <p>A simple way to inspect the results and identify potential issues with the reliability
 of the calculations is to plot the distribution of forward and reverse work values.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.analysis</span> <span class="k">import</span> <span class="n">plot_work_dist</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.analysis</span> <span class="kn">import</span> <span class="n">plot_work_dist</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># write distribution plot to &#39;Wdist.png&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plot_work_dist</span><span class="p">(</span><span class="n">wf</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="o">=</span><span class="n">wr</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dG</span><span class="o">=</span><span class="n">cgi</span><span class="o">.</span><span class="n">dg</span><span class="p">,</span> <span class="n">dGerr</span><span class="o">=</span><span class="n">cgi</span><span class="o">.</span><span class="n">err_boot1</span><span class="p">)</span>
 </pre></div>

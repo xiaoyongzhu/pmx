@@ -1783,7 +1783,7 @@ structures from scratch.</p>
 <p>Most important:
 - build_chain</p>
 <dl>
-<dt>Usage:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.builder</span> <span class="k">import</span> <span class="o">*</span>
+<dt>Usage:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.builder</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span> <span class="o">=</span> <span class="n">build_chain</span><span class="p">(</span><span class="s1">&#39;AAAAAA&#39;</span><span class="p">)</span>    <span class="c1"># builds an ordinary polyalanine</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;polyala.pdb&#39;</span><span class="p">)</span>       <span class="c1"># store file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span> <span class="o">=</span> <span class="n">build_chain</span><span class="p">(</span><span class="s1">&#39;FGHRTCV&#39;</span><span class="p">,</span><span class="n">hydrogens</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="c1"># build chain without H</span>
