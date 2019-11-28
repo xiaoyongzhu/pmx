@@ -448,7 +448,17 @@ class Chain(Atomselection):
             changed = False
         self.cbuild('GLY')
         m = self.cterminus() # new terminus
-        del m['O']
+
+        try: # try deleting from the model
+            fooID = m['O'].id
+            foo = self.model.fetch_atoms(fooID,"byid")
+            modidx = self.model.atoms.index(foo[0])
+            del self.model.atoms[modidx]
+            self.model.renumber_atoms()
+            del m['O'] # deletes from chain
+        except:
+            del m['O']
+
         c, ca, ha1, ha2 = m.fetchm(['C', 'CA', 'HA1', 'HA2'])
         ca.name = 'CH3'
         ha1.name = 'HH31'
