@@ -202,7 +202,7 @@ def parse_options(SGE=False):
                         type=str,
                         help='Optional arguments to mdrun. '
                         'Enclose in quotes.',
-                        default="-pin on")
+                        default="")
 
 
 
