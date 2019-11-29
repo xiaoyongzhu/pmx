@@ -201,6 +201,10 @@ class Task_PL_align(Task_PL_gen_morphes):
             except StopIteration:
                 break
 
+            #don't want frames while still equilibrating
+            if(frame_A.time<self.study_settings['b']):
+                continue
+
             if(not os.path.isfile("frame%d.gro"%fridx)):
                 frame_A.update(m_A)
                 frame_B.update(m_B)
