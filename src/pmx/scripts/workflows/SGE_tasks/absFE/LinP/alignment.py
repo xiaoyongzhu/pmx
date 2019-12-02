@@ -160,6 +160,31 @@ class Task_PL_align(Task_PL_gen_morphes):
         os.makedirs(self.sim_path, exist_ok=True)
         os.chdir(self.sim_path)
 
+        trj_A_src=self.folder_path+"/state{2}/repeat{3}/npt{4}/".format(
+            self.p, self.l, 'A', self.i, self.m)  #P+L
+        trj_B_src=self.base_path+"/prot_{0}/apoP/repeat{3}/npt{4}/".format(
+            self.p, self.l, None, self.i, self.m) #apoP
+        trj_C_src=self.base_path+"/water/lig_{1}/state{2}/repeat{3}/npt{4}/".format(
+            self.p, self.l, 'B', self.i, self.m)  #vacL
+
+        #Cut the begining off of trjs and center them
+        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_A.trr "
+                  "-b {b} -ur compact -pbc mol -center "
+                  "> align.log 2>&1".format(
+                      tpr=trj_A_src+"tpr.tpr", trj=trj_A_src+"traj.trr",
+                      b=self.study_settings['b']) ) #P+L
+        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_B.trr "
+                  "-b {b} -ur compact -pbc mol -center "
+                  ">> align.log 2>&1".format(
+                      tpr=trj_B_src+"tpr.tpr", trj=trj_B_src+"traj.trr",
+                      b=self.study_settings['b']) ) #apoP
+        os.system("echo 2 0 | gmx trjconv -s {tpr} -f {trj} -o trj_C.trr "
+                  "-b {b} -ur compact -pbc mol -center "
+                  ">> align.log 2>&1".format(
+                      tpr=trj_C_src+"tpr.tpr", trj=trj_C_src+"traj.trr",
+                      b=self.study_settings['b']) ) #vacL
+
+
         m_A = Model(self.folder_path+"/ions%d_%d.pdb"%(self.i,self.m),bPDBTER=True)
         m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
             self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
@@ -171,13 +196,9 @@ class Task_PL_align(Task_PL_gen_morphes):
 
         chID,resID = find_last_protein_atom( m_B )
 
-
-        trj_A = Trajectory(self.folder_path+"/state{2}/repeat{3}/npt{4}/traj.trr".format(
-            self.p, self.l, 'A', self.i, self.m))
-        trj_B  = Trajectory(self.base_path+"/prot_{0}/apoP/repeat{3}/npt{4}/traj.trr".format(
-            self.p, self.l, None, self.i, self.m)) #apoP
-        trj_C  = Trajectory(self.base_path+"/water/lig_{1}/state{2}/repeat{3}/npt{4}/traj.trr".format(
-            self.p, self.l, 'B', self.i, self.m)) #vacL
+        trj_A = Trajectory("trj_A.trr") #P+L
+        trj_B = Trajectory("trj_B.trr") #apoP
+        trj_C = Trajectory("trj_C.trr") #vacL
 
         ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
         ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
