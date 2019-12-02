@@ -67,8 +67,10 @@ class Frame:
             self.v=empty((n,3),dtype=float32)
             self.f=empty((n,3),dtype=float32)
         else:
-            self.v=c_size_t(0)#((c_float*3)*n)()
-            self.f=c_size_t(0)#((c_float*3)*n)()
+            #self.v=c_size_t(0)#((c_float*3)*n)()
+            #self.f=c_size_t(0)#((c_float*3)*n)()
+            self.v=((c_float*3)*n)()
+            self.f=((c_float*3)*n)()
 
         # box
         if box is not None:
@@ -86,22 +88,35 @@ class Frame:
             for k in range(3):
                 box[i][k] = self.box[i][k]
 
-    def update_atoms(self, atom_sel):
+    def update_atoms(self, atom_sel, uv=False, uf=False):
         for i, atom in enumerate(atom_sel.atoms):
             if atom_sel.unity == 'A':
                 atom.x[0] = self.x[i][0]*10
                 atom.x[1] = self.x[i][1]*10
                 atom.x[2] = self.x[i][2]*10
+                if(uv):
+                    atom.v = [v/10 for v in self.v[i]]
+                else:
+                    atom.v=[0,0,0]
             else:
                 atom.x[0] = self.x[i][0]
                 atom.x[1] = self.x[i][1]
                 atom.x[2] = self.x[i][2]
+                if(uv):
+                    atom.v = [v for v in self.v[i]]
+                else:
+                    atom.v=[0,0,0]
 
-    def update( self, atom_sel ):
+            if(uf): #no force scaling by units
+                atom.f = [f for f in self.f[i]]
+            else:
+                atom.f=[0,0,0]
+
+    def update( self, atom_sel, uv=False, uf=False ):
         if(len(atom_sel.atoms)!=self.natoms):
             raise ValueError("Model and Trajectory have different numbers of atoms: %d and %d"\
                              %(len(atom_sel.atoms),self.natoms) )
-        self.update_atoms(atom_sel )
+        self.update_atoms(atom_sel, uv,uf )
         self.update_box( atom_sel.box )
 
 
@@ -182,7 +197,7 @@ class XDRFile:
         class XDRFILEstruct(Structure):
             pass;
         self.xdr.xdrfile_open.restype = POINTER(XDRFILEstruct)
-        
+
         #TODO: for safety and future ctypes compatability, declare the argument and return types for all c functions called
 
         #open file
@@ -241,7 +256,7 @@ class XDRFile:
                     result = self.xdr.read_xtc(self.xd,self.natoms,byref(step),byref(time),f.box,f.x,byref(prec))
                     f.prec=prec.value
                 else:
-                    result = self.xdr.read_trr(self.xd,self.natoms,byref(step),byref(time),byref(lam),f.box,f.x,None,None) #TODO: make v,f possible
+                    result = self.xdr.read_trr(self.xd,self.natoms,byref(step),byref(time),byref(lam),f.box,f.x,f.v,f.f) #TODO: make v,f possible
                     f.lam=lam.value
 
                 #check return value

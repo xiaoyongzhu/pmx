@@ -228,8 +228,8 @@ class Task_PL_align(Task_PL_gen_morphes):
 
             if(not os.path.isfile("frame%d.gro"%fridx)):
                 frame_A.update(m_A)
-                frame_B.update(m_B)
-                frame_C.update(m_C)
+                frame_B.update(m_B, uv=True)
+                frame_C.update(m_C, uv=True)
 
                 # m_A.write("m_A1.gro")
                 # step1: fit prot from prot+lig onto apo protein
