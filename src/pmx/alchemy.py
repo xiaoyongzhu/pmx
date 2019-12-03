@@ -194,7 +194,7 @@ def get_nuc_hybrid_resname(residue, new_nuc_name):
     return(hybrid_residue_name, residue.resname[1], new_nuc_name)
 
 
-def gen_hybrid_top(topol, recursive=True, verbose=False):
+def gen_hybrid_top(topol, recursive=True, verbose=False, scaleDih=1.0):
     """Fills the bstate of a topology file containing pmx hybrid residues. This
     can be either a top or itp file. If the file contains other itp files via
     include statements, the function can iterate through them if the recursive
@@ -214,6 +214,8 @@ def gen_hybrid_top(topol, recursive=True, verbose=False):
         topology file. Default is True.
     verbose : bool
         whether to print out info. Default is False.
+    scaleDih : float
+        scaling for dihedrals with a dummy.
 
     Returns
     -------
@@ -228,7 +230,7 @@ def gen_hybrid_top(topol, recursive=True, verbose=False):
     ffbonded_file = os.path.join(topol.ffpath, 'ffbonded.itp')
 
     # main function that returns the Topology with filled B states
-    def process_topol(topol, ff, ffbonded_file, verbose=False):
+    def process_topol(topol, ff, ffbonded_file, verbose=False, scaleDih=1.0):
         pmxtop = deepcopy(topol)
         # create model with residue list
         m = Model(atoms=pmxtop.atoms)
@@ -247,9 +249,9 @@ def gen_hybrid_top(topol, recursive=True, verbose=False):
         _find_angle_entries(pmxtop, verbose=verbose)
         dih_predef_default = []
         _find_predefined_dihedrals(pmxtop, rlist, rdic, ffbonded_file,
-                                   dih_predef_default, ff)
+                                   dih_predef_default, ff, scaleDih=scaleDih)
         _find_dihedral_entries(pmxtop, rlist, rdic, dih_predef_default,
-                               verbose=verbose)
+                               verbose=verbose, scaleDih=scaleDih)
 
         _add_extra_DNA_RNA_impropers(pmxtop, rlist, 1, [180, 40, 2], [180, 40, 2])
 
@@ -272,7 +274,7 @@ def gen_hybrid_top(topol, recursive=True, verbose=False):
         print('\nlog_> Reading input %s file "%s"'
               % (topol.filename.split('.')[-1], topol.filename))
     pmx_top = process_topol(topol=topol, ff=ff, ffbonded_file=ffbonded_file,
-                            verbose=verbose)
+                            verbose=verbose, scaleDih=scaleDih)
 
     # ------------------------------------
     # itps too if asked for and if present
@@ -436,6 +438,20 @@ def couple_mol(top):
 # ===============
 # HelperFunctions
 # ===============
+def _scale_dih( d, scale ):
+    # scale dihedral
+    dih = deepcopy(d)
+    if dih[0]==9 or dih[0]==4 or dih[0]==1 or dih[0]==2:
+        dih[2] *= scale
+    elif dih[0]==3:
+        dih[1] *= scale
+        dih[2] *= scale
+        dih[3] *= scale
+        dih[4] *= scale
+        dih[5] *= scale
+        dih[6] *= scale
+    return(dih)
+
 def _check_OPLS_LYS(res):
     if res.has_atom('HZ3'):
         return('K')
@@ -834,13 +850,15 @@ def _find_angle_entries(topol, verbose=False):
 
 
 def _find_dihedral_entries(topol, rlist, rdic, dih_predef_default,
-                           verbose=False):
+                           verbose=False, scaleDih=1.0):
     count = 0
     nfake = 0
     # here I will accumulate multiple entries of type 9 dihedrals
     dih9 = []
     # need to store already visited angles to avoid multiple re-definitions
     visited_dih = []
+    # scale dihedrals with dummies
+#    scaleDih = 0.0
 
     for d in topol.dihedrals:
         if len(d) >= 6:
@@ -896,11 +914,13 @@ def _find_dihedral_entries(topol, rlist, rdic, dih_predef_default,
                         for ast in foo:
                             if counter == 0:
                                 d[5] = ast
-                                d.append(ast)
+                                bst = _scale_dih( ast, scaleDih )
+                                d.append(bst)
                             else:
                                 alus = backup_d[:]
                                 alus[5] = ast
-                                alus.append(ast)
+                                bst = _scale_dih( ast, scaleDih )
+                                alus.append(bst)
                                 dih9.append(alus)
                             counter = 1
 
@@ -918,11 +938,13 @@ def _find_dihedral_entries(topol, rlist, rdic, dih_predef_default,
 
                         for bst in foo:
                             if counter == 0:
-                                d[5] = bst
+                                ast = _scale_dih( bst, scaleDih )
+                                d[5] = ast
                                 d.append(bst)
                             else:
                                 alus = backup_d[:]
-                                alus[5] = bst
+                                ast = _scale_dih( bst, scaleDih )
+                                alus[5] = ast
                                 alus.append(bst)
                                 dih9.append(alus)
                             counter = 1
@@ -1177,12 +1199,13 @@ def _is_ildn_dih_encountered(ildn_used, d, encountered):
 
 
 def _find_predefined_dihedrals(topol, rlist, rdic, ffbonded,
-                               dih_predef_default, ff):
+                               dih_predef_default, ff, scaleDih=1.0):
 
     dih9 = []  # here I will accumulate multiple entries of type 9 dihedrals
     explicit_def = _explicit_defined_dihedrals(ffbonded, ff)
     ildn_used = []  # ildn dihedrals that already were encountered
     opls_used = []  # opls dihedrals that already were encountered
+#    scaleDih = 0.0  # scale dihedrals with dummies
 
     for r in rlist:
         idx = r.id - 1
@@ -1343,6 +1366,8 @@ def _find_predefined_dihedrals(topol, rlist, rdic, ffbonded,
                     for foo in astate:
                         if counter == 0:
                             dx[4] = func
+                            if 'D' in A:
+                               foo =  _scale_dih( foo, scaleDih ) 
                             dx[5] = foo
                             if(func == 3):
                                 bar = [foo[0], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -1353,6 +1378,8 @@ def _find_predefined_dihedrals(topol, rlist, rdic, ffbonded,
                             dx.append(bar)
                         else:
                             alus = backup_dx[:]
+                            if 'D' in A:
+                               foo =  _scale_dih( foo, scaleDih )
                             alus[5] = foo
                             if func == 3:
                                 bar = [foo[0], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -1375,9 +1402,13 @@ def _find_predefined_dihedrals(topol, rlist, rdic, ffbonded,
                             else:
                                 bar = [foo[0], foo[1], 0.0, foo[-1]]
                             dx[5] = bar
+                            if 'D' in B:
+                               foo =  _scale_dih( foo, scaleDih )
                             dx.append(foo)
                         else:
                             alus = backup_dx[:]
+                            if 'D' in B:
+                               foo =  _scale_dih( foo, scaleDih )
                             if(func == 3):
                                 bar = [foo[0], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
                             elif(func == 2):
