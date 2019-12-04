@@ -74,6 +74,29 @@ class Prep_PL_folder(Prep_folder): # will execute on the login node
                 raise(Exception("We have more water than expected. "
                                 "This should never happen."))
 
+    def gen_ions(self,top_ions,pdb_ions):
+        """Generates ions in the system.
+        """
+        apoP_path=self.study_settings['base_path']+"/prot_{}/apoP".format(self.p)
+        line = subprocess.check_output("tail -n 3 {}/topol_solvated.top | grep Cl".format(apoP_path),
+                                       shell=True).decode('utf-8')
+        if(not "Cl" in line):
+            raise(Exception("Could not find the number of Cl molecules in ApoP."))
+        nCl=int(line.split()[-1])
+
+        line = subprocess.check_output("tail -n 3 {}/topol_solvated.top | grep Na".format(apoP_path),
+                                       shell=True).decode('utf-8')
+        if(not "Na" in line):
+            raise(Exception("Could not find the number of Na molecules in ApoP."))
+        nNa=int(line.split()[-1])
+
+
+        os.system("echo 'SOL' | gmx genion -s tpr.tpr "
+                          "-p {top} -nn {nCl} -np (nNa)"
+                          "-nname Cl -pname Na "
+                          "-o {out} >> genion.log 2>&1".format(
+                              top=top_ions, nCl=nCl, nNa=nNa, out=pdb_ions) )
+
     def requires(self):
         return([Gather_Inputs_PL_folder(
                     folder_path=self.folder_path,

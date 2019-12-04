@@ -170,6 +170,16 @@ class Prep_folder(SGETunedJobTask):
         os.system("gmx solvate -scale 1.0 -cp box.pdb -o water.pdb "\
                   "-cs spc216.gro -p topol_solvated.top >> prep.log 2>&1")
 
+    def gen_ions(self,top_ions,pdb_ions):
+        """Generates ions in the system.
+        """
+        os.system("echo 'SOL' | gmx genion -s tpr.tpr "
+                          "-p %s -conc %f "
+                          "-neutral -nname Cl -pname Na "
+                          "-o %s >> genion.log 2>&1" %(
+                              top_ions, self.study_settings['salt_conc'], pdb_ions) )
+
+
 
     def work(self):
         os.chdir(self.folder_path)
@@ -207,11 +217,12 @@ class Prep_folder(SGETunedJobTask):
                 if(os.path.isfile(pdb_ions)): #skip if it already exists
                     continue
                 sh.copy("topol_solvated.top", top_ions)
-                os.system("echo 'SOL' | gmx genion -s tpr.tpr "
-                          "-p %s -conc %f "
-                          "-neutral -nname Cl -pname Na "
-                          "-o %s >> genion.log 2>&1" %(
-                              top_ions, self.study_settings['salt_conc'], pdb_ions) )
+                # os.system("echo 'SOL' | gmx genion -s tpr.tpr "
+                #           "-p %s -conc %f "
+                #           "-neutral -nname Cl -pname Na "
+                #           "-o %s >> genion.log 2>&1" %(
+                #               top_ions, self.study_settings['salt_conc'], pdb_ions) )
+                self.gen_ions(top_ions,pdb_ions)
                 check_file_ready(pdb_ions)
 
         cleanList = glob.glob(self.folder_path+'/#*')
