@@ -78,13 +78,13 @@ class Prep_PL_folder(Prep_folder): # will execute on the login node
         """Generates ions in the system.
         """
         apoP_path=self.study_settings['base_path']+"/prot_{}/apoP".format(self.p)
-        line = subprocess.check_output("tail -n 3 {}/topol_solvated.top | grep Cl".format(apoP_path),
+        line = subprocess.check_output("tail -n 3 {}/{} | grep Cl".format(apoP_path,top_ions),
                                        shell=True).decode('utf-8')
         if(not "Cl" in line):
             raise(Exception("Could not find the number of Cl molecules in ApoP."))
         nCl=int(line.split()[-1])
 
-        line = subprocess.check_output("tail -n 3 {}/topol_solvated.top | grep Na".format(apoP_path),
+        line = subprocess.check_output("tail -n 3 {}/{} | grep Na".format(apoP_path,top_ions),
                                        shell=True).decode('utf-8')
         if(not "Na" in line):
             raise(Exception("Could not find the number of Na molecules in ApoP."))
