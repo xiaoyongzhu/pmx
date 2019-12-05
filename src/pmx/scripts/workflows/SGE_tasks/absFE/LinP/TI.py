@@ -123,11 +123,14 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         for nf in range(nframes):
             fname=os.path.join(self.sim_path, 'dHdl%d.xvg'%nf)
             if(os.path.isfile(fname)):
-                last_line = subprocess.check_output(
-                    ['tail', '-1', fname]).decode('utf-8')
-                last_time = float(last_line.split()[0])
-                if(last_time == expected_end_time):
-                    continue;
+                try:
+                    last_line = subprocess.check_output(
+                        ['tail', '-1', fname]).decode('utf-8')
+                    last_time = float(last_line.split()[0])
+                    if(last_time == expected_end_time):
+                        continue;
+                except IndexError: #if some dDdl file exists but is empty
+                    pass;
 
             #frame not ready
             unf.append(nf)
