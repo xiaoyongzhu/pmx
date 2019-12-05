@@ -4,8 +4,8 @@ This is a collection of the input files for 13 protein-ligand systems (482 ligan
 PDE2, CMET, Bace (Hunt et al), Bace p2, Galectin, JNK1, Tyk2, Bace, MCL1, CDK2, Thrombin, PTP1b, P38
 
 ## Citation: ##
-  Large Scale Relative Protein Ligand Binding Affinities Using Non-Equilibrium Alchemy. 
-  Gapsys, Pérez-Benito, Aldeghi, Seeliger, Van Vlijmen, Tresadern and de Groot. 
+  Large Scale Relative Protein Ligand Binding Affinities Using Non-Equilibrium Alchemy.  
+  Gapsys, Pérez-Benito, Aldeghi, Seeliger, Van Vlijmen, Tresadern and de Groot.  
   2020. Chemical Science. 10.1039/C9SC03754C
 
 ## Folder structure: ##
