@@ -95,6 +95,11 @@ mutate, and after having passed that mutated structure through pdb2gmx.
                         'dummies have a mass of 1.',
                         default=True,
                         action='store_true')
+    parser.add_argument('--scale_dih',
+                        dest='scale_dih',
+                        help='Scale the dihedrals that have a dummy. ',
+                        default=1.0,
+                        action='store')
     parser.add_argument('--norecursive',
                         dest='recursive',
                         help='Whether to fill the B states also for all itp '
@@ -124,6 +129,7 @@ def main(args):
     ff = args.ff
     scale_mass = args.scale_mass
     recursive = args.recursive
+    scaleDih = float(args.scale_dih)
 
     # if input is itp but output is else, rename output
     if top_file_ext == 'itp' and outfile.split('.')[-1] != 'itp':
@@ -135,7 +141,7 @@ def main(args):
 
     # fill the B states
     pmxtop, pmxitps = gen_hybrid_top(topol=topol, recursive=recursive,
-                                     verbose=True)
+                                     verbose=True, scaleDih=scaleDih)
 
     # write hybrid itps if present
     replace = {}

@@ -116,13 +116,15 @@ class Model(Atomselection):
         read a GRO file but would like to work on A coordinates, select "A".
         Note that if you read a PDB file in A coordinates and select "A",
         nothing happens (same for GRO and "nm" selection).
-    bPDBTER : bool(?)
+    bPDBTER : bool
         whether to recognize TER lines and other chain breaks, e.g.
         discontinuous residue indices(?). Default is True.
-    bNoNewID : bool(?)
+    bNoNewID : bool
         whether to assign new chain IDs? If True, new chain IDs starting
         with 'pmx' will be assigned(?). Only relevant if bPDBTER is True.
         Default is True.
+    bPDBGAP : bool
+        whether search for gaps in the chain to assign new chain IDs.
 
     Attributes
     ----------
@@ -146,7 +148,7 @@ class Model(Atomselection):
     """
     def __init__(self, filename=None, pdbline=None, renumber_atoms=True,
                  renumber_residues=True, rename_atoms=False, scale_coords=None,
-                 bPDBTER=True, bNoNewID=True,
+                 bPDBTER=True, bNoNewID=True, bPDBGAP=False,
                  **kwargs):
 
         Atomselection.__init__(self)
@@ -164,7 +166,7 @@ class Model(Atomselection):
             setattr(self, key, val)
 
         if filename is not None:
-            self.read(filename=filename, bPDBTER=bPDBTER, bNoNewID=bNoNewID)
+            self.read(filename=filename, bPDBTER=bPDBTER, bNoNewID=bNoNewID, bPDBGAP=bPDBGAP)
         if pdbline is not None:
             self.__readPDB(pdbline=pdbline)
         if self.atoms:
@@ -371,24 +373,35 @@ class Model(Atomselection):
         self.unity = 'A'
         return self
 
+    def __check_if_gap( self, atC, atN ):
+        if atC==None:
+            return(False)
+        if atN.name != 'N':
+            return(False)
+        d = atC - atN
+        if d > 1.7: # bond 
+            return(True)
+        return(False)
+
     # TODO: make readPDB and readPDBTER a single function. It seems like
     # readPDBTER is more general PDB reader?
-    def __readPDBTER(self, fname=None, pdbline=None, bNoNewID=True):
+    def __readPDBTER(self, fname=None, pdbline=None, bNoNewID=True, bPDBGAP=False):
         """Reads a PDB file with more options than __readPDB ?"""
         if pdbline:
             lines = pdbline.split('\n')
         else:
             lines = open(fname, 'r').readlines()
 
-        chainIDstring = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                         'abcdefghijklmnoprstuvwxyz'
-                         '123456789')
+        chainIDstring = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoprstuvwxyz123456789'
         bNewChain = True
         chainID = ' '
         prevID = ' '
+        prevAtomName = ' '
         prevResID = 0
-        usedChainIDs = ''
+        prevResName = ' '
+        usedChainIDs = []
         atomcount = 1
+        prevCatom = None
 
         for line in lines:
             if 'TER' in line:
@@ -399,35 +412,69 @@ class Model(Atomselection):
                 # identify chain change by ID (when no TER is there)
                 if (a.chain_id != prevID):
                     bNewChain = True
+                if (self.__check_if_gap( prevCatom,a )==True and bPDBGAP==True):
+                    bNewChain = True
                 if (a.resnr != prevResID):
                     try:
                         if a.resnr != prevResID+1:
+                            bNewChain = True
+                        if (prevAtomName == 'OC2') or (prevAtomName == 'OXT') or (prevAtomName == 'OT2'):
+                            bNewChain = True
+                        if (prevAtomName == 'HH33') and ((prevResName=='NME') or (prevResName=='NAC') or (prevResName=='CT3')): # NME cap
                             bNewChain = True
                     except TypeError:
                         bNewChain = False
                 prevID = a.chain_id
                 prevResID = a.resnr
-                if bNewChain is True:
-                    if (a.chain_id == ' ') or (a.chain_id == chainID):
+                prevAtomName = a.name
+                prevResName = a.resname
+                if a.name == 'C':
+                    prevCatom = a
+                if bNewChain==True:
+                    if (a.chain_id==' ') or (a.chain_id==chainID) or (a.chain_id in usedChainIDs):
                         # find a new chain id
                         bFound = False
-                        while bFound is False:
+                        while bFound==False:
                             foo = chainIDstring[0]
                             chainIDstring = chainIDstring.lstrip(chainIDstring[0])
                             if foo not in usedChainIDs:
-                                bFound = True
-                                usedChainIDs = usedChainIDs+foo
+                                bFound=True
                                 chainID = foo
-                                if bNoNewID is True:
+                                if bNoNewID==True:
                                     chainID = "pmx"+foo
+                                usedChainIDs.append(chainID)
                     else:
                         chainID = a.chain_id
-                        usedChainIDs = usedChainIDs + chainID
+                        usedChainIDs.append(chainID)
                 a.chain_id = chainID
                 self.atoms.append(a)
                 bNewChain = False
             if line[:6] == 'CRYST1':
                 self.box = _p.box_from_cryst1(line)
+
+        ##### now fix chain IDs that have been newly created #####
+        newChainDict = {}
+        chainIDstring = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoprstuvwxyz123456789'
+        for a in self.atoms:
+            # chain with a new ID
+            if 'pmx' in a.chain_id:
+                # this ID has already been encountered
+                if a.chain_id in newChainDict.keys():
+                    a.chain_id = newChainDict[a.chain_id]
+                # ID not yet encountered
+                else:
+                    # find a suitable ID
+                    bFound = False
+                    while bFound==False:
+                        foo = chainIDstring[0]
+                        chainIDstring = chainIDstring.lstrip(chainIDstring[0])
+                        # found
+                        if foo not in usedChainIDs:
+                            bFound=True
+                            usedChainIDs.append(foo)
+                            newChainDict[a.chain_id] = foo
+                            a.chain_id = foo
+
         self.make_chains()
         self.make_residues()
         self.unity = 'A'
@@ -514,7 +561,7 @@ class Model(Atomselection):
         else:
             self.moltype = 'unknown'
 
-    def read(self, filename, bPDBTER=False, bNoNewID=True):
+    def read(self, filename, bPDBTER=False, bNoNewID=True, bPDBGAP=False):
         """PDB/GRO file reader.
 
         Parameters
@@ -527,13 +574,15 @@ class Model(Atomselection):
             whether to assign new chain IDs. If True, new chain IDs starting
             with 'pmx' will be assigned(?). Only relevant if bPDBTER is also
             True. Default is True.
+        bPDBGAP : bool
+            whether search for gaps in the chain to assign new chain IDs.
         """
         ext = filename.split('.')[-1]
         if ext == 'pdb':
             if bPDBTER is True:
                 return self.__readPDBTER(fname=filename,
                                          pdbline=None,
-                                         bNoNewID=bNoNewID)
+                                         bNoNewID=bNoNewID, bPDBGAP=bPDBGAP)
             else:
                 return self.__readPDB(fname=filename)
         elif ext == 'gro':

@@ -448,7 +448,17 @@ class Chain(Atomselection):
             changed = False
         self.cbuild('GLY')
         m = self.cterminus() # new terminus
-        del m['O']
+
+        try: # try deleting from the model
+            fooID = m['O'].id
+            foo = self.model.fetch_atoms(fooID,"byid")
+            modidx = self.model.atoms.index(foo[0])
+            del self.model.atoms[modidx]
+            self.model.renumber_atoms()
+            del m['O'] # deletes from chain
+        except:
+            del m['O']
+
         c, ca, ha1, ha2 = m.fetchm(['C', 'CA', 'HA1', 'HA2'])
         ca.name = 'CH3'
         ha1.name = 'HH31'
@@ -549,7 +559,19 @@ class Chain(Atomselection):
         new = Molecule().new_aa(resn)
         self.__prepare_cterm_for_extension()
         cterm = self.cterminus()
-        Ca, C, O = cterm.fetchm(['CA', 'C', 'O'])
+        try:
+            Ca, C, O = cterm.fetchm(['CA', 'C', 'O'])
+        except:
+            try:
+                Ca, C, O = cterm.fetchm(['CA', 'C', 'OC1']) # amber
+                O2 = cterm.fetchm(['OC2'])
+                self.remove_atom(O2[0])
+            except:
+                Ca, C, O = cterm.fetchm(['CA', 'C', 'OT1']) # charmm
+                O2 = cterm.fetchm(['OT2'])
+                self.remove_atom(O2[0])
+            O.name = 'O'
+
         N, CA2 = new.fetchm(['N', 'CA'])
         if self.unity != 'A':
             self.nm2a()

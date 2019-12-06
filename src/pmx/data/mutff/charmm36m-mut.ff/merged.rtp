@@ -37631,7 +37631,8 @@
   [ impropers ]
 	   C6    C5    N1    O6
 
-[ K2C ]
+; VG modified name
+[ K2CX ]
   [ atoms ]
 	   N1 NG2P1   -0.240  0
 	   C2 CG2R64    0.770  1
@@ -38788,7 +38789,8 @@
 	   C2    N1    N3    N2
 	   N2   H22   H21    C2
 
-[ M2A ]
+; VG modified name
+[ M2AX ]
   [ atoms ]
 	   N9 NG2R51    0.000  0
 	   C8 CG2R53    0.350  1
@@ -38878,7 +38880,8 @@
 	   C6    C5    N1    N6
 	   N6   H62   H61    C6
 
-[ M2G ]
+; VG modified name
+[ M2GX ]
   [ atoms ]
 	   N9 NG2R51   -0.010  0
 	   C8 CG2R53    0.330  1
@@ -43119,7 +43122,8 @@
 	   O5   HO5
 	   C5   H52
 
-[ N2G ]
+; VG modified name
+[ N2GX ]
   [ atoms ]
 	   N9 NG2R52   -0.090  0
 	   C8 CG2R53    0.410  1
@@ -53007,7 +53011,8 @@
 	   C2    N1    N3    N2
 	   N2   H22   H21    C2
 
-[ R2C ]
+; VG modified name
+[ R2CX ]
   [ atoms ]
 	   N1 NG2P1   -0.240  0
 	   C2 CG2R64    0.770  1
