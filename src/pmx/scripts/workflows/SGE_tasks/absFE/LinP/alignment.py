@@ -348,7 +348,11 @@ class Task_PL_align2crystal(Task_PL_align):
         trj_B = Trajectory("trj_B.trr") #apoP
         trj_C = Trajectory("trj_C.trr") #vacL
 
-        #TODO: make index_prot_mol.ndx as this is done before restraints now
+        #make index_prot_mol.ndx here. Before it was done during restraint gen.
+        os.system("echo \"1|13\nq\n\" | "
+                  "gmx make_ndx -f {fp}/ions0_0.pdb "
+                  "-o {fp}/index_prot_mol.ndx > /dev/null 2>&1".format(
+                      fp=self.folder_path ))
 
         ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
         ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
