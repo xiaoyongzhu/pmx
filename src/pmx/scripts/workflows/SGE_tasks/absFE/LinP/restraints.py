@@ -294,7 +294,7 @@ class Task_PL_gen_restraints_align2crystal(Task_PL_gen_restraints):
         os.chdir(self.folder_path)
 
         srctpr=self.folder_path+"/state{2}/repeat{3}/npt{4}/tpr.tpr"
-        srctraj=self.folder_path+"/state{2}/repeat{3}/morphes{4}/aligned.trr"
+        srctraj=self.folder_path+"/state{2}/repeat{3}/morphes{4}/aligned.xtc"
 
         #create prot+MOL index group
         os.system("echo \"1|13\nq\n\" | "

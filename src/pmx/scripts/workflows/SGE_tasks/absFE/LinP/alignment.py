@@ -7,6 +7,7 @@ import os
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx import ndx
 from pmx.model import Model
+from ctypes import c_float
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R, find_last_protein_atom
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
@@ -348,6 +349,9 @@ class Task_PL_align2crystal(Task_PL_align):
         trj_B = Trajectory("trj_B.trr") #apoP
         trj_C = Trajectory("trj_C.trr") #vacL
 
+        trj_out = Trajectory("aligned.xtc", mode='Out',
+                             atomNum=len(m_A.atoms)) #aligned output
+
         #make index_prot_mol.ndx here. Before it was done during restraint gen.
         os.system("echo \"1|13\nq\n\" | "
                   "gmx make_ndx -f {fp}/ions0_0.pdb "
@@ -405,9 +409,20 @@ class Task_PL_align2crystal(Task_PL_align):
 
                 # output
                 m_B.write("frame%d.gro"%fridx)
+                x = ((c_float*3)*n)()
+                for i, atom in enumerate(m_B.atoms):
+                    if m_B.unity == 'A':
+                        self.x[i][0]=atom.x[0]/10
+                        self.x[i][1]=atom.x[1]/10
+                        self.x[i][2]=atom.x[2]/10
+                    else:
+                        self.x[i][0]=atom.x[0]
+                        self.x[i][1]=atom.x[1]
+                        self.x[i][2]=atom.x[2]
 
-
-
+                trj_out.write_xtc_frame(step=frame_B.step, time=frame_B.time,
+                                        lam=1.0, box=frame_B.box, x=x,
+                                        units='A', bTrr=False )
 
             fridx+=1
 
