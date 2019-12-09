@@ -171,6 +171,8 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         elif(self.restr_scheme=="Fitted"):
             find_restraints(log=False)
 
+        check_file_ready(os.path.join('ii.itp'))
+
         #create a C state topology that holds ligand in place
         #with the restraint from the ii.itp files
         for i in range(self.study_settings['n_repeats']):
