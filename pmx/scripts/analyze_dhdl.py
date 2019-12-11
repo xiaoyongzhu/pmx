@@ -710,8 +710,10 @@ def main(args):
         # If random selection is chosen, do this before reading files and
         # calculating the work values.
         if args.rand is not None:
-            filesAB = np.random.choice(filesAB, size=args.rand, replace=False)
-            filesBA = np.random.choice(filesBA, size=args.rand, replace=False)
+            if 'A' in statesProvided:
+                filesAB = np.random.choice(filesAB, size=args.rand, replace=False)
+            if 'B' in statesProvided:
+                filesBA = np.random.choice(filesBA, size=args.rand, replace=False)
             _tee(out, 'Selected random subset of %d trajectories.' % args.rand)
 
         # If slice values provided, select the files needed. Again before
@@ -722,14 +724,18 @@ def main(args):
             _tee(out, ' First trajectory read: %s' % first )
             _tee(out, ' Last trajectory read: %s' % last )
             _tee(out, '')
-            filesAB = filesAB[first:last]
-            filesBA = filesBA[first:last]
+            if 'A' in statesProvided:
+                filesAB = filesAB[first:last]
+            if 'B' in statesProvided:
+                filesBA = filesBA[first:last]
 
         # If index values provided, select the files needed
         if args.index is not None:
             # Avoid index out of range error if "wrong" indices are provided
-            filesAB = [filesAB[i] for i in args.index if i < len(filesAB)]
-            filesBA = [filesBA[i] for i in args.index if i < len(filesBA)]
+            if 'A' in statesProvided:
+                filesAB = [filesAB[i] for i in args.index if i < len(filesAB)]
+            if 'B' in statesProvided:
+                filesBA = [filesBA[i] for i in args.index if i < len(filesBA)]
             # ...but warn if this happens
             if any(i > (len(filesAB) - 1) for i in args.index):
                 print('\nWARNING: index out of range for some of your chosen '
@@ -742,8 +748,10 @@ def main(args):
 
         # when skipping start count from end: in this way the last frame is
         # always included, and what can change is the first one
-        filesAB = list(reversed(filesAB[::-skip]))
-        filesBA = list(reversed(filesBA[::-skip]))
+        if 'A' in statesProvided:
+            filesAB = list(reversed(filesAB[::-skip]))
+        if 'B' in statesProvided:
+            filesBA = list(reversed(filesBA[::-skip]))
 
         # --------------------
         # Now read in the data
@@ -755,13 +763,11 @@ def main(args):
         res_ba = []
         if 'A' in statesProvided:
             print('  Forward Data')
-            res_ab = parse_dgdl_files(filesAB, lambda0=0,
-                                  invert_values=False)
+            res_ab = parse_dgdl_files(filesAB, lambda0=0,invert_values=False)
             _dump_integ_file(args.oA, filesAB, res_ab)
         if 'B' in statesProvided:
             print('  Reverse Data')
-            res_ba = parse_dgdl_files(filesBA, lambda0=1,
-                                  invert_values=reverseB)
+            res_ba = parse_dgdl_files(filesBA, lambda0=1,invert_values=reverseB)
             _dump_integ_file(args.oB, filesBA, res_ba)
 
     # If work values are given as input instead, read those
