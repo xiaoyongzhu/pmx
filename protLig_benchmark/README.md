@@ -9,6 +9,7 @@ PDE2, CMET, Bace (Hunt et al), Bace p2, Galectin, JNK1, Tyk2, Bace, MCL1, CDK2, 
   2020. Chemical Science. 10.1039/C9SC03754C
 
 ## Folder structure: ##
+   ### For every protein-ligand dataset ###
 	- ligands_gaff2: for every ligand two topology files are present. 
 	ffMOL.itp contains the atomtypes, the rest of topology parameters are in MOL.itp. 
 	Structure is in the mol_gmx.pdb file. Force field: Gaff v2.1
@@ -26,4 +27,5 @@ PDE2, CMET, Bace (Hunt et al), Bace p2, Galectin, JNK1, Tyk2, Bace, MCL1, CDK2, 
 	
 	- transformations_cgenff: edge information for cgenff. 
 	
+  ddg_data: the folder contains calculated ddG values for all the protein-ligand datasets
 
