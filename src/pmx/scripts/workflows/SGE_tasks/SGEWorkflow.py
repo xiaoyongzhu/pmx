@@ -7,14 +7,6 @@ from pmx.scripts.workflows.Workflow import Workflow
 from pmx.scripts.workflows.utils import confirm_defNO
 
 
-# Scheduler factory that tries to disable reruns
-class my_WorkerSchedulerFactory(luigi.interface._WorkerSchedulerFactory):
-
-    def create_local_scheduler(self):
-        return luigi.scheduler.Scheduler(prune_on_get_work=True,
-                                          record_task_history=False)#,
-                                          #retry_count=0)
-
 # Wrapper task that executes requested dependencies
 class SGE_wrapper(luigi.task.WrapperTask):
 
@@ -101,11 +93,9 @@ class SGE_Workflow(Workflow):
                 exit(0)
             else:
                 luigi.build([test],
-                    worker_scheduler_factory=my_WorkerSchedulerFactory(),
                     local_scheduler=False, workers=self.n_workers)
         else: #use local scheduler
             luigi.build([test],
-                    worker_scheduler_factory=my_WorkerSchedulerFactory(),
                     local_scheduler=True, workers=self.n_workers)
 
 

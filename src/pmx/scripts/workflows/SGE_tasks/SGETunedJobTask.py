@@ -100,14 +100,12 @@ class SGETunedJobTask(SGEJobTask):
     #override scheduler based retry policy
     _disable_window_seconds = luigi.IntParameter(
         significant=False, default=3600*24*7, # 7 days
-        #visibility=ParameterVisibility.HIDDEN,
+        visibility=ParameterVisibility.HIDDEN,
         description="Number of seconds in which to count failures.")
     _retry_count = luigi.IntParameter(
         significant=False, default=0,
-        #visibility=ParameterVisibility.HIDDEN,
+        visibility=ParameterVisibility.HIDDEN,
         description="Number of failures to allow in the last _disable_window_seconds.")
-    #_disable_window_seconds=3600*24*7 # 7 days
-    #_retry_count=0 #no retries within disable_window seconds of previous failure
 
     @property
     def retry_count(self):
