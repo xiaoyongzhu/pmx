@@ -12,8 +12,8 @@ class my_WorkerSchedulerFactory(luigi.interface._WorkerSchedulerFactory):
 
     def create_local_scheduler(self):
         return luigi.scheduler.Scheduler(prune_on_get_work=True,
-                                          record_task_history=False,
-                                          retry_count=0)
+                                          record_task_history=False)#,
+                                          #retry_count=0)
 
 # Wrapper task that executes requested dependencies
 class SGE_wrapper(luigi.task.WrapperTask):

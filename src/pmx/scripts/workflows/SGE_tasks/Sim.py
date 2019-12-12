@@ -69,12 +69,12 @@ class SGE_Sim(SGETunedJobTask):
             date_time = datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
             sh.copy('state.cpt','state_{}_start.cpt'.format(date_time))
             os.system("{mdrun} -s tpr.tpr -ntomp {n_cpu} -maxh {maxh} -cpi state.cpt "
-                      "{mdrun_opts} > mdrun.log 2>&1".format(
+                      "{mdrun_opts} >> mdrun.log 2>&1".format(
                           mdrun=self.mdrun, n_cpu=self.n_cpu, maxh=maxh,
                           mdrun_opts=self.mdrun_opts))
         else: #first time
             os.system("{mdrun} -s tpr.tpr -ntomp {n_cpu} -maxh {maxh}"
-                      "{mdrun_opts} > mdrun.log 2>&1".format(
+                      "{mdrun_opts} >> mdrun.log 2>&1".format(
                           mdrun=self.mdrun, n_cpu=self.n_cpu, maxh=maxh,
                           mdrun_opts=self.mdrun_opts))
 
