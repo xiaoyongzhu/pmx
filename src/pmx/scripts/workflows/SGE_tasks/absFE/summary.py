@@ -51,6 +51,9 @@ class Task_summary_aligned(SGETunedJobTask):
         self.PL_settings=self.study_settings
 
         self.base_path = self.study_settings['base_path']
+        self.outname="summary_aligned.txt"
+        self.restrname="out_dg.dat"
+
 
     def work(self):
 
@@ -90,7 +93,7 @@ class Task_summary_aligned(SGETunedJobTask):
             for l in self.ligands:
                 key=p+' '+l
                 folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                with open(folder_path+"/out_dg.dat", 'r') as f:
+                with open(folder_path+"/"+self.restrname, 'r') as f:
                     for line in f:
                         if("Restraint contribution to free energy (w gmx limits):" in line and
                            "kJ/mol" in line):
@@ -99,7 +102,7 @@ class Task_summary_aligned(SGETunedJobTask):
 
 
         #print summary table
-        with open("summary_aligned.txt", 'w') as sf:
+        with open(self.outname, 'w') as sf:
 
             print("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^12s}".format(
                             "host guest","ddG (kJ/mol)","dG in prot" ,
@@ -124,7 +127,7 @@ class Task_summary_aligned(SGETunedJobTask):
                         anacorrs[key]) )
 
     def output(self):
-        files=['summary_aligned.txt']
+        files=[self.outname]
         return([luigi.LocalTarget(os.path.join(self.base_path, f)) for f in files])
 
     def requires(self):
@@ -156,3 +159,39 @@ class Task_summary_aligned(SGETunedJobTask):
 
         return(tasks)
 
+class Task_summary_aligned2crystal(Task_summary_aligned):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        #overwrite values
+        self.outname="summary_aligned2crystal.txt"
+        self.restrname="out_dg_aligned2crystal.dat"
+
+    def requires(self):
+        tasks=[]
+
+        #Ligand in Water
+        p="water"
+        for l in self.ligands:
+            folder_path = self.base_path+'/'+p+'/lig_'+l
+            for sTI in self.WL_settings['states']: #uses equil states for TI
+                for i in range(self.WL_settings['n_repeats']):
+                    tasks.append(Task_WL_analysis_aligned(
+                        l = l, i = i,
+                        study_settings = self.WL_settings,
+                        folder_path = folder_path,
+                        parallel_env=self.parallel_env))
+
+        #Ligand in Protein
+        for p in self.hosts:
+            for l in self.ligands:
+                folder_path = self.base_path+'/prot_'+p+'/lig_'+l
+                for sTI in self.PL_settings['TIstates']:
+                    for i in range(self.PL_settings['n_repeats']):
+                        tasks.append(Task_PL_analysis_aligned(
+                            p = p, l = l, i = i,
+                            study_settings = self.PL_settings,
+                            folder_path = folder_path,
+                            parallel_env=self.parallel_env))
+
+        return(tasks)

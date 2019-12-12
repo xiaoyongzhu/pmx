@@ -45,6 +45,8 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
         #set variables
         self.base_path = self.study_settings['base_path']
         self.ana_folder=self.folder_path+"/analysis/repeat%d"%self.i
+        self.TIpath=self.folder_path+'/state{s}/repeat{i}/morphes{m}/dHdl*.xvg'
+
 
     def work(self):
         dHdlA=[]
@@ -55,12 +57,10 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
 
         TIstate_list=[*self.study_settings['TIstates']]
         for m in range(self.study_settings['n_sampling_sims']):
-            dHdlA.extend(glob.glob(self.folder_path +\
-                        '/state{A}/repeat{i}/morphes{m}/dHdl*.xvg'.format(
-                            A=TIstate_list[0], i=self.i, m=m)))
-            dHdlB.extend(glob.glob(self.folder_path +\
-                        '/state{B}/repeat{i}/morphes{m}/dHdl*.xvg'.format(
-                            B=TIstate_list[1], i=self.i, m=m)))
+            dHdlA.extend(glob.glob(self.TIpath.format(
+                            s=TIstate_list[0], i=self.i, m=m)))
+            dHdlB.extend(glob.glob(self.TIpath.format(
+                            s=TIstate_list[1], i=self.i, m=m)))
 
         #set script params and call analyze_dhdl
         orig_argv = sys.argv
@@ -90,7 +90,6 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
 
     def requires(self):
         tasks=[]
-
         for sTI in self.study_settings['TIstates']:
             for m in range(self.study_settings['n_sampling_sims']):
                 tasks.append(Task_PL_TI_simArray(
@@ -102,3 +101,25 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
 
         return(tasks)
 
+
+class Task_PL_analysis_aligned2crystal(Task_PL_analysis_aligned):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        #overwrite variables
+        self.ana_folder=self.folder_path+"/analysis/align2crystal_repeat%d"%self.i
+        self.TIpath=self.folder_path+'/state{s}/align2crystal_repeat{i}/morphes{m}/dHdl*.xvg'
+
+
+    def requires(self):
+        tasks=[]
+        for sTI in self.study_settings['TIstates']:
+            for m in range(self.study_settings['n_sampling_sims']):
+                tasks.append(Task_PL_TI_simArray(
+                      p=self.p, l=self.l, i=self.i, m=m, sTI=sTI,
+                      study_settings=self.study_settings,
+                      folder_path=self.folder_path,
+                      parallel_env=self.parallel_env,
+                      restr_scheme="Aligned_crystal") )
+
+        return(tasks)

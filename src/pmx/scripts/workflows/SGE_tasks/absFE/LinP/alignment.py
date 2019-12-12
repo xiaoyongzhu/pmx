@@ -126,7 +126,7 @@ class Task_PL_align(Task_PL_gen_morphes):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if(not (self.restr_scheme=="Aligned" or self.restr_scheme=="Aligned_crystal")):
+        if(not (self.restr_scheme=="Aligned")):
             raise(Exception("{} should only be used if restraint "
                             "scheme is {}".format(
                                 self.__class__.__name__ ,"Aligned")))
@@ -267,6 +267,8 @@ class Task_PL_align(Task_PL_gen_morphes):
 class Task_PL_align2crystal(Task_PL_align):
     def __init__(self, *args, **kwargs):
         super(Task_PL_align,self).__init__(*args, **kwargs)
+        self.sim_path = self.folder_path+"/state%s/align2crystal_repeat%d/%s%d"%(
+            self.sTI, self.i, self.stage, self.m)
         if(self.restr_scheme!="Aligned_crystal"):
             raise(Exception("{} should only be used if restraint "
                             "scheme is {}".format(

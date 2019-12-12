@@ -8,7 +8,7 @@ from pmx.scripts.workflows.find_anchors_and_write_ii import find_distribs, _calc
 ################################################################################
 def find_restraints_align2crystal(struct="dumpD.gro",
                     traj="all_eqD_fit.xtc",
-                    out="ii.itp", an_cor_file="out_dg.dat",
+                    out="ii_aligned2crystal.itp", an_cor_file="out_dg_aligned2crystal.dat",
                     skip=1, log=False):
 
 

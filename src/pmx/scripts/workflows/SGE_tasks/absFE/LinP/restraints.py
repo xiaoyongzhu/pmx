@@ -277,8 +277,8 @@ class Task_PL_gen_restraints_align2crystal(Task_PL_gen_restraints):
     def output(self):
         targets=[
             luigi.LocalTarget(os.path.join(self.folder_path, 'index_prot_mol.ndx')),
-            luigi.LocalTarget(os.path.join(self.folder_path, 'ii.itp')),
-            luigi.LocalTarget(os.path.join(self.folder_path, 'out_dg.dat')),
+            luigi.LocalTarget(os.path.join(self.folder_path, 'ii_aligned2crystal.itp')),
+            luigi.LocalTarget(os.path.join(self.folder_path, 'out_dg_aligned2crystal.dat')),
             ]
         for s in self.states:
             targets.append([
@@ -288,7 +288,7 @@ class Task_PL_gen_restraints_align2crystal(Task_PL_gen_restraints):
         for i in range(self.study_settings['n_repeats']):
             for m in range(self.study_settings['n_sampling_sims']):
                 targets.append(luigi.LocalTarget(os.path.join(self.folder_path,
-                                              "topolTI_ions%d_%d.top"%(i,m))))
+                                              "topolTI_aligned2crystal_ions%d_%d.top"%(i,m))))
         return targets
 
     def work(self):
@@ -369,6 +369,8 @@ class Task_PL_gen_restraints_align2crystal(Task_PL_gen_restraints):
 
         find_restraints_align2crystal(struct= 'dumpD.gro',
                         traj = "all_eqD_fit.xtc",
+                        out="ii_aligned2crystal.itp",
+                        an_cor_file="out_dg_aligned2crystal.dat",
                         log=False)
 
 
@@ -377,8 +379,8 @@ class Task_PL_gen_restraints_align2crystal(Task_PL_gen_restraints):
         for i in range(self.study_settings['n_repeats']):
             for m in range(self.study_settings['n_sampling_sims']):
                 top_ions="topol_ions%d_%d.top"%(i,m)
-                topAC_ions="topolTI_ions%d_%d.top"%(i,m)
-                topsrc=self.study_settings['top_path']+"/topol_abs_prot_restr_amber.top"
+                topAC_ions="topolTI_aligned2crystal_ions%d_%d.top"%(i,m)
+                topsrc=self.study_settings['top_path']+"/topol_abs_prot_restr_aligned2crystal_amber.top"
                 os.system("cp {} {} > /dev/null 2>&1".format(top_ions,topAC_ions))
                 os.system("tail -n 3 {} >> {}".format(topsrc,topAC_ions))
                 check_file_ready(topAC_ions)
