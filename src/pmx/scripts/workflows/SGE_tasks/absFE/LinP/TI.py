@@ -156,12 +156,18 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                   "-v -maxwarn 3 ".format(D=TMPDIR, top=self.top,
                                           mdp=self.mdp, _id=dHdL_id) )
 
+        #limit mdrun runtime
+        s = self.runtime.split(':')
+        maxh = (int(s[0])+float(s[1])/60+float(s[2])/3600)
+        maxh = max(maxh*0.95, maxh-0.02) #grace period of 72 s so that SGE doesn't kill it too fast
+
         #run sim
         os.system(self.mdrun+" -s {D}/ti.tpr -dhdl {D}/dgdl.xvg -cpo "
                   "{D}/state.cpt -e {D}/ener.edr -g {D}/md.log -o "
                   "{D}/traj.trr -x {D}/traj.xtc -c {D}/confout.gro "
-                  "-ntomp {n_cpu} {opts}".format(
-                      D=TMPDIR, n_cpu=self.n_cpu, opts=self.mdrun_opts) )
+                  "-ntomp {n_cpu} -maxh {maxh} {opts}".format(
+                      D=TMPDIR, n_cpu=self.n_cpu, maxh=maxh,
+                      opts=self.mdrun_opts) )
 
         #copy dHdl file back
         os.system("rsync {}/dgdl.xvg {}/dHdl{}.xvg".format(

@@ -106,8 +106,6 @@ class SGETunedJobTask(SGEJobTask):
         significant=False, default=0,
         visibility=ParameterVisibility.HIDDEN,
         description="Number of failures to allow in the last _disable_window_seconds.")
-    #_disable_window_seconds=3600*24*7 # 7 days
-    #_retry_count=0 #no retries within disable_window seconds of previous failure
 
     @property
     def retry_count(self):

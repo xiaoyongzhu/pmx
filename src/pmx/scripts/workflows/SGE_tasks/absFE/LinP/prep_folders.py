@@ -90,8 +90,6 @@ class Prep_PL_folder(Prep_folder): # will execute on the login node
             raise(Exception("Could not find the number of Na molecules in ApoP."))
         nNa=int(line.split()[-1])
 
-        print("\tnNa =",nNa,"nCl =",nCl,"\n")
-
         os.system("echo 'SOL' | gmx genion -s tpr.tpr "
                           "-p {top} -nn {nCl} -np {nNa} "
                           "-nname Cl -pname Na "

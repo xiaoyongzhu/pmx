@@ -39,6 +39,11 @@ class SGE_Sim(SGETunedJobTask):
         os.makedirs(self.sim_path, exist_ok=True)
         os.chdir(self.sim_path)
 
+        #limit mdrun runtime
+        s = self.runtime.split(':')
+        maxh = (int(s[0])+float(s[1])/60+float(s[2])/3600)
+        maxh = max(maxh*0.95, maxh-0.02) #grace period of 72 s so that SGE doesn't kill it too fast
+
         #restraint
         r=""
         if self.posre:
@@ -63,14 +68,14 @@ class SGE_Sim(SGETunedJobTask):
             #checkpoint exists, resume from it
             date_time = datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
             sh.copy('state.cpt','state_{}_start.cpt'.format(date_time))
-            os.system("{mdrun} -s tpr.tpr -ntomp {n_cpu} -cpi state.cpt "
-                      "{mdrun_opts} > mdrun.log 2>&1".format(
-                          mdrun=self.mdrun, n_cpu=self.n_cpu,
+            os.system("{mdrun} -s tpr.tpr -ntomp {n_cpu} -maxh {maxh} -cpi state.cpt "
+                      "{mdrun_opts} >> mdrun.log 2>&1".format(
+                          mdrun=self.mdrun, n_cpu=self.n_cpu, maxh=maxh,
                           mdrun_opts=self.mdrun_opts))
         else: #first time
-            os.system("{mdrun} -s tpr.tpr -ntomp {n_cpu} "
-                      "{mdrun_opts} > mdrun.log 2>&1".format(
-                          mdrun=self.mdrun, n_cpu=self.n_cpu,
+            os.system("{mdrun} -s tpr.tpr -ntomp {n_cpu} -maxh {maxh}"
+                      "{mdrun_opts} >> mdrun.log 2>&1".format(
+                          mdrun=self.mdrun, n_cpu=self.n_cpu, maxh=maxh,
                           mdrun_opts=self.mdrun_opts))
 
         #clean overwritten files
