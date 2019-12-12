@@ -7,8 +7,8 @@ import numpy as np
 #import matplotlib as plt
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.analysis import Task_PL_analysis_aligned
-from pmx.scripts.workflows.SGE_tasks.absFE.LinW.analysis import Task_WL_analysis_aligned
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.analysis import Task_PL_analysis_aligned,Task_PL_analysis_aligned2crystal
+from pmx.scripts.workflows.SGE_tasks.absFE.LinW.analysis import Task_WL_analysis
 
 
 # ==============================================================================
@@ -176,7 +176,7 @@ class Task_summary_aligned2crystal(Task_summary_aligned):
             folder_path = self.base_path+'/'+p+'/lig_'+l
             for sTI in self.WL_settings['states']: #uses equil states for TI
                 for i in range(self.WL_settings['n_repeats']):
-                    tasks.append(Task_WL_analysis_aligned(
+                    tasks.append(Task_WL_analysis(
                         l = l, i = i,
                         study_settings = self.WL_settings,
                         folder_path = folder_path,
@@ -188,7 +188,7 @@ class Task_summary_aligned2crystal(Task_summary_aligned):
                 folder_path = self.base_path+'/prot_'+p+'/lig_'+l
                 for sTI in self.PL_settings['TIstates']:
                     for i in range(self.PL_settings['n_repeats']):
-                        tasks.append(Task_PL_analysis_aligned(
+                        tasks.append(Task_PL_analysis_aligned2crystal(
                             p = p, l = l, i = i,
                             study_settings = self.PL_settings,
                             folder_path = folder_path,

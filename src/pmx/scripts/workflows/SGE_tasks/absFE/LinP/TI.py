@@ -5,7 +5,8 @@ import subprocess
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedArrayJobTask import SGETunedArrayJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_morphes,Task_PL_align
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints_align2crystal
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints_align2crystal import Task_PL_gen_restraints_align2crystal
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.morphes_align2crystal import Task_PL_gen_morphes_align2crystal
 from pmx.scripts.workflows.utils import read_from_mdp
 
 
@@ -47,8 +48,14 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
 
         #set variables
         self.base_path = self.study_settings['base_path']
-        self.sim_path = self.folder_path+"/state%s/align2crystal_repeat%d/%s%d"%(
+        if(self.restr_scheme=="Aligned" or not self.restr_scheme): #not set in WinL
+            self.sim_path = self.folder_path+"/state%s/repeat%d/%s%d"%(
+                self.sTI, self.i, self.stage, self.m)
+        elif(self.restr_scheme=="Aligned_crystal"):
+            self.sim_path = self.folder_path+"/state%s/repeat%d/align2crystal_%s%d"%(
             self.sTI, self.i, self.stage, self.m)
+        else:
+            raise(Exception("Unsupported restr_scheme: '%s'"%self.restr_scheme))
         self.mdp = self.study_settings['mdp_path'] +\
             "/protein/ti_{0}.mdp".format(
                 self.study_settings['TIstates'][self.sTI])
@@ -79,7 +86,7 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         elif(self.restr_scheme=="Aligned_crystal"):
             #need restr anyway
             tasks.append( Task_PL_gen_restraints_align2crystal(
-                          p=self.p, l=self.l, sTI=self.sTI,
+                          p=self.p, l=self.l,
                           study_settings=self.study_settings,
                           folder_path=self.folder_path,
                           parallel_env=self.parallel_env,
@@ -87,14 +94,18 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
 
             #A also needs morphes
             if(self.sTI=='A'):
-                tasks.append( Task_PL_gen_morphes(p=self.p, l=self.l,
+                tasks.append( Task_PL_gen_morphes_align2crystal(p=self.p, l=self.l,
                               i=self.i, m=self.m, sTI=self.sTI,
                               study_settings=self.study_settings,
                               folder_path=self.folder_path,
                               parallel_env=self.parallel_env,
                               restr_scheme=self.restr_scheme) )
-            else:
+            elif(self.sTI!='D'):
                 raise(Exception("Unsupported TI state detected."))
+        else:
+            raise(Exception("Unsupported restraint scheme '%s'"%self.restr_scheme))
+
+        return(tasks)
 
 
 

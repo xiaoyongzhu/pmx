@@ -9,7 +9,7 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinW.TI import Task_WL_TI_simArray
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Task_WL_analysis_aligned(Task_PL_analysis_aligned):
+class Task_WL_analysis(Task_PL_analysis_aligned):
 
     #Parameters:
     p = None #disables base class' p

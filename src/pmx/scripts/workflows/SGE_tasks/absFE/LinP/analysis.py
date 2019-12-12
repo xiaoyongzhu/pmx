@@ -108,7 +108,7 @@ class Task_PL_analysis_aligned2crystal(Task_PL_analysis_aligned):
         super().__init__(*args, **kwargs)
         #overwrite variables
         self.ana_folder=self.folder_path+"/analysis/align2crystal_repeat%d"%self.i
-        self.TIpath=self.folder_path+'/state{s}/align2crystal_repeat{i}/morphes{m}/dHdl*.xvg'
+        self.TIpath=self.folder_path+'/state{s}/repeat{i}/align2crystal_morphes{m}/dHdl*.xvg'
 
 
     def requires(self):

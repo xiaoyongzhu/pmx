@@ -26,6 +26,10 @@ class SGE_Workflow_aligned2crystal_complete(SGE_Workflow):
         -------
         None.
         """
+
+        self.TIstates={"A":"l0", "D":"l1"} #states and suffixes of mdp files
+        self.study_settings.update({'TIstates':self.TIstates})
+
         summary=Task_summary_aligned2crystal(
             #hosts = self.hosts, ligands = self.ligands,
             study_settings = self.study_settings,
