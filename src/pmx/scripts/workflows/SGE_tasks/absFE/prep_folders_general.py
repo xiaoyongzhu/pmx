@@ -225,6 +225,12 @@ class Prep_folder(SGETunedJobTask):
                 self.gen_ions(top_ions,pdb_ions)
                 check_file_ready(pdb_ions)
 
+        #generate index for alignment
+        if(self.p and self.l): #P+L
+            os.system("echo \"1|13\nq\n\" | "
+                  "gmx make_ndx -f ions0_0.pdb "
+                  "-o index_prot_mol.ndx > /dev/null 2>&1")
+
         cleanList = glob.glob(self.folder_path+'/#*')
         for filePath in cleanList:
             try:
@@ -243,5 +249,8 @@ class Prep_folder(SGETunedJobTask):
             for m in range(self.study_settings['n_sampling_sims']):
                 files.append("topol_ions%d_%d.top"%(i,m))
                 files.append("ions%d_%d.pdb"%(i,m))
+
+        if(self.p and self.l): #P+L
+            files.append("index_prot_mol.ndx")
 
         return [luigi.LocalTarget(os.path.join(self.folder_path, f)) for f in files]

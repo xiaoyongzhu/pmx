@@ -79,7 +79,7 @@ class SGE_Workflow(Workflow):
         test=SGE_wrapper()
         test.set_deps(self.tasks)
 
-        print(print_tree(test))
+        #print(print_tree(test))
         #exit(1)
 
 

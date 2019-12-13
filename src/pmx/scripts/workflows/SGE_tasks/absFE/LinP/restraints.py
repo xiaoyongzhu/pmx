@@ -70,10 +70,10 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         srctpr=self.folder_path+"/state{2}/repeat{3}/npt{4}/tpr.tpr"
         srctraj=self.folder_path+"/state{2}/repeat{3}/npt{4}/traj.trr"
 
-        #create prot+MOL index group
-        os.system("echo \"1|13\nq\n\" | "
-                  "gmx make_ndx -f ions0_0.pdb "
-                  "-o index_prot_mol.ndx > /dev/null 2>&1")
+        # #create prot+MOL index group
+        # os.system("echo \"1|13\nq\n\" | "
+        #           "gmx make_ndx -f ions0_0.pdb "
+        #           "-o index_prot_mol.ndx > /dev/null 2>&1")
 
         #make topology for prot+MOL
         os.system("sed 's/SOL/;SOL/g' topol.top > topol_prot_mol.top")

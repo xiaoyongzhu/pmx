@@ -12,6 +12,14 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinP.prep_folders import Prep_PL_fold
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_align
 from pmx.xtc import Trajectory
 
+def _overwrite_coords(atoms_trg, atoms_src):
+    if(len(atoms_trg)!=len(atoms_src)):
+        raise(Exception("Copying coordinates between systems with "
+                        "different numbers of atoms ({} and{})".format(
+                            len(atoms_trg), len(atoms_src) )))
+    for i in range(len(atoms_src)):
+        for r in range(3):
+            atoms_trg[i].x[r] = atoms_src[i].x[r]
 
 # ==============================================================================
 #                         Derivative Task Classes
@@ -19,7 +27,7 @@ from pmx.xtc import Trajectory
 class Task_PL_align2crystal(Task_PL_align):
     def __init__(self, *args, **kwargs):
         super(Task_PL_align,self).__init__(*args, **kwargs)
-        self.sim_path = self.folder_path+"/state%s/align2crystal_repeat%d/%s%d"%(
+        self.sim_path = self.folder_path+"/state%s/repeat%d/aligned2crystal_%s%d"%(
             self.sTI, self.i, self.stage, self.m)
         if(self.restr_scheme!="Aligned_crystal"):
             raise(Exception("{} should only be used if restraint "
@@ -54,16 +62,6 @@ class Task_PL_align2crystal(Task_PL_align):
 
         return(tasks)
 
-    def _overwrite_coords(atoms_trg, atoms_src):
-        if(len(atoms_trg)!=len(atoms_src)):
-            raise(Exception("Copying coordinates between systems with "
-                            "different numbers of atoms ({} and{})".format(
-                                len(atoms_trg), len(atoms_src) )))
-        for i in len(atoms_src):
-            for r in range(3):
-                atoms_trg[i].x[r] = atoms_src[i].x[r]
-
-
     def work(self):
         #make the C state
         os.makedirs(self.sim_path, exist_ok=True)
@@ -77,7 +75,7 @@ class Task_PL_align2crystal(Task_PL_align):
         #Cut the begining off of trjs and center them
         os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_B.trr "
                   "-b {b} -ur compact -pbc mol -center "
-                  ">> align.log 2>&1".format(
+                  "> align.log 2>&1".format(
                       tpr=trj_B_src+"tpr.tpr", trj=trj_B_src+"traj.trr",
                       b=self.study_settings['b']) ) #apoP
         os.system("echo 2 0 | gmx trjconv -s {tpr} -f {trj} -o trj_C.trr "
@@ -103,14 +101,14 @@ class Task_PL_align2crystal(Task_PL_align):
         trj_B = Trajectory("trj_B.trr") #apoP
         trj_C = Trajectory("trj_C.trr") #vacL
 
-        trj_out = Trajectory("aligned.xtc", mode='Out',
+        trj_out = Trajectory("aligned.trr", mode='Out',
                              atomNum=len(m_A.atoms)) #aligned output
 
-        #make index_prot_mol.ndx here. Before it was done during restraint gen.
-        os.system("echo \"1|13\nq\n\" | "
-                  "gmx make_ndx -f {fp}/ions0_0.pdb "
-                  "-o {fp}/index_prot_mol.ndx > /dev/null 2>&1".format(
-                      fp=self.folder_path ))
+        # #make index_prot_mol.ndx here. Before it was done during restraint gen.
+        # os.system("echo \"1|13\nq\n\" | "
+        #           "gmx make_ndx -f {fp}/ions0_0.pdb "
+        #           "-o {fp}/index_prot_mol.ndx > /dev/null 2>&1".format(
+        #               fp=self.folder_path ))
 
         ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
         ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
@@ -125,6 +123,8 @@ class Task_PL_align2crystal(Task_PL_align):
         iter_B = iter(trj_B)
         iter_C = iter(trj_C)
         fridx=0
+        # with open("align.log", "a") as al_log:
+        #     print("/n/n/n#################################", file=al_log, flush=True)
         while True:
             try:
                 frame_B = next(iter_B)
@@ -139,7 +139,7 @@ class Task_PL_align2crystal(Task_PL_align):
 
             if(not os.path.isfile("frame%d.gro"%fridx)):
                 #m_A needs to be re-read or rotated back
-                self._overwrite_coords(m_A.atoms, m_A_ref.atoms)
+                _overwrite_coords(m_A.atoms, m_A_ref.atoms)
                 #m_b needs to be reloaded to have correct # of atoms
                 m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
                     self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
@@ -163,22 +163,20 @@ class Task_PL_align2crystal(Task_PL_align):
 
                 # output
                 m_B.write("frame%d.gro"%fridx)
-                x = ((c_float*3)*m_B.atoms)()
+
+                x = np.zeros(len(m_B.atoms)*3)
+                v = np.zeros(len(m_B.atoms)*3)
                 for i, atom in enumerate(m_B.atoms):
-                    if m_B.unity == 'A':
-                        self.x[i][0]=atom.x[0]/10
-                        self.x[i][1]=atom.x[1]/10
-                        self.x[i][2]=atom.x[2]/10
-                    else:
-                        self.x[i][0]=atom.x[0]
-                        self.x[i][1]=atom.x[1]
-                        self.x[i][2]=atom.x[2]
+                    x[i*3:(i+1)*3]=atom.x
+                    v[i*3:(i+1)*3]=atom.v
 
                 trj_out.write_xtc_frame(step=frame_B.step, time=frame_B.time,
-                                        lam=1.0, box=frame_B.box, x=x,
-                                        units='A', bTrr=False )
+                                        lam=1.0, box=frame_B.box, x=x, v=v,
+                                        units=m_B.unity, bTrr=True )
 
             fridx+=1
+
+        trj_out.close()
 
         #restore base path
         os.chdir(self.base_path)

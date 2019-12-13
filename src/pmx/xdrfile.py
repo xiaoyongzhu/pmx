@@ -41,7 +41,7 @@ out_mode = 42
 
 class Frame:
 
-    def __init__(self, n, mode, x=None, box=None, units=None, v=None, f=None):
+    def __init__(self, n, mode, x=None, box=None, units=None, v=False, f=False):
         # create vector for x
         self.natoms = n
         # x (coordinates)
@@ -69,8 +69,14 @@ class Frame:
         else:
             #self.v=c_size_t(0)#((c_float*3)*n)()
             #self.f=c_size_t(0)#((c_float*3)*n)()
-            self.v=((c_float*3)*n)()
-            self.f=((c_float*3)*n)()
+            if(v):
+                self.v=((c_float*3)*n)()
+            else:
+                self.v=c_size_t(0)
+            if(f):
+                self.f=((c_float*3)*n)()
+            else:
+                self.f=c_size_t(0)
 
         # box
         if box is not None:
@@ -231,8 +237,8 @@ class XDRFile:
               ndpointer(ndim=2,dtype=float32),ndpointer(ndim=2,dtype=float32),
               POINTER(c_float),POINTER(c_float)]
 
-    def write_xtc_frame( self, step=0, time=0.0, prec=1000.0, lam=0.0, box=False, x=False, units='A', bTrr=False ):
-        f = Frame(self.natoms,self.mode,box=box,x=x,units=units)
+    def write_xtc_frame( self, step=0, time=0.0, prec=1000.0, lam=0.0, box=None, x=None, v=None, f=None, units='A', bTrr=False ):
+        f = Frame(self.natoms,self.mode,box=box,x=x,v=(v is not None),f=(f is not None),units=units)
         step = c_int(step)
         time = c_float(time)
         prec = c_float(prec)
@@ -243,7 +249,10 @@ class XDRFile:
             result = self.xdr.write_xtc(self.xd,self.natoms,step,time,f.box,f.x,prec)
 
     def __iter__(self):
-        f = Frame(self.natoms,self.mode)
+        if( self.mode&mTrr):
+            f = Frame(self.natoms,self.mode, v=True, f=True)
+        else:
+            f = Frame(self.natoms,self.mode)
         #temporary c_type variables (frame variables are python type)
         step = c_int()
         time = c_float()
