@@ -54,13 +54,14 @@ class Task_summary_aligned(SGETunedJobTask):
         self.outname="summary_aligned.txt"
         self.restrname="out_dg.dat"
 
+        self.anafolderfmt="/analysis/repeat{i}"
 
     def work(self):
 
         def read_results():
             rs=np.ndarray(self.study_settings['n_repeats'])
             for i in range(self.study_settings['n_repeats']):
-                ana_folder=folder_path+"/analysis/repeat%d"%i
+                ana_folder=folder_path+self.anafolderfmt.format(i=i)
                 with open(ana_folder+"/results.txt", 'r') as f:
                     for line in f:
                         if "BAR: dG" in line:
@@ -139,7 +140,7 @@ class Task_summary_aligned(SGETunedJobTask):
             folder_path = self.base_path+'/'+p+'/lig_'+l
             for sTI in self.WL_settings['states']: #uses equil states for TI
                 for i in range(self.WL_settings['n_repeats']):
-                    tasks.append(Task_WL_analysis_aligned(
+                    tasks.append(Task_WL_analysis(
                         l = l, i = i,
                         study_settings = self.WL_settings,
                         folder_path = folder_path,
@@ -166,6 +167,7 @@ class Task_summary_aligned2crystal(Task_summary_aligned):
         #overwrite values
         self.outname="summary_aligned2crystal.txt"
         self.restrname="out_dg_aligned2crystal.dat"
+        self.anafolderfmt="/analysis/aligned2crystal_repeat{i}"
 
     def requires(self):
         tasks=[]

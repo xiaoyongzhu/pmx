@@ -12,7 +12,7 @@ class Task_PL_gen_morphes_align2crystal(Task_PL_gen_morphes):
         super().__init__(*args, **kwargs)
         #overwrite variables
         self.base_path = self.study_settings['base_path']
-        self.sim_path = self.folder_path+"/state%s/repeat%d/align2crystal_%s%d"%(
+        self.sim_path = self.folder_path+"/state%s/repeat%d/aligned2crystal_%s%d"%(
             self.sTI, self.i, self.stage, self.m)
         self.mdp = self.study_settings['mdp_path'] +\
             "/protein/eq_npt_{0}.mdp".format(

@@ -51,16 +51,20 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         if(self.restr_scheme=="Aligned" or not self.restr_scheme): #not set in WinL
             self.sim_path = self.folder_path+"/state%s/repeat%d/%s%d"%(
                 self.sTI, self.i, self.stage, self.m)
+            self.top = self.folder_path+"/topolTI_ions{3}_{4}.top".format(
+                self.p, self.l, self.sTI, self.i, self.m)
         elif(self.restr_scheme=="Aligned_crystal"):
-            self.sim_path = self.folder_path+"/state%s/repeat%d/align2crystal_%s%d"%(
+            self.sim_path = self.folder_path+"/state%s/repeat%d/aligned2crystal_%s%d"%(
             self.sTI, self.i, self.stage, self.m)
+            self.top = self.folder_path+"/topolTI_aligned2crystal_ions{3}_{4}.top".format(
+                self.p, self.l, self.sTI, self.i, self.m)
         else:
             raise(Exception("Unsupported restr_scheme: '%s'"%self.restr_scheme))
+
         self.mdp = self.study_settings['mdp_path'] +\
             "/protein/ti_{0}.mdp".format(
                 self.study_settings['TIstates'][self.sTI])
-        self.top = self.folder_path+"/topolTI_ions{3}_{4}.top".format(
-            self.p, self.l, self.sTI, self.i, self.m)
+
         self.mdrun = self.study_settings['mdrun']
         self.mdrun_opts = self.study_settings['mdrun_opts']
 
@@ -111,6 +115,8 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
 
     def output(self):
         nframes = len(glob.glob1(self.sim_path,"frame*.gro"))
+        if(nframes==0):
+            raise(Exception("No frames to run TI on in "+self.sim_path))
 
         targets=[]
         for nf in range(nframes):
@@ -123,10 +129,12 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         Check if all dHdl files exist and are of correct length.
         """
         reqs_complete = all(r.complete() for r in luigi.task.flatten(self.requires()))
-        outputs = luigi.task.flatten(self.output())
-        all_exist=all(map(lambda output: output.exists(), outputs))
-
-        return (reqs_complete and all_exist and not self._find_unfinished())
+        if(reqs_complete):
+            outputs = luigi.task.flatten(self.output())
+            all_exist=all(map(lambda output: output.exists(), outputs))
+            return (all_exist and not self._find_unfinished())
+        else:
+            return(reqs_complete)
 
 
     def _find_unfinished(self):
