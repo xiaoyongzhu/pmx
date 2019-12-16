@@ -54,14 +54,18 @@ class Task_summary_aligned(SGETunedJobTask):
         self.outname="summary_aligned.txt"
         self.restrname="out_dg.dat"
 
-        self.anafolderfmt="/analysis/repeat{i}"
+        self.anafolderfmt_P="/analysis/repeat{i}"
+        self.anafolderfmt_W="/analysis/repeat{i}"
 
     def work(self):
 
-        def read_results():
+        def read_results(inP=False):
             rs=np.ndarray(self.study_settings['n_repeats'])
             for i in range(self.study_settings['n_repeats']):
-                ana_folder=folder_path+self.anafolderfmt.format(i=i)
+                if(inP):
+                    ana_folder=folder_path+self.anafolderfmt_P.format(i=i)
+                else:
+                    ana_folder=folder_path+self.anafolderfmt_W.format(i=i)
                 with open(ana_folder+"/results.txt", 'r') as f:
                     for line in f:
                         if "BAR: dG" in line:
@@ -78,7 +82,7 @@ class Task_summary_aligned(SGETunedJobTask):
         for l in self.ligands:
             key=l
             folder_path = self.base_path+'/'+p+'/lig_'+l
-            inws.update({key:read_results()})
+            inws.update({key:read_results(inP=False)})
 
         #dG in protein
         inps={}
@@ -86,7 +90,7 @@ class Task_summary_aligned(SGETunedJobTask):
             for l in self.ligands:
                 key=p+' '+l
                 folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                inps.update({key:read_results()})
+                inps.update({key:read_results(inP=True)})
 
         #read analytical corrections for restraints
         anacorrs={}
@@ -167,7 +171,7 @@ class Task_summary_aligned2crystal(Task_summary_aligned):
         #overwrite values
         self.outname="summary_aligned2crystal.txt"
         self.restrname="out_dg_aligned2crystal.dat"
-        self.anafolderfmt="/analysis/aligned2crystal_repeat{i}"
+        self.anafolderfmt_P="/analysis/aligned2crystal_repeat{i}"
 
     def requires(self):
         tasks=[]
