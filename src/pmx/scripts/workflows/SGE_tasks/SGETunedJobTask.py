@@ -60,7 +60,7 @@ class SGETunedJobTask(SGEJobTask):
     #Large value is better to avoid overloading the login node.
     #Needs to be less than time between queue updates.
     poll_time = luigi.IntParameter(
-        significant=False, default=300,
+        significant=False, default=120,
         visibility=ParameterVisibility.HIDDEN,
         description="specify the wait time to poll qstat for the job status")
 
