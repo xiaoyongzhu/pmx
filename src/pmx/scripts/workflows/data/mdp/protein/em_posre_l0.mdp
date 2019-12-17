@@ -1,5 +1,5 @@
 
-define                   = -DPOSRES
+define                   = -DFLEXIBLE -DPOSRES
 
 ; RUN CONTROL PARAMETERS
 integrator               = steep
@@ -30,7 +30,7 @@ DispCorr                 = EnerPres
 table-extension          = 1
 
 ; OPTIONS FOR BONDS    
-constraints              = all-bonds
+constraints              = none
 constraint-algorithm     = Lincs
 continuation      = no
 lincs-order              = 6
