@@ -15,6 +15,29 @@ try:
 except ImportError:
     import pickle
 
+def _parse_qstat_state_opt_header(qstat_out, job_id, header=True):
+    """Parse "state" column from `qstat` output for given job_id
+
+    Returns state for the *first* job matching job_id. Returns 'u' if
+    `qstat` output is empty or job_id is not found.
+
+    If header=False, can also be used with qstat | grep jobid
+
+    """
+    if qstat_out.strip() == '':
+        return 'u'
+    lines = qstat_out.split('\n')
+    if(header):
+        # skip past header
+        while not lines.pop(0).startswith('---'):
+            pass
+    for line in lines:
+        if line:
+            job, prior, name, user, state = line.strip().split()[0:5]
+            if int(job) == int(job_id):
+                return state
+    return 'u'
+
 def extended_build_qsub_command(cmd, job_name, outfile, errfile, pe, n_cpu, runtime=None):
     """Submit shell command to SGE queue via `qsub`"""
     h_rt=""
@@ -60,7 +83,7 @@ class SGETunedJobTask(SGEJobTask):
     #Large value is better to avoid overloading the login node.
     #Needs to be less than time between queue updates.
     poll_time = luigi.IntParameter(
-        significant=False, default=120,
+        significant=False, default=600,
         visibility=ParameterVisibility.HIDDEN,
         description="specify the wait time to poll qstat for the job status")
 
@@ -224,17 +247,21 @@ class SGETunedJobTask(SGEJobTask):
 
             # See what the job's up to
             # ASSUMPTION
-            qstat_out = subprocess.check_output(['qstat']).decode('utf-8')
-            sge_status = _parse_qstat_state(qstat_out, self.job_id)
-            if sge_status == 'r':
+            #qstat_out = subprocess.check_output(['qstat']).decode('utf-8')
+            #sge_status = _parse_qstat_state(qstat_out, self.job_id)
+            qstat_out = subprocess.check_output("qstat | grep {}".format(self.job_id)).decode('utf-8')
+            sge_status = _parse_qstat_state_opt_header(qstat_out, self.job_id, header=False)
+            if sge_status == 'r' or sge_status == 'Rr' :
                 logger.info('Job is running...')
             elif sge_status == 'qw':
                 logger.info('Job is pending...')
-            elif sge_status == 't':
+            elif sge_status == 't' or sge_status == 'Rt':
                 logger.info('Job is transferring...')
             elif 'E' in sge_status:
                 logger.error('Job has FAILED:\n' + '\n'.join(self._fetch_task_failures()))
                 break
+            elif 'd' in sge_status:
+                logger.error('Job has been scheduled for deletion...')
             elif sge_status == 'u':
                 # Then the job could either be failed or done.
                 errors = self._fetch_task_failures()
@@ -246,7 +273,7 @@ class SGETunedJobTask(SGEJobTask):
             else:
                 logger.info('Job status is UNKNOWN!')
                 logger.info('Status is : %s' % sge_status)
-                raise Exception("job status isn't one of ['r', 'qw', 'E*', 't', 'u']: %s" % sge_status)
+                raise Exception("job status isn't one of ['r', 'qw', 'E*', 't', 'u', 'Rr', 'Rt', 'd*']: %s" % sge_status)
 
     def _dump(self, out_dir=''):
         """Dump instance to file."""
