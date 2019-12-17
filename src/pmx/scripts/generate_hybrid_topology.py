@@ -93,7 +93,7 @@ mutate, and after having passed that mutated structure through pdb2gmx.
                         dest='scale_mass',
                         help='Scale the masses of morphing atoms so that '
                         'dummies have a mass of 1.',
-                        default=True,
+                        default=False,
                         action='store_true')
     parser.add_argument('--scale_dih',
                         dest='scale_dih',
