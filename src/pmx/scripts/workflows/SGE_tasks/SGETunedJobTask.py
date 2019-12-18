@@ -249,7 +249,7 @@ class SGETunedJobTask(SGEJobTask):
             # ASSUMPTION
             #qstat_out = subprocess.check_output(['qstat']).decode('utf-8')
             #sge_status = _parse_qstat_state(qstat_out, self.job_id)
-            qstat_out = subprocess.check_output("qstat | grep {}".format(self.job_id)).decode('utf-8')
+            qstat_out = subprocess.run("qstat | grep {}".format(self.job_id), shell=True, check=False, stdout=subprocess.PIPE).stdout.decode('utf-8')
             sge_status = _parse_qstat_state_opt_header(qstat_out, self.job_id, header=False)
             if sge_status == 'r' or sge_status == 'Rr' :
                 logger.info('Job is running...')
