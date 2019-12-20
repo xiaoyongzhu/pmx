@@ -152,6 +152,8 @@ class Task_PL_gen_restraints_align2crystal(Task_PL_gen_restraints):
                 top_ions="topol_ions%d_%d.top"%(i,m)
                 topAC_ions="topolTI_aligned2crystal_ions%d_%d.top"%(i,m)
                 topsrc=self.study_settings['top_path']+"/topol_abs_prot_restr_aligned2crystal_amber.top"
+                if(not os.path.isfile(topsrc)):
+                    raise(Exception("Missing reuired topology file: %s"%topsrc))
                 os.system("cp {} {} > /dev/null 2>&1".format(top_ions,topAC_ions))
                 os.system("tail -n 3 {} >> {}".format(topsrc,topAC_ions))
                 check_file_ready(topAC_ions)
