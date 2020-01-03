@@ -357,19 +357,21 @@ class Chain(Atomselection):
             self.model.chdic[chain_id] = self
             del self.model.chdic[old_id]
 
-    def append(self, mol):
+    def append(self, mol, newResNum=False):
         """Appends a residue to the Chain.
 
         Parameters
         ----------
         mol : Molecule
             Molecule instance to append
+        newResNum : int, optional
+            assigns a specific residue number that differs from the ID in pos
         """
         if not isinstance(mol, Molecule):
             raise(TypeError, "%s is not a Molecule instance" % str(mol))
         else:
             n = len(self.residues)
-            self.insert_residue(n, mol)
+            self.insert_residue(n, mol, newResNum=newResNum)
 
     def copy(self):
         return copy.deepcopy(self)
@@ -667,7 +669,7 @@ class Chain(Atomselection):
             x = 1./linalg.norm(v1)
             H.x = N.x + v1*x
             H.x = r.apply(H.x, 2*pi/3.)
-        self.append(new)
+        self.append(new,newResNum=self.residues[-1].id+1)
         cterm.set_omega(180)
         cterm.set_psi(psi, propagate=True)
         new.set_phi(next_phi)
@@ -783,7 +785,7 @@ class Chain(Atomselection):
         r = Rotation(N.x, C.x)
         O.x = r.apply(O.x, delta)
 
-        self.insert_residue(0, new)
+        self.insert_residue(0, new, newResNum=self.residues[0].id-1)
         new.set_omega_down(180)
         nterm.set_phi_down(phi, True)
         new.set_psi_down(psi, True)
