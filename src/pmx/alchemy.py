@@ -232,8 +232,9 @@ def gen_hybrid_top(topol, recursive=True, verbose=False, scaleDih=1.0):
     # main function that returns the Topology with filled B states
     def process_topol(topol, ff, ffbonded_file, verbose=False, scaleDih=1.0):
         pmxtop = deepcopy(topol)
+        pmxatoms = deepcopy(pmxtop.atoms)
         # create model with residue list
-        m = Model(atoms=pmxtop.atoms)
+        m = Model(atoms=pmxatoms)
         # use model residue list
         pmxtop.residues = m.residues
         # get list of hybrid residues and their params
