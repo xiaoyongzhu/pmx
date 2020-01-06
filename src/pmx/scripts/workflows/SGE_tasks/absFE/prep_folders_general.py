@@ -5,6 +5,7 @@ import luigi
 import os
 import pmx
 import shutil as sh
+import math
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.utils import check_file_ready
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
@@ -48,6 +49,28 @@ class Gather_Inputs_folder(SGETunedJobTask):
     srctop=""
     posre=True
 
+    def find_chains(self, path):
+        chains=[]
+        with open(path) as itp:
+            inmoltype=False
+            for line in itp:
+                line.rstrip()
+                if(not line): continue
+                elif(not inmoltype and "[ moleculetype ]" in line):
+                    inmoltype=True
+                elif(inmoltype):
+                    if(line[0]==';'): continue
+                    elif(line[0]=='['): inmoltype=False #next block
+                    else:
+                        s=line.split()
+                        chains.append(s[0])
+                        inmoltype=False
+
+        if(len(chains)<1):
+            raise(Exception("Error: No chains found in %s!"%path))
+        return(chains)
+
+
     def work(self):
 
         #make folder
@@ -81,14 +104,65 @@ class Gather_Inputs_folder(SGETunedJobTask):
             #generate restraints for equillibration
             #TODO: rewrite this to use the pmx Topology class
             if(self.p):
-                os.system("echo 'Protein\n' | gmx genrestr -f init.pdb "
-                          "-fc 9000 9000 9000 -o prot_posre.itp "
-                          "-n index.ndx >> setup.log 2>&1")
-                check_file_ready("prot_posre.itp")
-                os.system("echo 'Protein\n' | gmx genrestr -f init.pdb "
-                          "-fc 500 500 500 -o prot_posre_soft.itp "
-                          "-n index.ndx >> setup.log 2>&1")
-                check_file_ready("prot_posre_soft.itp")
+                #find out how many chains (molecule types) there are in the protein
+                chains=self.find_chains("prot.itp")
+
+                if(len(chains)==1):
+                    #only one chain; its safe to make a single restraint file
+                    #call it prot
+                    os.system("echo 'Protein\n' | gmx genrestr -f init.pdb "
+                              "-fc 9000 9000 9000 -o prot_posre.itp "
+                              "-n index.ndx >> setup.log 2>&1")
+                    check_file_ready("prot_posre.itp")
+                    os.system("echo 'Protein\n' | gmx genrestr -f init.pdb "
+                              "-fc 500 500 500 -o prot_posre_soft.itp "
+                              "-n index.ndx >> setup.log 2>&1")
+                    check_file_ready("prot_posre_soft.itp")
+
+                elif(len(chains)>1):
+                    #multiple chains, need separate files that are included from prot.itp
+
+                    #split init.pdb into chains
+                    chaindict={}
+                    an=1
+                    with open("init.pdb","r") as initstruct:
+                        for line in initstruct:
+                            if("ATOM" in line or "HETATM" in line):
+                                s=line.split()
+                                if(s[4][0].isalpha()): #forth column of pdb is a letter if atom in chain
+                                    key=s[4][0]
+                                    if key in chaindict.keys():
+                                        chaindict[key].append(an)
+                                    else:
+                                        chaindict.update({key:[an]})
+                                an+=1
+
+                    with open("chains.ndx","w") as chainndx:
+                        for ch in chaindict.keys():
+                            chainndx.write("[ %s ]\n"%ch)
+                            nentries=0;
+                            width=int(math.log10(max(chaindict[ch]))+2)
+                            perrow=int(79/(width))
+                            for ind in chaindict[ch]:
+                                if(nentries>0 and nentries%perrow==0):
+                                    chainndx.write("\n")
+                                chainndx.write("{ind:>{width}}".format(ind=ind, width=width))
+                                nentries+=1;
+                            chainndx.write("\n")
+                    check_file_ready("chains.ndx")
+
+
+                    for ch in chains:
+                        os.system("echo '{key}\n' | gmx genrestr -f init.pdb "
+                              "-fc 9000 9000 9000 -o {ch}_posre.itp "
+                              "-n chains.ndx >> setup.log 2>&1".format(ch=ch, key=ch[-1]))
+                        check_file_ready("{ch}_posre.itp".format(ch=ch))
+                        os.system("echo '{key}\n' | gmx genrestr -f init.pdb "
+                              "-fc 500 500 500 -o {ch}_posre_soft.itp "
+                              "-n chains.ndx >> setup.log 2>&1".format(ch=ch, key=ch[-1]))
+                        check_file_ready("{ch}_posre_soft.itp".format(ch=ch))
+
+
             if(self.l):
                 os.system("echo 'MOL\n' | gmx editconf -f init.pdb "
                           "-o lig.pdb -n index.ndx >> setup.log 2>&1")
@@ -118,7 +192,14 @@ class Gather_Inputs_folder(SGETunedJobTask):
         if(self.p):
             files.extend(["prot.itp"])
             if(self.posre):
-                files.extend(["prot_posre.itp", "prot_posre_soft.itp"])
+                chains=self.find_chains(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.itp")
+                if(len(chains)==1):
+                    files.extend(["prot_posre.itp", "prot_posre_soft.itp"])
+                else:
+                    for ch in chains:
+                        files.extend(["{ch}_posre.itp".format(ch=ch),
+                                      "{ch}_posre_soft.itp".format(ch=ch)])
+
         if(self.l):
             files.extend(["lig.itp"])
             if(self.posre):
