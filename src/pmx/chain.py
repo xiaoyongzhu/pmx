@@ -306,7 +306,11 @@ class Chain(Atomselection):
             self.insert_residue(idx, new, residue.id)
         else:
             self.insert_residue(idx, new)
-        self.remove_residue(residue, bKeepResNum)
+
+        bRenumberRes = True
+        if bKeepResNum==True:
+            bRenumberRes = False
+        self.remove_residue(residue, renumber_residues=bRenumberRes)
 
     def remove_atom(self, atom):
         m = atom.molecule
