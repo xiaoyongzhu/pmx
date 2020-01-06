@@ -153,13 +153,17 @@ class Gather_Inputs_folder(SGETunedJobTask):
 
 
                     for ch in chains:
-                        os.system("echo '{key}\n' | gmx genrestr -f init.pdb "
+                        os.system("echo '{key}\n' | gmx editconf -f init.pdb "
+                              "-o {ch}.pdb "
+                              "-n chains.ndx >> setup.log 2>&1".format(ch=ch, key=ch[-1]))
+                        check_file_ready("{ch}.pdb".format(ch=ch))
+                        os.system("echo 'System\n' | gmx genrestr -f {ch}.pdb "
                               "-fc 9000 9000 9000 -o {ch}_posre.itp "
-                              "-n chains.ndx >> setup.log 2>&1".format(ch=ch, key=ch[-1]))
+                              ">> setup.log 2>&1".format(ch=ch, key=ch[-1]))
                         check_file_ready("{ch}_posre.itp".format(ch=ch))
-                        os.system("echo '{key}\n' | gmx genrestr -f init.pdb "
+                        os.system("echo 'System\n' | gmx genrestr -f {ch}.pdb "
                               "-fc 500 500 500 -o {ch}_posre_soft.itp "
-                              "-n chains.ndx >> setup.log 2>&1".format(ch=ch, key=ch[-1]))
+                              ">> setup.log 2>&1".format(ch=ch, key=ch[-1]))
                         check_file_ready("{ch}_posre_soft.itp".format(ch=ch))
 
 
