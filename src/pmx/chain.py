@@ -316,6 +316,33 @@ class Chain(Atomselection):
         m = atom.molecule
         m.remove_atom(atom)
 
+    def fetch_residue(self, idx ):
+        """Get a residue based on its index
+                                                                                                                       
+        Parameters                                                                                                     
+        ----------                                                                                                     
+        idx : int                                                                                                      
+            ID of the residue to fetch.                                                                                
+                                                                                                                       
+        Returns                                                                                                        
+        -------                                                                                                        
+        residue : Molecule                                                                                             
+            Molecule instance of the residue found.                                                                    
+        """                                                                                                            
+                                                                                                                       
+        # check idx is a valid selection                                                                               
+        if idx not in [r.id for r in self.residues]:                                                                   
+            raise ValueError('resid %s not found in Model residues' % idx)                                             
+                                                                                                                       
+        # check selection is unique                                                                                
+        if [r.id for r in self.residues].count(idx) != 1:                                                          
+            raise ValueError('idx choice %s results in non-unique selection' % idx)                                
+                                                                                                                       
+        # then find and return the residue                                                                             
+        for r in self.residues:                                                                                    
+            if r.id == idx:                                                                                        
+                return r                                                                                           
+
     def fetch_residues(self, key, inv=False):
         """Fetch residues by residue names.
 

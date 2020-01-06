@@ -232,9 +232,8 @@ def gen_hybrid_top(topol, recursive=True, verbose=False, scaleDih=1.0):
     # main function that returns the Topology with filled B states
     def process_topol(topol, ff, ffbonded_file, verbose=False, scaleDih=1.0):
         pmxtop = deepcopy(topol)
-        pmxatoms = deepcopy(pmxtop.atoms)
         # create model with residue list
-        m = Model(atoms=pmxatoms)
+        m = Model(atoms=pmxtop.atoms, renumber_residues=False)
         # use model residue list
         pmxtop.residues = m.residues
         # get list of hybrid residues and their params
@@ -1216,11 +1215,13 @@ def _find_predefined_dihedrals(topol, rlist, rdic, ffbonded,
             al = []
             for name in d[:4]:
                 if name.startswith('+'):
-                    next = r.chain.residues[idx+1]
+                    next = r.chain.fetch_residue(idx=r.id+1)
+#                    next = r.chain.residues[idx+1]
                     atom = next.fetch(name[1:])[0]
                     al.append(atom)
                 elif name.startswith('-'):
-                    prev = r.chain.residues[idx-1]
+                    prev = r.chain.fetch_residue(idx=r.id-1)
+#                    prev = r.chain.residues[idx-1]
                     atom = prev.fetch(name[1:])[0]
                     al.append(atom)
                 else:
