@@ -161,8 +161,7 @@ class Chain(Atomselection):
         else:
             have_model = False
         if pos not in range(len(self.residues)+1):
-            raise(ValueError, 'Chain has only %d residues' %
-                  len(self.residues))
+            raise(ValueError('Chain has only %d residues'%len(self.residues)))
         else:
             mol.set_resid(-999)
             if newResNum is not False:

@@ -244,7 +244,9 @@ class Task_PL_align(Task_PL_gen_morphes):
                 rotate_velocities_R( m_C, R )
 
                 #insert vac ligand into B
-                m_B.insert_residue(resID, m_C.residues[0], chID)
+                #as last residue in last protein chain
+                chain_local_resID = len(m_B.chdic[chID].residues)
+                m_B.insert_residue(chain_local_resID, m_C.residues[0], chID)
 
                 # output
                 m_B.write("frame%d.gro"%fridx)
