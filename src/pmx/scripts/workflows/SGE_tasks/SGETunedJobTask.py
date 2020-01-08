@@ -118,6 +118,12 @@ class SGETunedJobTask(SGEJobTask):
         description="Number of seconds to wait for the (remote) file system "
         "to sync output files at end of task before declaring task as failed.")
 
+    debug_exit = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False,
+        default=False,
+        description="Don't execute. Just raise an exception before submitting to queue.")
+
     extra_packages=[] #extra packages to be tarballed. Overloaded by subclasses.
 
     #override scheduler based retry policy
@@ -152,6 +158,11 @@ class SGETunedJobTask(SGEJobTask):
         task starts checking for unfulfilled dependencies. In such cases we
         should wait for the file system to sync before continuing.
         """
+
+        #check if we want this job to fail (for debug purposes)
+        if(self.debug_exit):
+            raise(Exception("Exiting for debug reasons. We don't want this job to actually execute."))
+
         super().run()
 
         #make sure output files actually exist and are acessible for next tasks
