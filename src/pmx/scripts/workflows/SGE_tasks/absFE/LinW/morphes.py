@@ -3,7 +3,7 @@
 import luigi
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.absFE.LinW.equil_sims import Sim_WL_NPT
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_morphes
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.morphes import Task_PL_gen_morphes
 
 
 # ==============================================================================

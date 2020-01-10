@@ -4,7 +4,6 @@ import numpy as np
 import os
 from pmx import ndx
 from pmx.model import Model
-from ctypes import c_float
 from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R, find_last_protein_atom
 from pmx.scripts.workflows.SGE_tasks.absFE.LinW.equil_sims import Sim_WL_NPT
 from pmx.scripts.workflows.SGE_tasks.absFE.ApoP.equil_sims import Sim_ApoP_NPT
@@ -27,6 +26,8 @@ def _overwrite_coords(atoms_trg, atoms_src):
 class Task_PL_align2crystal(Task_PL_align):
     def __init__(self, *args, **kwargs):
         super(Task_PL_align,self).__init__(*args, **kwargs)
+        self._setupState()
+
         self.sim_path = self.folder_path+"/state%s/repeat%d/aligned2crystal_%s%d"%(
             self.sTI, self.i, self.stage, self.m)
         if(self.restr_scheme!="Aligned_crystal"):

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import glob
 import luigi
 import numpy as np
 import os
@@ -9,17 +8,17 @@ from pmx import ndx
 from pmx.model import Model
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R, find_last_protein_atom
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
-from pmx.scripts.workflows.SGE_tasks.absFE.LinW.equil_sims import Sim_WL_NPT
 from pmx.scripts.workflows.utils import read_from_mdp
+from pmx.scripts.workflows.SGE_tasks.absFE.LinW.equil_sims import Sim_WL_NPT
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
+from pmx.scripts.workflows.SGE_tasks.absFE.ApoP.equil_sims import Sim_ApoP_NPT
 from pmx.xtc import Trajectory
 
 
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Task_PL_gen_morphes(SGETunedJobTask):
-
+class Task_PL_align(SGETunedJobTask):
     #Parameters:
     p = luigi.Parameter(description='Protein name')
     l = luigi.Parameter(description='Ligand name')
@@ -53,8 +52,10 @@ class Task_PL_gen_morphes(SGETunedJobTask):
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
 
+    extra_packages=[np]
+
     def __init__(self, *args, **kwargs):
-        super(Task_PL_gen_morphes, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._setupState()
 
         #set variables
@@ -65,64 +66,6 @@ class Task_PL_gen_morphes(SGETunedJobTask):
             "/protein/eq_npt_{0}.mdp".format(
                 self.study_settings['TIstates'][self.sTI])
 
-    def _setupState(self):
-        self.s=self.sTI
-
-    def work(self):
-        #generate morphs for A state
-        os.makedirs(self.sim_path, exist_ok=True)
-        os.chdir(self.sim_path)
-
-        tpr=self.folder_path+"/state{2}/repeat{3}/npt{4}/tpr.tpr".format(
-            self.p, self.l, self.s, self.i, self.m)
-        trj=self.folder_path+"/state{2}/repeat{3}/npt{4}/traj.trr".format(
-            self.p, self.l, self.s, self.i, self.m)
-
-        #this is slow
-        os.system("echo 0 | gmx trjconv -s %s "
-                  "-f %s -o %s "
-                  "-b %f -sep -ur compact -pbc mol "
-                  "> /dev/null 2>&1"%(tpr,trj,"frame.gro",self.study_settings['b']) )
-
-        cleanList = glob.glob(self.folder_path+'/#*')
-        for filePath in cleanList:
-            try:
-                os.unlink(filePath)
-            except:
-                print("Error while deleting file: ", filePath)
-
-        #restore base path
-        os.chdir(self.base_path)
-
-
-    def requires(self):
-        #restraints require both state A & B for all repeats and sampling sims
-        return( Task_PL_gen_restraints(p=self.p, l=self.l,
-                          study_settings=self.study_settings,
-                          folder_path=self.folder_path,
-                          parallel_env=self.parallel_env,
-                          restr_scheme=self.restr_scheme) )
-
-    def output(self):
-        #find nframes by reading the mdp file
-        end_time, dtframe = read_from_mdp(self.mdp)
-        nframes=int(end_time/dtframe) - int(self.study_settings['b']/dtframe) +1 #first frame counts
-
-        targets=[]
-        for nf in range(nframes):
-            targets.append(luigi.LocalTarget(
-                os.path.join(self.sim_path, 'frame%d.gro'%nf)) )
-        return targets
-
-
-
-
-class Task_PL_align(Task_PL_gen_morphes):
-
-    extra_packages=[np]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         if(not (self.restr_scheme=="Aligned")):
             raise(Exception("{} should only be used if restraint "
                             "scheme is {}".format(
@@ -140,20 +83,38 @@ class Task_PL_align(Task_PL_gen_morphes):
 
     def requires(self):
         #restraints require both state A & B for all repeats and sampling sims
-        tasks=[Task_PL_gen_restraints(p=self.p, l=self.l,
-                          study_settings=self.study_settings,
-                          folder_path=self.folder_path,
-                          parallel_env=self.parallel_env,
-                          restr_scheme=self.restr_scheme)]
-
+        tasks=[]
         for i in range(self.study_settings['n_repeats']):
             for m in range(self.study_settings['n_sampling_sims']):
                 tasks.append(Sim_WL_NPT(l=self.l, i=i, m=m, s='B',
                           study_settings=self.study_settings,
                           folder_path=self.base_path+"/water/lig_{}".format(self.l),
                           parallel_env=self.parallel_env))
+                tasks.append(Sim_PL_NPT(p=self.p, l=self.l, i=i, m=m, s='A',
+                          study_settings=self.study_settings,
+                          folder_path=self.folder_path,
+                          parallel_env=self.parallel_env))
+                tasks.append(Sim_ApoP_NPT(p=self.p, i=i, m=m,
+                          study_settings=self.study_settings,
+                          folder_path=self.base_path+"/prot_{}/apoP".format(self.p),
+                          parallel_env=self.parallel_env))
 
         return(tasks)
+
+    def output(self):
+        #find nframes by reading the mdp file
+        end_time, dtframe = read_from_mdp(self.mdp)
+        nframes=int(end_time/dtframe) - int(self.study_settings['b']/dtframe) +1 #first frame counts
+
+        targets=[]
+        for nf in range(nframes):
+            targets.append(luigi.LocalTarget(
+                os.path.join(self.sim_path, 'frame%d.gro'%nf)) )
+
+        targets.append(luigi.LocalTarget(
+            os.path.join(self.sim_path, "aligned.trr")) )
+
+        return targets
 
 
     def work(self):
@@ -167,22 +128,45 @@ class Task_PL_align(Task_PL_gen_morphes):
             self.p, self.l, None, self.i, self.m) #apoP
         trj_C_src=self.base_path+"/water/lig_{1}/state{2}/repeat{3}/npt{4}/".format(
             self.p, self.l, 'B', self.i, self.m)  #vacL
+            
+        tpr_A=self.folder_path+"/state{2}/repeat{3}/em{4}/tpr.tpr".format(
+            self.p, self.l, 'A', self.i, self.m)  #P+L
+        tpr_B=self.base_path+"/prot_{0}/apoP/repeat{3}/em{4}/tpr.tpr".format(
+            self.p, self.l, None, self.i, self.m) #apoP
+        tpr_C=self.base_path+"/water/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr".format(
+            self.p, self.l, 'B', self.i, self.m)  #vacL
 
         #Cut the begining off of trjs and center them
-        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_A.trr "
+        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_A_raw.trr "
                   "-b {b} -ur compact -pbc mol -center "
                   "> align.log 2>&1".format(
-                      tpr=trj_A_src+"tpr.tpr", trj=trj_A_src+"traj.trr",
+                      tpr=tpr_A, trj=trj_A_src+"traj.trr",
                       b=self.study_settings['b']) ) #P+L
-        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_B.trr "
+            #fit traj onto the structure EM started with
+        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_A.trr "
+                  "-ur compact -fit rot+trans "
+                  ">> align.log 2>&1".format(
+                      tpr=tpr_A, trj="trj_A_raw.trr") ) #P+L
+        os.system("rm trj_A_raw.trr")
+        
+                      
+        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_B_raw.trr "
                   "-b {b} -ur compact -pbc mol -center "
                   ">> align.log 2>&1".format(
-                      tpr=trj_B_src+"tpr.tpr", trj=trj_B_src+"traj.trr",
+                      tpr=tpr_B, trj=trj_B_src+"traj.trr",
                       b=self.study_settings['b']) ) #apoP
+            #fit traj onto the structure EM started with
+        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_B.trr "
+                  "-ur compact -fit rot+trans "
+                  ">> align.log 2>&1".format(
+                      tpr=tpr_B, trj="trj_B_raw.trr") ) #apoP
+        os.system("rm trj_B_raw.trr")
+        
+        #no need to fit the liagand
         os.system("echo 2 0 | gmx trjconv -s {tpr} -f {trj} -o trj_C.trr "
                   "-b {b} -ur compact -pbc mol -center "
                   ">> align.log 2>&1".format(
-                      tpr=trj_C_src+"tpr.tpr", trj=trj_C_src+"traj.trr",
+                      tpr=tpr_C, trj=trj_C_src+"traj.trr",
                       b=self.study_settings['b']) ) #vacL
 
 
@@ -201,7 +185,10 @@ class Task_PL_align(Task_PL_gen_morphes):
         trj_B = Trajectory("trj_B.trr") #apoP
         trj_C = Trajectory("trj_C.trr") #vacL
 
-        ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
+        trj_out = Trajectory("aligned.trr", mode='Out',
+                     atomNum=len(m_A.atoms)) #aligned output
+
+        ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False) #made in prep folders now
         ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
         p_ndx = np.asarray(ndx_file_A["Protein"].ids)-1
         linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
@@ -251,12 +238,24 @@ class Task_PL_align(Task_PL_gen_morphes):
                 # output
                 m_B.write("frame%d.gro"%fridx)
 
+                x = np.zeros(len(m_B.atoms)*3)
+                v = np.zeros(len(m_B.atoms)*3)
+                for i, atom in enumerate(m_B.atoms):
+                    x[i*3:(i+1)*3]=atom.x
+                    v[i*3:(i+1)*3]=atom.v
+
+                trj_out.write_xtc_frame(step=frame_B.step, time=frame_B.time,
+                                        lam=1.0, box=frame_B.box, x=x, v=v,
+                                        units=m_B.unity, bTrr=True )
+
                 #m_b needs to be reloaded to have correct # of atoms next iteration
                 m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
                     self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
                 m_B.a2nm()
 
             fridx+=1
+
+        trj_out.close()
 
         #restore base path
         os.chdir(self.base_path)

@@ -4,7 +4,8 @@ import os
 import subprocess
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedArrayJobTask import SGETunedArrayJobTask #tuned for the owl cluster
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_gen_morphes,Task_PL_align
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.morphes import Task_PL_gen_morphes
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints_align2crystal import Task_PL_gen_restraints_align2crystal
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.morphes_align2crystal import Task_PL_gen_morphes_align2crystal
 from pmx.scripts.workflows.utils import read_from_mdp
@@ -79,8 +80,7 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                               parallel_env=self.parallel_env,
                               restr_scheme=self.restr_scheme) )
             elif(self.sTI=='C'):
-                tasks.append( Task_PL_align(p=self.p, l=self.l,
-                              i=self.i, m=self.m, sTI=self.sTI,
+                tasks.append( Task_PL_gen_restraints(p=self.p, l=self.l,
                               study_settings=self.study_settings,
                               folder_path=self.folder_path,
                               parallel_env=self.parallel_env,

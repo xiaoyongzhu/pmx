@@ -9,7 +9,7 @@ from pmx.scripts.workflows.find_anchors_and_write_ii import find_restraints
 from pmx.scripts.workflows.find_anchors_and_write_ii_single_traj import find_restraints_align2crystal
 from pmx.scripts.workflows.find_avg import find_avg_struct
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
-from pmx.scripts.workflows.SGE_tasks.absFE.ApoP.equil_sims import Sim_ApoP_NPT
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_align
 from pmx.scripts.workflows.utils import check_file_ready
 
 
@@ -54,8 +54,10 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         #set variables
         self.base_path = self.study_settings['base_path']
 
-        if(self.restr_scheme=="Aligned" or self.restr_scheme=="Fitted"):
-            self.states=["A", "ApoProt"]
+        if(self.restr_scheme=="Aligned"):
+            self.states=["C"]
+        elif(self.restr_scheme=="Fitted"):
+            self.states=["A", "B"]
         elif(self.restr_scheme=="Fixed"):
             raise(Exception("Fixed restraints not yet implemened."))
             self.states = self.study_settings['states']
@@ -84,7 +86,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
 
         for s in self.states:
             #make tprs
-            if(s == "A"):   #align A to initial structure
+            if(s == "A" or s=="C"):   #align A/C to initial structure
                 ref="box.pdb"
                 ref_top="topol_prot_mol.top"
                 mdp = self.study_settings['mdp_path'] + "/protein/init.mdp"
@@ -116,6 +118,12 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                         trj=apoP_path.format(self.p,self.l,s,i,m)+"traj.trr"
                         sel="4 Protein"
                         ndx=self.base_path+"/prot_{0}/apoP/index.ndx".format(self.p)
+                    if(s=="C"):
+                        aligned_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
+                        tpr=aligned_path.format(self.p,self.l,"A",i,m,"npt")+"tpr.tpr"
+                        trj=aligned_path.format(self.p,self.l,s,i,m,"morphes")+"aligned.trr"
+                        sel="4 Protein_MOL"
+                        ndx="index_prot_mol.ndx"
                     else:
                         tpr=srctpr.format(self.p,self.l,s,i,m)
                         trj=srctraj.format(self.p,self.l,s,i,m)
@@ -165,10 +173,12 @@ class Task_PL_gen_restraints(SGETunedJobTask):
 
         #generate the restraints
         # print("\tGenerating the restraints")
-        if(self.restr_scheme=="Aligned" or self.restr_scheme=="Fitted"):
-            find_restraints(structB= "dumpApoProt.gro",
-                            trajB = "all_eqApoProt_fit.xtc",
-                            log=False)
+        if(self.restr_scheme=="Aligned"):
+            find_restraints_align2crystal(struct= 'dumpC.gro',
+                        traj = "all_eqC_fit.xtc",
+                        out="ii.itp",
+                        an_cor_file="out_dg.dat",
+                        log=False)
         elif(self.restr_scheme=="Fitted"):
             find_restraints(log=False)
 
@@ -196,17 +206,14 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             #sampling simulations in each repeat
             for m in range(self.study_settings['n_sampling_sims']):
                 #states of equilibrium sims
-                if(self.restr_scheme=="Aligned" or self.restr_scheme=="Fitted"):
-                    reqs.append(Sim_PL_NPT(p=self.p, l=self.l, i=i, m=m, s='A',
+                if(self.restr_scheme=="Aligned"):
+                    reqs.append(Task_PL_align(p=self.p, l=self.l, i=i, m=m, sTI='C',
                                       study_settings=self.study_settings,
                                       folder_path=self.folder_path,
-                                      parallel_env=self.parallel_env)
+                                      parallel_env=self.parallel_env,
+                                      restr_scheme=self.restr_scheme)
                             )
-                    reqs.append(Sim_ApoP_NPT(p=self.p, i=i, m=m,
-                          study_settings=self.study_settings,
-                          folder_path=self.base_path+"/prot_{}/apoP".format(self.p),
-                          parallel_env=self.parallel_env))
-                else:
+                elif(self.restr_scheme=="Fitted"):
                     for s in self.states:
                         reqs.append(
                             Sim_PL_NPT(p=self.p, l=self.l, i=i, m=m, s=s,
@@ -220,11 +227,11 @@ class Task_PL_gen_restraints(SGETunedJobTask):
 
     def output(self):
         targets=[
-            luigi.LocalTarget(os.path.join(self.folder_path, 'index_prot_mol.ndx')),
             luigi.LocalTarget(os.path.join(self.folder_path, 'ii.itp')),
             luigi.LocalTarget(os.path.join(self.folder_path, 'out_dg.dat')),
-            luigi.LocalTarget(os.path.join(self.folder_path, 'averageA.gro'))
             ]
+        if(self.restr_scheme=="Fitted"):
+            targets.append([luigi.LocalTarget(os.path.join(self.folder_path, 'averageA.gro'))])
         for s in self.states:
             targets.append([
                 luigi.LocalTarget(os.path.join(self.folder_path, 'dump%s.gro'%s)),
