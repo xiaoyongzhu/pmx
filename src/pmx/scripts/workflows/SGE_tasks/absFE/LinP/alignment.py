@@ -195,7 +195,16 @@ class Task_PL_align(Task_PL_gen_morphes):
         m_B.a2nm()
         m_C.a2nm()
 
-        chID,resID = find_last_protein_atom( m_B )
+        #find chain and resID of the last residue of the protein
+        chID,last_prot_resID = find_last_protein_atom( m_B )
+        #find the residue index to insert the ligand in the same chain as the end of the protein
+        chain_local_res_index = -1;
+        for i,r in enumerate(m_B.chdic[chID].residues):
+            if(r.id==last_prot_resID):
+                chain_local_res_index=i+1;
+                break;
+        if(chain_local_res_index<0):
+            raise("Could not find residue with resID %d in protein chain %s."%(last_prot_resID, chID))
 
         trj_A = Trajectory("trj_A.trr") #P+L
         trj_B = Trajectory("trj_B.trr") #apoP
@@ -244,9 +253,7 @@ class Task_PL_align(Task_PL_gen_morphes):
                 rotate_velocities_R( m_C, R )
 
                 #insert vac ligand into B
-                #as last residue in last protein chain
-                chain_local_resID = len(m_B.chdic[chID].residues)
-                m_B.insert_residue(chain_local_resID, m_C.residues[0], chID)
+                m_B.insert_residue(chain_local_res_index, m_C.residues[0], chID)
 
                 # output
                 m_B.write("frame%d.gro"%fridx)

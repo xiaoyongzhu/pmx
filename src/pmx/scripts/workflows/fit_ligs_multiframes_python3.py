@@ -23,7 +23,9 @@ def find_last_protein_atom( m ):
     for atom in m.atoms:
         if ('SOL' in atom.resname) or ('HOH' in atom.resname) \
            or ('NA' in atom.resname) or ('CL' in atom.resname) \
-           or ('Na' in atom.resname) or ('Cl' in atom.resname):
+           or ('Na' in atom.resname) or ('Cl' in atom.resname) \
+           or ('Mg' in atom.resname) or ('MG' in atom.resname) \
+           or ('Zn' in atom.resname) or ('ZN' in atom.resname):
            chID = prev.chain_id
            resID = prev.resnr
            break
