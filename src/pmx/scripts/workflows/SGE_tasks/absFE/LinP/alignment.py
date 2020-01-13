@@ -128,45 +128,22 @@ class Task_PL_align(SGETunedJobTask):
             self.p, self.l, None, self.i, self.m) #apoP
         trj_C_src=self.base_path+"/water/lig_{1}/state{2}/repeat{3}/npt{4}/".format(
             self.p, self.l, 'B', self.i, self.m)  #vacL
-            
-        tpr_A=self.folder_path+"/state{2}/repeat{3}/em{4}/tpr.tpr".format(
-            self.p, self.l, 'A', self.i, self.m)  #P+L
-        tpr_B=self.base_path+"/prot_{0}/apoP/repeat{3}/em{4}/tpr.tpr".format(
-            self.p, self.l, None, self.i, self.m) #apoP
-        tpr_C=self.base_path+"/water/lig_{1}/state{2}/repeat{3}/npt{4}/tpr.tpr".format(
-            self.p, self.l, 'B', self.i, self.m)  #vacL
 
         #Cut the begining off of trjs and center them
-        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_A_raw.trr "
+        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_A.trr "
                   "-b {b} -ur compact -pbc mol -center "
                   "> align.log 2>&1".format(
-                      tpr=tpr_A, trj=trj_A_src+"traj.trr",
+                      tpr=trj_A_src+"tpr.tpr", trj=trj_A_src+"traj.trr",
                       b=self.study_settings['b']) ) #P+L
-            #fit traj onto the structure EM started with
-        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_A.trr "
-                  "-ur compact -fit rot+trans "
-                  ">> align.log 2>&1".format(
-                      tpr=tpr_A, trj="trj_A_raw.trr") ) #P+L
-        os.system("rm trj_A_raw.trr")
-        
-                      
-        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_B_raw.trr "
+        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_B.trr "
                   "-b {b} -ur compact -pbc mol -center "
                   ">> align.log 2>&1".format(
-                      tpr=tpr_B, trj=trj_B_src+"traj.trr",
+                      tpr=trj_B_src+"tpr.tpr", trj=trj_B_src+"traj.trr",
                       b=self.study_settings['b']) ) #apoP
-            #fit traj onto the structure EM started with
-        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_B.trr "
-                  "-ur compact -fit rot+trans "
-                  ">> align.log 2>&1".format(
-                      tpr=tpr_B, trj="trj_B_raw.trr") ) #apoP
-        os.system("rm trj_B_raw.trr")
-        
-        #no need to fit the liagand
         os.system("echo 2 0 | gmx trjconv -s {tpr} -f {trj} -o trj_C.trr "
                   "-b {b} -ur compact -pbc mol -center "
                   ">> align.log 2>&1".format(
-                      tpr=tpr_C, trj=trj_C_src+"traj.trr",
+                      tpr=trj_C_src+"tpr.tpr", trj=trj_C_src+"traj.trr",
                       b=self.study_settings['b']) ) #vacL
 
 
@@ -179,16 +156,25 @@ class Task_PL_align(SGETunedJobTask):
         m_B.a2nm()
         m_C.a2nm()
 
-        chID,resID = find_last_protein_atom( m_B )
+        #find chain and resID of the last residue of the protein
+        chID,last_prot_resID = find_last_protein_atom( m_B )
+        #find the residue index to insert the ligand in the same chain as the end of the protein
+        chain_local_res_index = -1;
+        for i,r in enumerate(m_B.chdic[chID].residues):
+            if(r.id==last_prot_resID):
+                chain_local_res_index=i+1;
+                break;
+        if(chain_local_res_index<0):
+            raise("Could not find residue with resID %d in protein chain %s."%(last_prot_resID, chID))
 
         trj_A = Trajectory("trj_A.trr") #P+L
         trj_B = Trajectory("trj_B.trr") #apoP
         trj_C = Trajectory("trj_C.trr") #vacL
 
         trj_out = Trajectory("aligned.trr", mode='Out',
-                     atomNum=len(m_A.atoms)) #aligned output
+                             atomNum=len(m_A.atoms)) #aligned output
 
-        ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False) #made in prep folders now
+        ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
         ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
         p_ndx = np.asarray(ndx_file_A["Protein"].ids)-1
         linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
@@ -216,6 +202,10 @@ class Task_PL_align(SGETunedJobTask):
 
             if(not os.path.isfile("frame%d.gro"%fridx)):
                 frame_A.update(m_A)
+                #m_b needs to be reloaded to have correct # of atoms next iteration
+                m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
+                    self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
+                m_B.a2nm()
                 frame_B.update(m_B, uv=True)
                 frame_C.update(m_C, uv=True)
 
@@ -231,9 +221,7 @@ class Task_PL_align(SGETunedJobTask):
                 rotate_velocities_R( m_C, R )
 
                 #insert vac ligand into B
-                #as last residue in last protein chain
-                chain_local_resID = len(m_B.chdic[chID].residues)
-                m_B.insert_residue(chain_local_resID, m_C.residues[0], chID)
+                m_B.insert_residue(chain_local_res_index, m_C.residues[0], chID)
 
                 # output
                 m_B.write("frame%d.gro"%fridx)
@@ -248,10 +236,7 @@ class Task_PL_align(SGETunedJobTask):
                                         lam=1.0, box=frame_B.box, x=x, v=v,
                                         units=m_B.unity, bTrr=True )
 
-                #m_b needs to be reloaded to have correct # of atoms next iteration
-                m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
-                    self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
-                m_B.a2nm()
+
 
             fridx+=1
 
