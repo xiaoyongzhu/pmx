@@ -92,6 +92,7 @@ class Task_PL_gen_morphes(SGETunedJobTask):
     def requires(self):
         #restraints require both state A & B for all repeats and sampling sims
         return( Task_PL_gen_restraints(p=self.p, l=self.l,
+                          i=self.i,
                           study_settings=self.study_settings,
                           folder_path=self.folder_path,
                           parallel_env=self.parallel_env,

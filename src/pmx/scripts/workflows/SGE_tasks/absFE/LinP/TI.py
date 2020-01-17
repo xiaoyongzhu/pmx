@@ -81,6 +81,7 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                               restr_scheme=self.restr_scheme) )
             elif(self.sTI=='C'):
                 tasks.append( Task_PL_gen_restraints(p=self.p, l=self.l,
+                              i=self.i,
                               study_settings=self.study_settings,
                               folder_path=self.folder_path,
                               parallel_env=self.parallel_env,

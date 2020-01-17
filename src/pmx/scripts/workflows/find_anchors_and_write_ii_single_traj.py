@@ -1,8 +1,6 @@
 import argparse
 import numpy as np
 import MDAnalysis as md
-from MDAnalysis.lib.distances import *
-from MDAnalysis.analysis.distances import *
 from pmx.scripts.workflows.find_anchors_and_write_ii import find_distribs, _calc_restraint_dg_w_gromacs_limits
 
 ################################################################################
