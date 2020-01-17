@@ -52,7 +52,7 @@ class Task_summary_aligned(SGETunedJobTask):
 
         self.base_path = self.study_settings['base_path']
         self.outname="summary_aligned.txt"
-        self.restrname="out_dg.dat"
+        self.restrname="out_dg_{i}.dat"
 
         self.anafolderfmt_P="/analysis/repeat{i}"
         self.anafolderfmt_W="/analysis/repeat{i}"
@@ -72,6 +72,16 @@ class Task_summary_aligned(SGETunedJobTask):
                             s = line.split()
                             rs[i]=float(s[3])
                             break
+
+                if(inP): #analytical correction for this repeat
+                    with open(folder_path+"/"+self.restrname.format(i=i), 'r') as f:
+                        for line in f:
+                            if("Restraint contribution to free energy (w gmx limits):" in line and
+                               "kJ/mol" in line):
+                                s = line.split()
+                                rs[i]+=float(s[-2])
+                                break
+
             dGpart = np.mean(rs)
             std = np.std(rs)
             return([dGpart,std])
@@ -98,38 +108,41 @@ class Task_summary_aligned(SGETunedJobTask):
             for l in self.ligands:
                 key=p+' '+l
                 folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                with open(folder_path+"/"+self.restrname, 'r') as f:
-                    for line in f:
-                        if("Restraint contribution to free energy (w gmx limits):" in line and
-                           "kJ/mol" in line):
-                            s=line.split()
-                            anacorrs.update({key:float(s[-2])})
+                cors=np.ndarray(self.study_settings['n_repeats'])
+                for i in range(self.study_settings['n_repeats']):
+                    with open(folder_path+"/"+self.restrname.format(i=i), 'r') as f:
+                        for line in f:
+                            if("Restraint contribution to free energy (w gmx limits):" in line and
+                               "kJ/mol" in line):
+                                s=line.split()
+                                cors[i]=float(s[-2])
+                anacorrs.update({key:[np.mean(cors),np.std(cors)]})
 
 
         #print summary table
         with open(self.outname, 'w') as sf:
 
-            print("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^12s}".format(
-                            "host guest","ddG (kJ/mol)","dG in prot" ,
-                            "dG in water", "restraint dG"))
-            sf.write("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^12s}\n".format(
-                            "host guest","ddG (kJ/mol)","dG in prot" ,
-                            "dG in water", "restraint dG"))
+            print("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^20s}".format(
+                            "host guest","ddG (kJ/mol)","dG in prot+restr" ,
+                            "dG in water", "ana. corr."))
+            sf.write("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^20s}\n".format(
+                            "host guest","ddG (kJ/mol)","dG in prot+restr" ,
+                            "dG in water", "ana. corr."))
             for p in self.hosts:
                 for l in self.ligands:
                     key=p+' '+l
-                    ddG = inws[l][0] - inps[key][0] - anacorrs[key] #water - protein - restr corr.
+                    ddG = inws[l][0] - inps[key][0] #water - (protein + restr corr.)
                     sigma = np.sqrt(inps[key][1]**2 + inws[l][1]**2) #standard dev.
-                    print("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>12.2f}".format(
+                    print("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}".format(
                         key, ddG, sigma,
                         inps[key][0], inps[key][1],
                         inws[l][0], inws[l][1],
-                        anacorrs[key]) )
-                    sf.write("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>12.2f}\n".format(
+                        anacorrs[key][0], anacorrs[key][1]) )
+                    sf.write("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}\n".format(
                         key, ddG, sigma,
                         inps[key][0], inps[key][1],
                         inws[l][0], inws[l][1],
-                        anacorrs[key]) )
+                        anacorrs[key][0], anacorrs[key][1]) )
 
     def output(self):
         files=[self.outname]
@@ -170,7 +183,7 @@ class Task_summary_aligned2crystal(Task_summary_aligned):
         super().__init__(*args, **kwargs)
         #overwrite values
         self.outname="summary_aligned2crystal.txt"
-        self.restrname="out_dg_aligned2crystal.dat"
+        self.restrname="out_dg_aligned2crystal_{i}.dat"
         self.anafolderfmt_P="/analysis/aligned2crystal_repeat{i}"
 
     def requires(self):

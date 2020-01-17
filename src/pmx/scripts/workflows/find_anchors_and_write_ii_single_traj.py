@@ -7,7 +7,7 @@ from pmx.scripts.workflows.find_anchors_and_write_ii import find_distribs, _calc
 def find_restraints_align2crystal(struct="dumpD.gro",
                     traj="all_eqD_fit.xtc",
                     out="ii_aligned2crystal.itp", an_cor_file="out_dg_aligned2crystal.dat",
-                    skip=1, log=False):
+                    skip=1, plotfile="restraint_coord_distrib.png", log=False):
 
 
     #load trajectories
@@ -105,7 +105,7 @@ def find_restraints_align2crystal(struct="dumpD.gro",
     final_anchors=[relevant[i].index for i in last_anchors]
     if(log):
         print("Final Dsum:%.4f\t final anchors"%last_Dsum, final_anchors)
-    FCs,eqs=find_distribs(last_anchors, relevantpos, plot=True)
+    FCs,eqs=find_distribs(last_anchors, relevantpos, plot=plotfile)
 
     #add 1 to all anchor indices, as gmx indexing starts at 1, not 0.
     final_anchors=[relevant[i].index + 1 for i in last_anchors]

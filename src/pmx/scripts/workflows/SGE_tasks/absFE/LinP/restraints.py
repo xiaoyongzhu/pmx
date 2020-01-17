@@ -79,26 +79,26 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         #           "-o index_prot_mol.ndx > /dev/null 2>&1")
 
         #make topology for prot+MOL
-        os.system("sed 's/SOL/;SOL/g' topol.top > topol_prot_mol.top")
+        os.system("sed 's/SOL/;SOL/g' topol.top > topol_prot_mol_{i}.top".format(i=self.i))
 
         #make topology for ApoP
         os.system("sed 's/SOL/;SOL/g' {base}/prot_{p}/apoP/topol.top "
-                  "> topol_prot.top".format(base=self.base_path, p=self.p))
+                  "> topol_prot_{i}.top".format(base=self.base_path, p=self.p, i=self.i))
 
         for s in self.states:
             #make tprs
             if(s == "A" or s=="C"):   #align A/C to initial structure
                 ref="box.pdb"
-                ref_top="topol_prot_mol.top"
+                ref_top="topol_prot_mol_{i}.top".format(i=self.i)
                 mdp = self.study_settings['mdp_path'] + "/protein/init.mdp"
             else:           #align B to average of A
                 ref="averageA_{i}_prot_only.gro".format(i=self.i)
-                ref_top="topol_prot.top"
+                ref_top="topol_prot_{i}.top".format(i=self.i)
                 mdp = self.study_settings['mdp_path'] + "/apo_protein/init.mdp"
 
 
             os.system("gmx grompp -p {ref_top} -c {ref} -f {mdp} "
-                      "-o tpr{s}_{i}.tpr -maxwarn 2 > grompp{s}.log 2>&1".format(
+                      "-o tpr{s}_{i}.tpr -maxwarn 2 > grompp{s}_{i}.log 2>&1".format(
                           ref_top=ref_top, ref=ref, mdp=mdp, s=s, i=self.i) )
             check_file_ready("tpr{s}_{i}.tpr".format(s=s, i=self.i))
 
@@ -181,6 +181,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                         traj = "all_eqC_{i}_fit.xtc".format(i=self.i),
                         out="ii_{i}.itp".format(i=self.i),
                         an_cor_file="out_dg_{i}.dat".format(i=self.i),
+                        plotfile="restraint_coord_distrib_{i}.png".format(i=self.i),
                         log=False)
         elif(self.restr_scheme=="Fitted"):
             find_restraints(
@@ -191,6 +192,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                 trajB="all_eqB_{i}_fit.xtc".format(i=self.i),
                 out="ii_{i}.itp".format(i=self.i),
                 an_cor_file="out_dg_{i}.dat".format(i=self.i),
+                plotfile="restraint_coord_distrib_{i}.png".format(i=self.i),
                 log=False)
 
         check_file_ready(os.path.join("ii_{i}.itp".format(i=self.i)))

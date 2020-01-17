@@ -76,7 +76,7 @@ def wrap_dih(x,m):
     new_x=np.where(x-m<-180, x+2*180, new_x)
     return(new_x);
 ################################################################################
-def find_distribs(localindeces, relcoords, bscale=1.0, plot=False):
+def find_distribs(localindeces, relcoords, bscale=1.0, plot=""):
     dist=[]
     angA=[]
     angB=[]
@@ -195,7 +195,7 @@ def find_distribs(localindeces, relcoords, bscale=1.0, plot=False):
 
     if plot:
         plt.tight_layout()
-        plt.savefig("restraint_coord_distrib.png", dpi=300)
+        plt.savefig(plot, dpi=300)
         #plt.show()
 
 
@@ -228,9 +228,9 @@ def find_restraints(structA="dumpA.gro", structB="dumpB.gro",
                     ref="averageA.gro",
                     trajA="all_eqA_fit.xtc", trajB="all_eqB_fit.xtc",
                     out="ii.itp", an_cor_file="out_dg.dat",
-                    skip=1, log=False):
-    
-    
+                    skip=1, plotfile="restraint_coord_distrib.png", log=False):
+
+
     #load trajectories
     A = md.Universe(structA,trajA)
     #lig_cand = A.select_atoms("resnum 2 and not (name H*)")
@@ -245,7 +245,7 @@ def find_restraints(structA="dumpA.gro", structB="dumpB.gro",
     B = md.Universe(structB,trajB)
     #prot_cand = B.select_atoms("resnum 1 and not (name H*) and point %f %f %f %f"%(lcog[0], lcog[1], lcog[2], 15.0))
     prot_cand = B.select_atoms("protein and not (name H*) and point %f %f %f %f"%(lcog[0], lcog[1], lcog[2], 15.0))
-    
+
 
     #ligand variance in A
     displ_mat_A=[]
@@ -342,7 +342,7 @@ def find_restraints(structA="dumpA.gro", structB="dumpB.gro",
     final_anchors=[relevant[i].index for i in last_anchors]
     if(log):
         print("Final Dsum:%.4f\t final anchors"%last_Dsum, final_anchors)
-    FCs,eqs=find_distribs(last_anchors, relevantpos, plot=True)
+    FCs,eqs=find_distribs(last_anchors, relevantpos, plot=plotfile)
 
     #add 1 to all anchor indices, as gmx indexing starts at 1, not 0.
     final_anchors=[relevant[i].index + 1 for i in last_anchors]
@@ -383,8 +383,8 @@ def find_restraints(structA="dumpA.gro", structB="dumpB.gro",
     if(log):
         print('Restraint contribution to free energy (w gmx limits): %3.4f kJ/mol' % dg)
         print('Restraint contribution to free energy (w gmx limits): %3.4f kcal/mol' % (dg/4.184))
-    
-    
+
+
 ################################################################################
 #start of execution
 if __name__== "__main__":
