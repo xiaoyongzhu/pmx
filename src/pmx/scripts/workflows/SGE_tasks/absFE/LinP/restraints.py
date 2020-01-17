@@ -107,6 +107,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                 os.unlink("trjconv.log")
 
             #independent repeats for error analysis
+            local_trjs=""
             for i in range(self.study_settings['n_repeats']):
                 #sampling simulations in each repeat
                 for m in range(self.study_settings['n_sampling_sims']):
@@ -132,10 +133,11 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                                       self.study_settings['b']) )
 
                     check_file_ready("eq%s%d_%d.xtc"%(s,i,m))
+                    local_trjs+="eq%s%d_%d.xtc "%(s,i,m)
 
             #concatenate trajectories
-            os.system("gmx trjcat -f eq%s*.xtc -o all_eq%s.xtc -sort "
-                      "-cat >> trjconv.log 2>&1"%(s,s) )
+            os.system("gmx trjcat -f %s -o all_eq%s.xtc -sort "
+                      "-cat >> trjconv.log 2>&1"%(local_trjs,s) )
             check_file_ready("all_eq%s.xtc"%s)
 
             #fit to reference structure in tpr files
