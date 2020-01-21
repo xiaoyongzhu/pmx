@@ -127,16 +127,15 @@ class Jarz:
         mexp = 0.0
         m = 0.0
         m2 = 0.0
+
+        w = np.array(w)
+        median = np.median(w)
         for i in w:
-            mexp = mexp + np.exp(-beta*c*i)
-            m = m + c*i
-            m2 = m2 + i*i
-        mexp = mexp/n
-        m = m/n
-        m2 = m2/n
+            mexp = mexp + np.exp( -beta*c*i - (-beta*c*median) )
+#            mexp = mexp + np.exp(-beta*c*i)
 
         # Jarzynski estimator
-        dg = -kb * T * np.log(mexp)
+        dg = c*median -kb*T*np.log(mexp) + kb*T*np.log(n)
 
         return c * dg
 
