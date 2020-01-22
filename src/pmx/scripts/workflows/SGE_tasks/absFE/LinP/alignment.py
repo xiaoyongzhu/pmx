@@ -176,7 +176,8 @@ class Task_PL_align(SGETunedJobTask):
 
         ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
         ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
-        p_ndx = np.asarray(ndx_file_A["Protein"].ids)-1
+        #p_ndx = np.asarray(ndx_file_A["Protein"].ids)-1
+        p_ndx = np.asarray(ndx_file_A["C-alpha"].ids)-1 # as in Vytas' alignment script
         linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
         l_ndx = np.asarray(ndx_file_C["MOL"].ids)-1
 

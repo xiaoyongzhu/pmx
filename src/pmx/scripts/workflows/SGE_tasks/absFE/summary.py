@@ -76,7 +76,7 @@ class Task_summary_aligned(SGETunedJobTask):
                 if(inP): #analytical correction for this repeat
                     with open(folder_path+"/"+self.restrname.format(i=i), 'r') as f:
                         for line in f:
-                            if("Restraint contribution to free energy (w gmx limits):" in line and
+                            if("Restraint contribution to free energy" in line and
                                "kJ/mol" in line):
                                 s = line.split()
                                 rs[i]+=float(s[-2])
@@ -108,11 +108,11 @@ class Task_summary_aligned(SGETunedJobTask):
             for l in self.ligands:
                 key=p+' '+l
                 folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                cors=np.ndarray(self.study_settings['n_repeats'])
+                cors=np.zeros(self.study_settings['n_repeats'])
                 for i in range(self.study_settings['n_repeats']):
                     with open(folder_path+"/"+self.restrname.format(i=i), 'r') as f:
                         for line in f:
-                            if("Restraint contribution to free energy (w gmx limits):" in line and
+                            if("Restraint contribution to free energy " in line and
                                "kJ/mol" in line):
                                 s=line.split()
                                 cors[i]=float(s[-2])
