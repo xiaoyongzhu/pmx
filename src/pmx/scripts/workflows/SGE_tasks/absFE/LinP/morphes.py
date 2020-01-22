@@ -75,7 +75,7 @@ class Task_PL_gen_morphes(SGETunedJobTask):
         #this is slow
         os.system("echo 0 | gmx trjconv -s %s "
                   "-f %s -o %s "
-                  "-b %f -sep -ur compact -pbc mol "
+                  "-b %f -sep -ur compact -pbc mol -novel "
                   "> trjconv.log 2>&1"%(tpr,trj,"frame.gro",self.study_settings['b']) )
 
         cleanList = glob.glob(self.folder_path+'/#*')
