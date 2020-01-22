@@ -83,6 +83,10 @@ class Sim_ApoP_NVT_posre(Sim_PL_NVT_posre):
         self.mdrun = self.study_settings['mdrun']
         self.mdrun_opts = self.study_settings['mdrun_opts']
 
+        if(self.restr_to_EM):
+            self.posre = self.folder_path+"/repeat{i}/em{m}/confout.gro".format(
+                i=self.i, m=self.m)
+
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\
             "/apo_protein/eq_nvt_posre.mdp"
@@ -124,6 +128,10 @@ class Sim_ApoP_NVT_posre_soft(Sim_PL_NVT_posre_soft):
             self.p, self.l, self.s, self.i, self.m)
         self.mdrun = self.study_settings['mdrun']
         self.mdrun_opts = self.study_settings['mdrun_opts']
+
+        if(self.restr_to_EM):
+            self.posre = self.folder_path+"/repeat{i}/em{m}/confout.gro".format(
+                i=self.i, m=self.m)
 
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\

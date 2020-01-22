@@ -38,6 +38,12 @@ class Sim_PL_EM(SGE_Sim):
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
 
+    restr_to_EM = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False,
+        default=False,
+        description="restrain to EM or to crystal structure.")
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -77,6 +83,10 @@ class Sim_PL_NVT_posre(Sim_PL_EM):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        if(self.restr_to_EM):
+            self.posre = self.folder_path+"/state{s}/repeat{i}/em{m}/confout.gro".format(
+                s=self.s, i=self.i, m=self.m)
+
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\
             "/protein/eq_nvt_posre_{0}.mdp".format(self.study_settings['states'][self.s])
@@ -97,6 +107,10 @@ class Sim_PL_NVT_posre_soft(Sim_PL_EM):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        if(self.restr_to_EM):
+            self.posre = self.folder_path+"/state{s}/repeat{i}/em{m}/confout.gro".format(
+                s=self.s, i=self.i, m=self.m)
 
         #override relevant file names
         self.mdp = self.study_settings['mdp_path'] +\
