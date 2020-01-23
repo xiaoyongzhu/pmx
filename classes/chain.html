@@ -272,7 +272,7 @@ is built. By default seq=None.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#pmx.chain.Chain.get_sequence" title="pmx.chain.Chain.get_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequence</span></code></a>()</p></td>
 <td><p>Returns the sequence of residues in FASTA format.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.chain.Chain.append" title="pmx.chain.Chain.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(mol)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.chain.Chain.append" title="pmx.chain.Chain.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(mol[, newResNum])</p></td>
 <td><p>Appends a residue to the Chain.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pmx.chain.Chain.insert_residue" title="pmx.chain.Chain.insert_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_residue</span></code></a>(pos, mol[, newResNum])</p></td>
@@ -318,11 +318,14 @@ is built. By default seq=None.</p>
 
 <dl class="method">
 <dt id="pmx.chain.Chain.append">
-<code class="sig-name descname">append</code><span class="sig-paren">(</span><em class="sig-param">mol</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.append" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">append</code><span class="sig-paren">(</span><em class="sig-param">mol</em>, <em class="sig-param">newResNum=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.append" title="Permalink to this definition">¶</a></dt>
 <dd><p>Appends a residue to the Chain.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>mol</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – Molecule instance to append</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mol</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – Molecule instance to append</p></li>
+<li><p><strong>newResNum</strong> (<em>int</em><em>, </em><em>optional</em>) – assigns a specific residue number that differs from the ID in pos</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -364,6 +367,23 @@ key=’H1’ will select atoms named, for instance, “H12”, “H13”, and
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pmx.chain.Chain.fetch_residue">
+<code class="sig-name descname">fetch_residue</code><span class="sig-paren">(</span><em class="sig-param">idx</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.chain.Chain.fetch_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a residue based on its index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>idx</strong> (<em>int</em>) – ID of the residue to fetch.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>residue</strong> – Molecule instance of the residue found.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule">Molecule</a></p>
 </dd>
 </dl>
 </dd></dl>

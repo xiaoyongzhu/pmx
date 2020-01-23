@@ -240,7 +240,7 @@ returned.</p>
 
 <dl class="function">
 <dt id="pmx.alchemy.gen_hybrid_top">
-<code class="sig-prename descclassname">pmx.alchemy.</code><code class="sig-name descname">gen_hybrid_top</code><span class="sig-paren">(</span><em class="sig-param">topol</em>, <em class="sig-param">recursive=True</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.gen_hybrid_top" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pmx.alchemy.</code><code class="sig-name descname">gen_hybrid_top</code><span class="sig-paren">(</span><em class="sig-param">topol</em>, <em class="sig-param">recursive=True</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">scaleDih=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.alchemy.gen_hybrid_top" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fills the bstate of a topology file containing pmx hybrid residues. This
 can be either a top or itp file. If the file contains other itp files via
 include statements, the function can iterate through them if the recursive
@@ -256,6 +256,7 @@ False, then an empty list is returned.</p>
 <li><p><strong>recursive</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to fill b states also for all itp files included in the
 topology file. Default is True.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – whether to print out info. Default is False.</p></li>
+<li><p><strong>scaleDih</strong> (<em>float</em>) – scaling for dihedrals with a dummy.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -632,7 +633,7 @@ of the standard error. Default is one (do not estimate the error).</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimate</span> <span class="o">=</span> <span class="n">Jarz</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nblocks</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimate</span> <span class="o">=</span> <span class="n">Jarz</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nblocks</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg_forward</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">dg_for</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg_reverse</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">dg_rev</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg_mean</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">dg_mean</span>
@@ -828,7 +829,7 @@ of the standard error. Default is one (do not estimate the error).</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimate</span> <span class="o">=</span> <span class="n">JarzGauss</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nblocks</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimate</span> <span class="o">=</span> <span class="n">JarzGauss</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nblocks</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg_forward</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">dg_for</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg_reverse</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">dg_rev</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg_forward_err1</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">err_for</span>
@@ -1067,7 +1068,7 @@ of the standard error. Default is one (do not estimate the error).</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimate</span> <span class="o">=</span> <span class="n">Crooks</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nblocks</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimate</span> <span class="o">=</span> <span class="n">Crooks</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nblocks</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">dg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg_err1</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">err_boot1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg_err2</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">err_boot2</span>
@@ -1336,7 +1337,7 @@ of the standard error. Default is one (do not estimate the error).</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimate</span> <span class="o">=</span> <span class="n">BAR</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nblocks</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimate</span> <span class="o">=</span> <span class="n">BAR</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">wr</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">nboots</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nblocks</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">dg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg_err1</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">err</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dg_err2</span> <span class="o">=</span> <span class="n">estimate</span><span class="o">.</span><span class="n">err_boot</span>
@@ -1783,7 +1784,7 @@ structures from scratch.</p>
 <p>Most important:
 - build_chain</p>
 <dl>
-<dt>Usage:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.builder</span> <span class="kn">import</span> <span class="o">*</span>
+<dt>Usage:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pmx.builder</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span> <span class="o">=</span> <span class="n">build_chain</span><span class="p">(</span><span class="s1">&#39;AAAAAA&#39;</span><span class="p">)</span>    <span class="c1"># builds an ordinary polyalanine</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;polyala.pdb&#39;</span><span class="p">)</span>       <span class="c1"># store file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ch</span> <span class="o">=</span> <span class="n">build_chain</span><span class="p">(</span><span class="s1">&#39;FGHRTCV&#39;</span><span class="p">,</span><span class="n">hydrogens</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="c1"># build chain without H</span>
@@ -2067,7 +2068,7 @@ which will be opened, the patterns replaced, and written again.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;hello, John&#39;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;hello, John&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">multiple_replace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;hello&#39;</span><span class="p">:</span><span class="s1">&#39;goodbye&#39;</span><span class="p">,</span> <span class="s1">&#39;John&#39;</span><span class="p">:</span><span class="s1">&#39;Mark&#39;</span><span class="p">})</span>
 <span class="go">&#39;goodbye, Mark&#39;</span>
 </pre></div>
@@ -2393,7 +2394,7 @@ will be written.</p></li>
 <p>This file contains the Rotation class.
 A Rotation instance is built with two vectors.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Rotation</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>  <span class="c1"># create rotation object around v2-v1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v3</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
@@ -2506,13 +2507,13 @@ A Rotation instance is built with two vectors.</p>
 <span id="pmx-parser"></span><h2>pmx.parser<a class="headerlink" href="#module-pmx.parser" title="Permalink to this headline">¶</a></h2>
 <p>Some functions to write parsers for different data formats.</p>
 <p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lst</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>     <span class="c1"># read file</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lst</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>     <span class="c1"># read file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lst</span> <span class="o">=</span> <span class="n">kickOutComments</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>       <span class="c1"># remove comments with # or ;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lst</span> <span class="o">=</span> <span class="n">parseList</span><span class="p">(</span><span class="s1">&#39;ifs&#39;</span><span class="p">,</span><span class="n">lst</span><span class="p">)</span>            <span class="c1"># parse each line and return</span>
 <span class="go">[integer, float, string] triples</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">subl</span> <span class="o">=</span> <span class="n">readSection</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span><span class="s1">&#39;[ begin ]&#39;</span><span class="p">,</span><span class="s1">&#39;[ end ]&#39;</span><span class="p">)</span> <span class="c1"># get all lines between</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">subl</span> <span class="o">=</span> <span class="n">readSection</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span><span class="s1">&#39;[ begin ]&#39;</span><span class="p">,</span><span class="s1">&#39;[ end ]&#39;</span><span class="p">)</span> <span class="c1"># get all lines between</span>
 <span class="go">[ begin ] and [ end ]</span>
 </pre></div>
 </div>
