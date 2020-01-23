@@ -224,20 +224,20 @@ class Task_PL_align(SGETunedJobTask):
                 #insert vac ligand into B
                 m_B.insert_residue(chain_local_res_index, m_C.residues[0], chID)
 
-                #zero frame velocities so they don't get written to gro
-                for atom in m_B.atoms:
-                    for r in range(3):
-                        atom.v[r] = 0
+                # #zero frame velocities so they don't get written to gro
+                # for atom in m_B.atoms:
+                #     for r in range(3):
+                #         atom.v[r] = 0
                 # output
                 m_B.write("frame%d.gro"%fridx)
 
                 x = np.zeros(len(m_B.atoms)*3)
-                #v = np.zeros(len(m_B.atoms)*3)
+                v = np.zeros(len(m_B.atoms)*3)
                 for i, atom in enumerate(m_B.atoms):
                     x[i*3:(i+1)*3]=atom.x
-                    #v[i*3:(i+1)*3]=atom.v
+                    v[i*3:(i+1)*3]=atom.v
 
-                v=None
+                # v=None
                 trj_out.write_xtc_frame(step=frame_B.step, time=frame_B.time,
                                         lam=1.0, box=frame_B.box, x=x, v=v,
                                         units=m_B.unity, bTrr=True )
