@@ -52,7 +52,12 @@ class Task_summary_aligned(SGETunedJobTask):
 
         self.WL_settings=copy.deepcopy(self.study_settings.get_wrapped())
         self.WL_settings['TIstates']=self.WL_settings['states']
-        self.PL_settings=self.study_settings
+        self.WL_settings['n_repeats']=self.n_repeats
+        self.WL_settings['n_sampling_sims']=self.n_sampling_sims
+        self.PL_settings=copy.deepcopy(self.study_settings.get_wrapped())
+        self.PL_settings['n_repeats']=self.n_repeats
+        self.PL_settings['n_sampling_sims']=self.n_sampling_sims
+        #self.PL_settings=self.study_settings
 
         self.base_path = self.study_settings['base_path']
         self.outname="summary_aligned.txt"
