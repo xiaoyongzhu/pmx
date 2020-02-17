@@ -33,7 +33,7 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
         self.tasks.append(summary)
 
         self.n_workers=2*len(summary.hosts)*len(summary.ligands)*len(self.states)*\
-                    self.n_repeats*self.n_sampling_sims
+                    summary.n_repeats*summary.n_sampling_sims
 
         super().run_everything() #creates the scheduler and runs the workers
 

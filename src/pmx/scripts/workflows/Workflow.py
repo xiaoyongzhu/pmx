@@ -8,13 +8,14 @@ import shutil as sh
 # ==============================================================================
 class Workflow:
     def __init__(self, toppath, mdppath, hosts=[], ligands=[],
-                 n_repeats=3, n_sampling_sims=1, basepath=os.getcwd(),
+                 # n_repeats=3, n_sampling_sims=1,
+                 basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,
                  mdrun="gmx mdrun", mdrun_opts="", b=2256.0):
         self.toppath = toppath
         self.mdppath = mdppath
-        self.n_repeats = n_repeats
-        self.n_sampling_sims = n_sampling_sims
+        # self.n_repeats = n_repeats
+        # self.n_sampling_sims = n_sampling_sims
         self.hosts = hosts
         self.ligands = ligands
         self.basepath = basepath

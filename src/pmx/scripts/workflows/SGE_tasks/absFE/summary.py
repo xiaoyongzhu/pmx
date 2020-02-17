@@ -25,6 +25,10 @@ class Task_summary_aligned(SGETunedJobTask):
     #Parameters:
     hosts = luigi.ListParameter(description='list of protein names to evaluate')
     ligands = luigi.ListParameter(description='list of ligand names to evaluate')
+    n_repeats = luigi.IntParameter(description='Number of repeats',
+                                   default=3)
+    n_sampling_sims = luigi.IntParameter(description='Number of sampling simulations',
+                                         default=1)
 
     #TODO: add default
     study_settings = luigi.DictParameter(significant=False,
