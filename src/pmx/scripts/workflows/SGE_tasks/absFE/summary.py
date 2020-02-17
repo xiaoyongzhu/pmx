@@ -69,8 +69,8 @@ class Task_summary_aligned(SGETunedJobTask):
     def work(self):
 
         def read_results(inP=False):
-            rs=np.ndarray(self.study_settings['n_repeats'])
-            for i in range(self.study_settings['n_repeats']):
+            rs=np.ndarray(self.n_repeats)
+            for i in range(self.n_repeats):
                 if(inP):
                     ana_folder=folder_path+self.anafolderfmt_P.format(i=i)
                 else:
@@ -117,8 +117,8 @@ class Task_summary_aligned(SGETunedJobTask):
             for l in self.ligands:
                 key=p+' '+l
                 folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                cors=np.zeros(self.study_settings['n_repeats'])
-                for i in range(self.study_settings['n_repeats']):
+                cors=np.zeros(self.n_repeats)
+                for i in range(self.n_repeats):
                     with open(folder_path+"/"+self.restrname.format(i=i), 'r') as f:
                         for line in f:
                             if("Restraint contribution to free energy " in line and
