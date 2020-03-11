@@ -657,7 +657,7 @@ def _merge_by_names(mol1, mol2):
             atom_pairs.append([at1, at2])
         except:
             pass
-    dummies = mol2.fetch_atoms(map(lambda a: a.name, merged_atoms1), inv=True)
+    dummies = mol2.fetch_atoms( list(map(lambda a: a.name, merged_atoms1)), inv=True)
     return atom_pairs, dummies
 
 
@@ -687,7 +687,7 @@ def _make_predefined_pairs(mol1, mol2, pair_list):
         merged_atoms2.append(at2)
         atom_pairs.append([at1, at2])
 
-    dummies = mol2.fetch_atoms(map(lambda a: a.name, merged_atoms1), inv=True)
+    dummies = mol2.fetch_atoms(list(map(lambda a: a.name, merged_atoms1)), inv=True)
     return atom_pairs, dummies
 
 
@@ -1210,7 +1210,7 @@ def _make_mtp(r, ii_list, rotations, dihi_list):
     if rotations:
         mtp.append('\n [ rotations ]\n')
         for rot in rotations:
-            mtp.append('  %s-%s %s\n' % (rot[0].name, rot[1].name, ' '.join(map(lambda a: a.name, rot[2:]))))
+            mtp.append('  %s-%s %s\n' % (rot[0].name, rot[1].name, ' '.join(list(map(lambda a: a.name, rot[2:])))))
         mtp.append('\n')
 
     return mtp
