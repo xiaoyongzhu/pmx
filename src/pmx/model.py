@@ -70,7 +70,7 @@ Some useful methods:
     >>> # return the last residue from chain A
     >>> rl = model.chdic['A'].residues[-1]
     >>> # returns a list with the first residues of each chain
-    >>> rl = map(lamda m: m.residues[0], model.chains)
+    >>> rl = list(map(lamda m: m.residues[0], model.chains))
     >>> # remove chain A
     >>> del model['A']
     >>> # write new structure file
