@@ -2018,7 +2018,7 @@ written to new files.
                         'between the two residues.',
                         default=False,
                         action='store_true')
-    parser.add_argument('--noH2H',
+    parser.add_argument('--noH2Heavy',
                         dest='h2heavy',
                         help='Whether to allow hydrogen to/from heavy atoms \n'
                         'morphing. Default is True, this flag sets it to '
