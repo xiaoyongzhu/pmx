@@ -68,13 +68,14 @@ Basic Usage:
     remove chain A
     >>> model.write(args['-o']) write new structure file
     """
-from atomselection import *
-import sys,copy,library
+from .atomselection import *
+import sys,copy
+from . import library
 #from chain import *
-import chain
-from molecule import *
-from atom import *
-import _pmx as _p
+from . import chain
+from .molecule import *
+from .atom import *
+from . import _pmx as _p
 XX       =  0             
 YY       =  1             
 ZZ       =  2
@@ -96,7 +97,7 @@ class Model(Atomselection):
         self.have_bonds=0
         self.box = [ [0,0,0], [0,0,0], [0,0,0] ]
         self.unity = 'A'
-        for key, val in kwargs.items():
+        for key, val in list(kwargs.items()):
             setattr(self,key,val)
 
         if filename is not None:
@@ -117,7 +118,7 @@ class Model(Atomselection):
             self.make_chains()
             self.make_residues()
         if self.chdic and not self.chains:
-            for key, val in self.chdic.items():
+            for key, val in list(self.chdic.items()):
                 self.chains.append(val)
             if not self.atoms and not self.residues:
                 self.resl_from_chains()
@@ -153,23 +154,23 @@ class Model(Atomselection):
     def writePIR( self, filename, title=""):
         fp = open(filename,"w")
         if not title: title = '_'.join(self.title.split())
-        print >>fp, '>P1;%s' % title
-        print >>fp, 'sequence:::::::::'
+        print('>P1;%s' % title, file=fp)
+        print('sequence:::::::::', file=fp)
         for i in range( len(self.chains) - 1):
-            print >>fp, self.chains[i].get_sequence()+'/'
-        print >>fp, self.chains[-1].get_sequence()+'*'
+            print(self.chains[i].get_sequence()+'/', file=fp)
+        print(self.chains[-1].get_sequence()+'*', file=fp)
         fp.close()
 
     def writeFASTA( self, filename, title = ""):
         fp = open(filename,"w")
         if not title: title = '_'.join(self.title.split())
         if len(self.chains) == 1:
-            print >>fp, '> %s' % title
-            print >>fp, self.chains[0].get_sequence()
+            print('> %s' % title, file=fp)
+            print(self.chains[0].get_sequence(), file=fp)
         else:
             for chain in self.chains:
-                print >>fp, '> %s_chain_%s' % (title, chain.id )
-                print >>fp, chain.get_sequence()
+                print('> %s_chain_%s' % (title, chain.id ), file=fp)
+                print(chain.get_sequence(), file=fp)
                 
     
 
@@ -225,7 +226,7 @@ class Model(Atomselection):
         elif ext == 'fasta':
             self.writeFASTA( fn, title )
         else:
-            print >>sys.stderr, 'pmx_Error_> Can only write pdb or gro!'
+            print('pmx_Error_> Can only write pdb or gro!', file=sys.stderr)
             sys.exit(1)
 
 
@@ -344,10 +345,10 @@ class Model(Atomselection):
         else:
             l = open(fname,'r').readlines()
 
- 	chainIDstring = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoprstuvwxyz123456789'
-	bNewChain = True
-	chainID = ' '
-	prevID = ' '
+        chainIDstring = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoprstuvwxyz123456789'
+        bNewChain = True
+        chainID = ' '
+        prevID = ' '
         prevAtomName = ' '
         prevResID = 0
         prevResName = ' '
@@ -356,54 +357,52 @@ class Model(Atomselection):
         prevCatom = None
         
         for line in l:
-	    if 'TER' in line:
-		bNewChain = True
+            if 'TER' in line:
+                bNewChain = True
             if (line[:4]=='ATOM') or (line[:6]=='HETATM'):
                 a = Atom().readPDBString(line,origID=atomcount)
                 atomcount+=1
 #		if (a.chain_id != prevID) and (a.chain_id != ' '): # identify chain change by ID (when no TER is there)
-		if (a.chain_id != prevID): # identify chain change by ID (when no TER is there)
-		    bNewChain = True
+                if (a.chain_id != prevID): # identify chain change by ID (when no TER is there)
+                    bNewChain = True
                 if (self.__check_if_gap( prevCatom,a )==True and bPDBGAP==True):
                     bNewChain = True
                 if (a.resnr != prevResID):
                     try:
                         if a.resnr != prevResID+1:
-		            bNewChain = True
+                            bNewChain = True
                         if (prevAtomName == 'OC2') or (prevAtomName == 'OXT') or (prevAtomName == 'OT2'):
                             bNewChain = True
                         if (prevAtomName == 'HH33') and ((prevResName=='NME') or (prevResName=='NAC') or (prevResName=='CT3')): # NME cap
                             bNewChain = True
                     except TypeError:
                         bNewChain = False
-		prevID = a.chain_id
+                prevID = a.chain_id
                 prevResID = a.resnr
                 prevAtomName = a.name
                 prevResName = a.resname
                 if a.name == 'C':
                     prevCatom = a
-		if bNewChain==True:
-		    if (a.chain_id==' ') or (a.chain_id==chainID) or (a.chain_id in usedChainIDs):
-                        #print a.chain_id,a,chainID,usedChainIDs
-			# find a new chain id
-			bFound = False
-			while bFound==False:
-			    foo = chainIDstring[0]
-			    chainIDstring = chainIDstring.lstrip(chainIDstring[0])
-			    if foo not in usedChainIDs:
-				bFound=True
-				chainID = foo
-				if bNoNewID==True:
-				    chainID = "pmx"+foo
-				usedChainIDs.append(chainID)
-		    else:
-			chainID = a.chain_id
-			usedChainIDs.append(chainID)
-		a.chain_id = chainID
-                self.atoms.append(a)
-		bNewChain = False
-            if line[:6] == 'CRYST1':
-                self.box = _p.box_from_cryst1( line )
+                if bNewChain==True:
+                    if (a.chain_id==' ') or (a.chain_id==chainID) or (a.chain_id in usedChainIDs):
+                        bFound = False
+                        while bFound==False:
+                            foo = chainIDstring[0]
+                            chainIDstring = chainIDstring.lstrip(chainIDstring[0])
+                            if foo not in usedChainIDs:
+                                bFound=True
+                                chainID = foo
+                            if bNoNewID==True:
+                                chainID = "pmx"+foo
+                            usedChainIDs.append(chainID)
+                        else:
+                            chainID = a.chain_id
+                            usedChainIDs.append(chainID)
+                            a.chain_id = chainID
+                            self.atoms.append(a)
+                        bNewChain = False
+                        if line[:6] == 'CRYST1':
+                            self.box = _p.box_from_cryst1( line )
 
         ##### now fix chain IDs that have been newly created #####
         newChainDict = {}
@@ -412,7 +411,7 @@ class Model(Atomselection):
             # chain with a new ID
             if 'pmx' in a.chain_id:
                 # this ID has already been encountered
-                if a.chain_id in newChainDict.keys():
+                if a.chain_id in list(newChainDict.keys()):
                     a.chain_id = newChainDict[a.chain_id]
                 # ID not yet encountered
                 else:
@@ -495,14 +494,14 @@ class Model(Atomselection):
     def read(self, filename, bPDBTER=False, bNoNewID=True, bPDBGAP=False ):
         ext = filename.split('.')[-1]
         if ext == 'pdb':
-	    if bPDBTER:
+            if bPDBTER:
                 return self.__readPDBTER( filename, None, bNoNewID, bPDBGAP )
-	    else:
+            else:
                 return self.__readPDB( filename )
         elif ext == 'gro':
             return self.__readGRO( filename )
         else:
-            print >>sys.stderr, 'ERROR: Can only read pdb or gro!'
+            print('ERROR: Can only read pdb or gro!', file=sys.stderr)
             sys.exit(1)
 
     def renumber_residues(self):
@@ -520,9 +519,9 @@ class Model(Atomselection):
         ch.remove_residue(residue)
 
     def remove_chain(self,key):
-        if not self.chdic.has_key(key):
-            print 'No chain %s to remove....' % key
-            print 'No changes applied.'
+        if key not in self.chdic:
+            print('No chain %s to remove....' % key)
+            print('No changes applied.')
             return
         for ch in self.chains:
             if ch.id == key:
@@ -553,9 +552,9 @@ class Model(Atomselection):
         ch.replace_residue(residue,new,bKeepResNum)
         
     def insert_chain(self,pos,new_chain):
-        if self.chdic.has_key(new_chain.id):
-            print 'Chain identifier %s already in use!' % new_chain.id
-            print 'Changing chain identifier to 0'
+        if new_chain.id in self.chdic:
+            print('Chain identifier %s already in use!' % new_chain.id)
+            print('Changing chain identifier to 0')
             new_chain.set_chain_id('0')
         self.chains.insert(pos,new_chain)
         self.resl_from_chains()
@@ -682,7 +681,7 @@ class Model(Atomselection):
         nter = []
         for ch in model.chains:
             first = ch.residues[0]      # first residue
-            if first.resname in library._one_letter.keys():
+            if first.resname in list(library._one_letter.keys()):
                 nter.append(first)
         return nter
 
@@ -690,7 +689,7 @@ class Model(Atomselection):
         cter = []
         for ch in model.chains:
             last = ch.residues[-1]      # last residue
-            if last.resname in library._one_letter.keys():
+            if last.resname in list(library._one_letter.keys()):
                 cter.append(last)
         return last
 

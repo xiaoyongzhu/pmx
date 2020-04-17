@@ -29,6 +29,17 @@
 // ----------------------------------------------------------------------
 #include <pmx.h>
 
+struct pmx_state {
+    PyObject *error;
+};
+
+#if PY_MAJOR_VERSION >= 3
+#define GETSTATE(m) ((struct pmx_state*)PyModule_GetState(m))
+#else
+#define GETSTATE(m) (&_state)
+static struct pmx_state _state;
+#endif
+
 static PyMethodDef pmx_methods[]={
   {(char *) "dist",wrap_dist, METH_VARARGS, NULL},
   {(char *) "dist2",wrap_distance2, METH_VARARGS, NULL},
@@ -61,8 +72,84 @@ static PyMethodDef pmx_methods[]={
   {NULL,NULL,0,NULL}
 };
 
-void init_pmx(void)
+
+static PyObject *
+error_out(PyObject *m) {
+    struct pmx_state *st = GETSTATE(m);
+    PyErr_SetString(st->error, "pmx error in C extension");
+    return NULL;
+}
+
+/*static PyMethodDef myextension_methods[] = {
+    {"error_out", (PyCFunction)error_out, METH_NOARGS, NULL},
+    {NULL, NULL}
+};*/
+
+#if PY_MAJOR_VERSION >= 3
+
+static int pmx_traverse(PyObject *m, visitproc visit, void *arg) {
+    Py_VISIT(GETSTATE(m)->error);
+    return 0;
+}
+
+static int pmx_clear(PyObject *m) {
+    Py_CLEAR(GETSTATE(m)->error);
+    return 0;
+}
+
+
+static struct PyModuleDef pmxdef = {
+        PyModuleDef_HEAD_INIT,
+        "_pmx",
+        NULL,
+        sizeof(struct pmx_state),
+        pmx_methods,
+        NULL,
+        pmx_traverse,
+        pmx_clear,
+        NULL
+};
+
+
+
+#define INITERROR return NULL
+
+PyMODINIT_FUNC
+PyInit__pmx(void)
+
+#else
+#define INITERROR return
+
+void
+init_pmx(void)
+#endif
+{
+#if PY_MAJOR_VERSION >= 3
+    PyObject *module = PyModule_Create(&pmxdef);
+#else
+    PyObject *module = Py_InitModule("_pmx", pmx_methods);
+#endif
+
+    if (module == NULL)
+        INITERROR;
+    struct module_state *st = GETSTATE(module);
+
+/*    st->error = PyErr_NewException("_pmx.Error", NULL, NULL);
+    if (st->error == NULL) {
+        Py_DECREF(module);
+        INITERROR;
+    }*/
+
+#if PY_MAJOR_VERSION >= 3
+    return module;
+#endif
+}
+
+
+
+
+/*void init_pmx(void)
 {
   (void) Py_InitModule3("_pmx",pmx_methods,NULL);
-}
+}*/
 
