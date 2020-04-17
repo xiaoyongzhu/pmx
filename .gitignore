@@ -4,3 +4,5 @@
 build.sh
 .localhistory
 build
+dist
+pmx.egg-info
