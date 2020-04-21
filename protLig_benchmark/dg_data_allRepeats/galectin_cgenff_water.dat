@@ -1,0 +1,9 @@
+#1_edge  2_water1_ddg  3_water1_err  4_water2_ddg  5_water2_err  6_water3_ddg  7_water3_err
+#all values in kJ/mol
+02_ligOMe_05_ligOEt  -35.14  0.11  -35.31  0.12  -35.11  0.11
+03_ligNHMe_02_ligOMe  -86.47  0.18  -86.36  0.20  -86.42  0.17
+03_ligNHMe_04_ligNMe2  5.04  0.20  5.16  0.19  4.84  0.16
+04_ligNMe2_08_ligNH2  -17.78  0.21  -17.74  0.17  -17.79  0.22
+06_ligPyr_01_ligF  -107.61  0.39  -107.47  0.40  -107.81  0.37
+07_ligOH_01_ligF  -82.01  0.10  -81.84  0.10  -81.58  0.10
+07_ligOH_02_ligOMe  8.79  0.22  8.58  0.22  9.03  0.23
