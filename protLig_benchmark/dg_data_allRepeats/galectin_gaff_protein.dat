@@ -1,0 +1,9 @@
+#1_edge  2_prot1_ddg  3_prot1_err  4_prot2_ddg  5_prot2_err  6_prot3_ddg  7_prot3_err
+#all values in kJ/mol
+02_ligOMe_05_ligOEt  -14.98  0.34  -18.11  0.33  -16.08  0.31
+03_ligNHMe_02_ligOMe  9.56  0.42  10.86  0.39  11.99  0.47
+03_ligNHMe_04_ligNMe2  62.56  0.47  66.76  0.36  67.17  0.43
+04_ligNMe2_08_ligNH2  -119.97  0.62  -116.22  0.70  -120.20  0.60
+06_ligPyr_01_ligF  -33.66  0.83  -32.09  1.91  -33.60  0.89
+07_ligOH_01_ligF  14.42  0.44  14.54  0.37  14.21  0.38
+07_ligOH_02_ligOMe  56.22  0.69  52.05  0.43  51.64  0.33

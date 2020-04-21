@@ -29,3 +29,5 @@ PDE2, CMET, Bace (Hunt et al), Bace p2, Galectin, JNK1, Tyk2, Bace, MCL1, CDK2, 
 	
   ddg_data: the folder contains calculated ddG values for all the protein-ligand datasets
 
+  dg_data_allRepeats: gaff and cgenff force field dG data for transitions in water and protein separately for each repeat
+
