@@ -2,7 +2,7 @@
 define                   =
 
 ; RUN CONTROL PARAMETERS
-integrator               = sd
+integrator               = md
 ; Start time and timestep in ps
 tinit                    = 0
 dt                       = 0.002
@@ -61,12 +61,12 @@ table-extension          = 1
 
 ; OPTIONS FOR WEAK COUPLING ALGORITHMS
 ; Temperature coupling  
-;tcoupl                   = berendsen; overwriten by sd
+tcoupl                   = v-rescale
 ; Groups to couple separately
-tc-grps                  = MOL Water_and_ions
+tc-grps                  = System
 ; Time constant (ps) and reference temperature (K)
-tau-t                    = 2.0 2.0
-ref-t                    = 298 298
+tau-t                    = 0.1
+ref-t                    = 298
 ; Pressure coupling     
 Pcoupl                   = no;Parrinello-Rahman
 Pcoupltype               = Isotropic
@@ -79,13 +79,13 @@ ref-p                    = 1
 ; INITIAL TEMP
 gen-vel                  = no
 ; Type of annealing for each temperature group (no/single/periodic)
-annealing                = single single
+annealing                = single
 ; Number of time points to use for specifying annealing in each group
-annealing_npoints        = 2 2
+annealing_npoints        = 2
 ; List of times at the annealing points for each group
-annealing_time           = 0 5 0 5
+annealing_time           = 0 5
 ; Temp. at each annealing point, for each group.
-annealing_temp           = 0 298 0 298
+annealing_temp           = 0 298
 
 ; GENERATE VELOCITIES FOR STARTUP RUN
 
