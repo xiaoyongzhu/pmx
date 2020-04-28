@@ -3,6 +3,8 @@
 import luigi
 import MDAnalysis as md
 import os
+import sys
+from io import StringIO
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.find_anchors_and_write_ii import find_restraints
@@ -11,6 +13,7 @@ from pmx.scripts.workflows.find_avg import find_avg_struct
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_align
 from pmx.scripts.workflows.utils import check_file_ready
+from pmx.scripts.workflows.postHoc_restraining_python3 import main as main_postHock_restr
 
 
 # ==============================================================================
@@ -46,6 +49,12 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         significant=False, default="pmx_{task_family}_p{p}_l{l}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
+        
+    #debug output
+    debug = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False, default=False,
+        description="show debug output in a log.")
 
     extra_packages=[md]
 
@@ -174,6 +183,8 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         #         check_file_ready("averageA_{i}_prot_only.gro".format(i=self.i))
 
 
+        if(self.debug):
+            print("debug: restr_scheme={}".format(self.restr_scheme))
         #generate the restraints
         # print("\tGenerating the restraints")
         if(self.restr_scheme=="Aligned"):
@@ -189,17 +200,41 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                       "gmx make_ndx -f ions{i}_0.pdb -n index_prot_mol.ndx "
                       "-o {ndx} > noH_make_ndx_{i}.log 2>&1".format(i=self.i, ndx=ndx))
             check_file_ready(os.path.join(ndx))
+            if(self.debug):
+                print("debug: made {}".format(ndx))
 
             aligned_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
             aligned_trjs=""
             for m in range(self.study_settings['n_sampling_sims']):
                 aligned_trjs+=aligned_path.format(self.p,self.l,"C",self.i,m,"morphes")+"/frame*.gro"
-            os.system("echo -e \"3\n22\n\" | python /home/ykhalak/custom_scripts/pmx/postHoc_restraining_python3.py "
-                      "-f {ap} "
-                      "-n {ndx} -oii ii_{i}.itp -odg out_dg_{i}.dat > gen_restr{i}.log 2>&1".format(
-                          ap=aligned_trjs, ndx=ndx, i=self.i))
+            
+            if(self.debug):
+                print("debug: launching /home/ykhalak/custom_scripts/pmx/postHoc_restraining_python3.py")
+            # os.system("echo -e \"3\n22\n\" | python /home/ykhalak/custom_scripts/pmx/postHoc_restraining_python3.py "
+            #           "-f {ap} "
+            #           "-n {ndx} -oii ii_{i}.itp -odg out_dg_{i}.dat > gen_restr{i}.log 2>&1".format(
+            #               ap=aligned_trjs, ndx=ndx, i=self.i))
+                
+            oldstdin = sys.stdin
+            oldstdout = sys.stdout
+            oldstderr = sys.stderr
+            
+            sys.stdin = StringIO("3\n22\n")
+            with open("gen_restr{i}.log".format(i=self.i), 'w') as logf:
+                sys.stdout = logf
+                sys.stderr = logf
+                argv = ["postHoc_restraining_python3.py", "-f", aligned_trjs, "-n", ndx,
+                            "-oii", "ii_{i}.itp".format(i=self.i)]
+            
+            main_postHock_restr(argv)
+
+            sys.stdin = oldstdin
+            sys.stdout = oldstdout
+            sys.stderr = oldstderr
 
         elif(self.restr_scheme=="Fitted"):
+            if(self.debug):
+                print("debug: launch find_restraints")
             find_restraints(
                 structA="dumpA_{i}.gro".format(i=self.i),
                 structB="dumpB_{i}.gro".format(i=self.i),
