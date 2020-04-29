@@ -207,8 +207,9 @@ def check_dih(allModels,ind1,ind2,ind3,ind4,alphaLevel):
 def identify_atom_pairs( distMatVar, n, N, allModels, RT, ligAtomDict, protAtomDict, alphaLevel ):
     ligList = []
     protList = []
-    forbiddenLigList = [] # list of atoms in case several iterations needed
-    forbiddenProtList = [] # list of atoms in case several iterations needed
+#    forbiddenLigList = [] # list of atoms in case several iterations needed
+#    forbiddenProtList = [] # list of atoms in case several iterations needed
+    forbiddenLigProtList = [] # list of ligand_atom pairs already identified in an unsuccessful iteration
     minVarList = []
     backupDistMatVar = cp.deepcopy(distMatVar)
 
@@ -228,14 +229,16 @@ def identify_atom_pairs( distMatVar, n, N, allModels, RT, ligAtomDict, protAtomD
         ind = np.argmin(distMatVar)
         ligInd = np.divmod( ind, N )[0]
         protInd = np.divmod( ind, N)[1]
-        if (ligInd not in ligList) and (protInd not in protList) \
-           and (ligInd not in forbiddenLigList) and (protInd not in forbiddenProtList):
+        ligProtInd = str(ligInd)+'_'+str(protInd)
+        if (ligInd not in ligList) and (protInd not in protList) and (ligProtInd not in forbiddenLigProtList):
+#           and (ligInd not in forbiddenLigList) and (protInd not in forbiddenProtList):
             if found==0:
                 # check dist
                 if check_dist(allModels,ligAtomDict[ligInd],protAtomDict[protInd],alphaLevel)==False:
                     distMatVar[ind] = 99999.99
                     continue
-#                else:
+                else:
+                     forbiddenLigProtList.append(ligProtInd)
 #                    forbiddenLigList.append(ligInd)
 #                    forbiddenProtList.append(protInd)
             if found==1:
@@ -243,9 +246,9 @@ def identify_atom_pairs( distMatVar, n, N, allModels, RT, ligAtomDict, protAtomD
                 if check_angle(allModels,RT,ligAtomDict[ligInd],ligAtomDict[ligList[0]],protAtomDict[protList[0]],alphaLevel)==False or check_dih(allModels,ligAtomDict[ligInd],ligAtomDict[ligList[0]],protAtomDict[protList[0]],protAtomDict[protInd],alphaLevel)==False:
                     distMatVar[ind] = 99999.99
                     continue
-                else:
-                    forbiddenLigList.append(ligInd)
-                    forbiddenProtList.append(protInd)
+#                else:
+#                    forbiddenLigList.append(ligInd)
+#                    forbiddenProtList.append(protInd)
             if found==2:
                 # check angle2 and dih1 and dih3
                 if check_angle(allModels,RT,ligAtomDict[ligList[0]],protAtomDict[protList[0]],protInd,alphaLevel)==False or check_dih(allModels,ligAtomDict[ligInd],ligAtomDict[ligList[1]],ligAtomDict[ligList[0]],protAtomDict[protList[0]],alphaLevel)==False or check_dih(allModels,ligAtomDict[ligList[0]],protAtomDict[protList[0]],protAtomDict[protList[1]],protAtomDict[protInd],alphaLevel)==False:

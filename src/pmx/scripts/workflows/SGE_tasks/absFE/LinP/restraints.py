@@ -4,6 +4,7 @@ import luigi
 import MDAnalysis as md
 import os
 import sys
+import glob
 from io import StringIO
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
@@ -223,10 +224,13 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             with open("gen_restr{i}.log".format(i=self.i), 'w') as logf:
                 sys.stdout = logf
                 sys.stderr = logf
-                argv = ["postHoc_restraining_python3.py", "-f", aligned_trjs, "-n", ndx,
+                
+                g=glob.glob(aligned_trjs)
+                
+                argv = ["postHoc_restraining_python3.py", "-f", g, "-n", ndx,
                             "-oii", "ii_{i}.itp".format(i=self.i)]
-            
-            main_postHock_restr(argv)
+                            
+                main_postHock_restr(argv)
 
             sys.stdin = oldstdin
             sys.stdout = oldstdout
