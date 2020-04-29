@@ -209,8 +209,6 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             for m in range(self.study_settings['n_sampling_sims']):
                 aligned_trjs+=aligned_path.format(self.p,self.l,"C",self.i,m,"morphes")+"/frame*.gro"
             
-            if(self.debug):
-                print("debug: launching /home/ykhalak/custom_scripts/pmx/postHoc_restraining_python3.py")
             # os.system("echo -e \"3\n22\n\" | python /home/ykhalak/custom_scripts/pmx/postHoc_restraining_python3.py "
             #           "-f {ap} "
             #           "-n {ndx} -oii ii_{i}.itp -odg out_dg_{i}.dat > gen_restr{i}.log 2>&1".format(
@@ -225,11 +223,16 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                 sys.stdout = logf
                 sys.stderr = logf
                 
-                g=glob.glob(aligned_trjs)                
+                g=glob.glob(aligned_trjs)
                 argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", ndx,
-                            "-oii", "ii_{i}.itp".format(i=self.i)]
-                            
+                            "-oii", "ii_{i}.itp".format(i=self.i),
+                            "-odg", "out_dg_{i}.dat".format(i=self.i)]
+
+                if(self.debug):
+                    print("debug: starting postHoc_restraining")                            
                 main_postHock_restr(argv)
+                if(self.debug):
+                    print("debug: after postHoc_restraining")
 
             sys.stdin = oldstdin
             sys.stdout = oldstdout
