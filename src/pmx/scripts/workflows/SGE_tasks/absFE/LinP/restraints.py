@@ -225,9 +225,8 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                 sys.stdout = logf
                 sys.stderr = logf
                 
-                g=glob.glob(aligned_trjs)
-                
-                argv = ["postHoc_restraining_python3.py", "-f", g, "-n", ndx,
+                g=glob.glob(aligned_trjs)                
+                argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", ndx,
                             "-oii", "ii_{i}.itp".format(i=self.i)]
                             
                 main_postHock_restr(argv)
