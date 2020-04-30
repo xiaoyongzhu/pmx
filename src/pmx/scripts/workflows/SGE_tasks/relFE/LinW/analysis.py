@@ -3,13 +3,13 @@
 import luigi
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.analysis import Task_PL_analysis_aligned
-from pmx.scripts.workflows.SGE_tasks.absFE.LinW.TI import Task_WL_TI_simArray
+from pmx.scripts.workflows.SGE_tasks.relFE.LinW.TI import Task_WL_TI_simArray_rel
 
 
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Task_WL_analysis(Task_PL_analysis_aligned):
+class Task_WL_analysis_rel(Task_PL_analysis_aligned):
 
     #Parameters:
     p = None #disables base class' p
@@ -27,13 +27,15 @@ class Task_WL_analysis(Task_PL_analysis_aligned):
         significant=False, default="pmx_{task_family}_l{l}_{i}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
+    
+    restr_scheme = None
 
     def requires(self):
         tasks=[]
 
         for sTI in self.study_settings['TIstates']:
             for m in range(self.study_settings['n_sampling_sims']):
-                tasks.append(Task_WL_TI_simArray(
+                tasks.append(Task_WL_TI_simArray_rel(
                       l=self.l, i=self.i, m=m, sTI=sTI,
                       study_settings=self.study_settings,
                       folder_path=self.folder_path,

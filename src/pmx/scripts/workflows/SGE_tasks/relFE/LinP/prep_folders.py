@@ -5,13 +5,12 @@ import os
 import shutil as sh
 import subprocess
 from luigi.parameter import ParameterVisibility
-from pmx.scripts.workflows.SGE_tasks.absFE.prep_folders_general import Gather_Inputs_folder, Prep_folder
-from pmx.scripts.workflows.SGE_tasks.absFE.ApoP.prep_folders import Prep_ApoP_folder
+from pmx.scripts.workflows.SGE_tasks.relFE.prep_folders_general import Gather_Inputs_folder_rel, Prep_folder_rel
 
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Gather_Inputs_PL_folder(Gather_Inputs_folder):
+class Gather_Inputs_PL_folder_rel(Gather_Inputs_folder):
 
 
     job_name_format = luigi.Parameter(
@@ -26,7 +25,7 @@ class Gather_Inputs_PL_folder(Gather_Inputs_folder):
         self.posre=True
 
 
-class Prep_PL_folder(Prep_folder): # will execute on the login node
+class Prep_PL_folder_rel(Prep_folder): # will execute on the login node
 
 
     job_name_format = luigi.Parameter(
@@ -39,68 +38,8 @@ class Prep_PL_folder(Prep_folder): # will execute on the login node
         super().__init__(*args, **kwargs)
         self.init_mdp="{}/protein/init.mdp".format(self.study_settings['mdp_path'])
 
-    def solvate(self):
-        apoP_path=self.study_settings['base_path']+"/prot_{}/apoP".format(self.p)
-        line = subprocess.check_output("tail -n 1 {}/topol_solvated.top".format(apoP_path),
-                                       shell=True).decode('utf-8')
-        if(not "SOL" in line):
-            raise(Exception("Could not find the number of water molecules in ApoP."))
-        need=int(line.split()[-1])
-
-        d=self.study_settings['d']
-        os.unlink("box.pdb")
-        while(True):
-            os.system("gmx editconf -f init.pdb -o box.pdb -bt %s -d %f "\
-                      "> prep.log 2>&1"%(self.study_settings['bt'], d))
-
-            os.system("gmx solvate -scale 1.0 -cp box.pdb -o water.pdb "\
-                      "-cs spc216.gro -p topol_solvated.top -maxsol {} "
-                      ">> prep.log 2>&1".format(need))
-
-            line = subprocess.check_output("tail -n 1 topol_solvated.top",
-                                           shell=True).decode('utf-8')
-            have=int(line.split()[-1])
-
-            if(have==need):
-                break
-            elif(have<need):
-                #reset
-                os.unlink("topol_solvated.top")
-                os.unlink("box.pdb")
-                os.unlink("water.pdb")
-                sh.copy("topol.top","topol_solvated.top")
-                d+=0.005 #add 0.05 A to the padding and try again
-            else:
-                raise(Exception("We have more water than expected. "
-                                "This should never happen."))
-
-    def gen_ions(self,top_ions,pdb_ions):
-        """Generates ions in the system.
-        """
-        apoP_path=self.study_settings['base_path']+"/prot_{}/apoP".format(self.p)
-        line = subprocess.check_output("tail -n 3 {}/{} | grep Cl".format(apoP_path,top_ions),
-                                       shell=True).decode('utf-8')
-        if(not "Cl" in line):
-            raise(Exception("Could not find the number of Cl molecules in ApoP."))
-        nCl=int(line.split()[-1])
-
-        line = subprocess.check_output("tail -n 3 {}/{} | grep Na".format(apoP_path,top_ions),
-                                       shell=True).decode('utf-8')
-        if(not "Na" in line):
-            raise(Exception("Could not find the number of Na molecules in ApoP."))
-        nNa=int(line.split()[-1])
-
-        os.system("echo 'SOL' | gmx genion -s tpr.tpr "
-                          "-p {top} -nn {nCl} -np {nNa} "
-                          "-nname Cl -pname Na "
-                          "-o {out} >> genion.log 2>&1".format(
-                              top=top_ions, nCl=nCl, nNa=nNa, out=pdb_ions) )
-
     def requires(self):
-        return([Gather_Inputs_PL_folder(
+        return([Gather_Inputs_PL_folder_rel(
                     folder_path=self.folder_path,
                     p=self.p, l=self.l,
-                    study_settings=self.study_settings),
-                Prep_ApoP_folder(
-                    folder_path=self.study_settings['base_path']+"/prot_{}/apoP".format(self.p),
-                    p=self.p, study_settings=self.study_settings) ])
+                    study_settings=self.study_settings) ])

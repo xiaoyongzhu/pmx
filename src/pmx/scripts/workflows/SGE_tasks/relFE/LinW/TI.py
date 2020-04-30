@@ -1,10 +1,10 @@
 import luigi
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.TI import Task_PL_TI_simArray
-from pmx.scripts.workflows.SGE_tasks.absFE.LinW.morphes import Task_WL_gen_morphes
+from pmx.scripts.workflows.SGE_tasks.relFE.LinW.morphes import Task_WL_gen_morphes_rel
 
 
-class Task_WL_TI_simArray(Task_PL_TI_simArray):
+class Task_WL_TI_simArray_rel(Task_PL_TI_simArray):
 
     #Parameters:
     p = None #disables base class' p
@@ -23,9 +23,7 @@ class Task_WL_TI_simArray(Task_PL_TI_simArray):
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
 
-    restr_scheme = luigi.Parameter(significant=False, default="",
-                 description='Restraint scheme to use. '
-                 'Aligned, Fitted or Fixed')
+    restr_scheme = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -39,7 +37,7 @@ class Task_WL_TI_simArray(Task_PL_TI_simArray):
         #self._find_unfinished() is executed later and depends on correct self.mdp
 
     def requires(self):
-        return( Task_WL_gen_morphes(l=self.l,
+        return( Task_WL_gen_morphes_rel(l=self.l,
                           i=self.i, m=self.m, sTI=self.sTI,
                           study_settings=self.study_settings,
                           folder_path=self.folder_path,

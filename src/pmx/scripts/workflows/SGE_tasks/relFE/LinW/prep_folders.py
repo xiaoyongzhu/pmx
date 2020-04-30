@@ -2,12 +2,12 @@
 
 import luigi
 from luigi.parameter import ParameterVisibility
-from pmx.scripts.workflows.SGE_tasks.absFE.prep_folders_general import Gather_Inputs_folder, Prep_folder
+from pmx.scripts.workflows.SGE_tasks.relFE.prep_folders_general import Gather_Inputs_folder_rel, Prep_folder_rel
 
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Gather_Inputs_WL_folder(Gather_Inputs_folder):
+class Gather_Inputs_WL_folder_rel(Gather_Inputs_folder_rel):
     p = None #disables base class' p
 
     job_name_format = luigi.Parameter(
@@ -22,7 +22,7 @@ class Gather_Inputs_WL_folder(Gather_Inputs_folder):
         self.posre=False
 
 
-class Prep_WL_folder(Prep_folder): # will execute on the login node
+class Prep_WL_folder_rel(Prep_folder_rel): # will execute on the login node
     p = None #disables base class' p
 
     job_name_format = luigi.Parameter(
@@ -36,7 +36,7 @@ class Prep_WL_folder(Prep_folder): # will execute on the login node
         self.init_mdp="{}/water/init.mdp".format(self.study_settings['mdp_path'])
 
     def requires(self):
-        return( Gather_Inputs_WL_folder(folder_path=self.folder_path,
+        return( Gather_Inputs_WL_folder_rel(folder_path=self.folder_path,
                                         l=self.l,
                                         study_settings=self.study_settings) )
 

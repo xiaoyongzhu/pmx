@@ -2,14 +2,14 @@
 
 import luigi
 from luigi.parameter import ParameterVisibility
-from pmx.scripts.workflows.SGE_tasks.absFE.LinW.equil_sims import Sim_WL_NPT
+from pmx.scripts.workflows.SGE_tasks.relFE.LinW.equil_sims import Sim_WL_NPT_rel
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.morphes import Task_PL_gen_morphes
 
 
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Task_WL_gen_morphes(Task_PL_gen_morphes):
+class Task_WL_gen_morphes_rel(Task_PL_gen_morphes):
 
     #Parameters:
     p = None
@@ -42,7 +42,7 @@ class Task_WL_gen_morphes(Task_PL_gen_morphes):
                 self.study_settings['TIstates'][self.sTI])
 
     def requires(self):
-        return( Sim_WL_NPT(l=self.l, i=self.i, m=self.m, s=self.s,
+        return( Sim_WL_NPT_rel(l=self.l, i=self.i, m=self.m, s=self.s,
                           study_settings=self.study_settings,
                           folder_path=self.folder_path,
                           parallel_env=self.parallel_env) )

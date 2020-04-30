@@ -7,14 +7,14 @@ import numpy as np
 #import matplotlib as plt
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.analysis import Task_PL_analysis_aligned,Task_PL_analysis_aligned2crystal
-from pmx.scripts.workflows.SGE_tasks.absFE.LinW.analysis import Task_WL_analysis
+from pmx.scripts.workflows.SGE_tasks.relFE.LinP.analysis import Task_PL_analysis_rel
+from pmx.scripts.workflows.SGE_tasks.relFE.LinW.analysis import Task_WL_analysis_rel
 
 
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Task_summary_aligned(SGETunedJobTask):
+class Task_summary_relative(SGETunedJobTask):
     #run on the login node
     run_locally = luigi.BoolParameter(
         default = True,
@@ -60,7 +60,7 @@ class Task_summary_aligned(SGETunedJobTask):
         #self.PL_settings=self.study_settings
 
         self.base_path = self.study_settings['base_path']
-        self.outname="summary_aligned.txt"
+        self.outname="summary_relative.txt"
         self.restrname="out_dg_{i}.dat"
 
         self.anafolderfmt_P="/analysis/repeat{i}"
@@ -68,7 +68,7 @@ class Task_summary_aligned(SGETunedJobTask):
 
     def work(self):
 
-        def read_results(inP=False):
+        def read_results():
             rs=np.ndarray(self.n_repeats)
             for i in range(self.n_repeats):
                 if(inP):
@@ -82,15 +82,6 @@ class Task_summary_aligned(SGETunedJobTask):
                             rs[i]=float(s[3])
                             break
 
-                if(inP): #analytical correction for this repeat
-                    with open(folder_path+"/"+self.restrname.format(i=i), 'r') as f:
-                        for line in f:
-                            if("Restraint contribution to free energy" in line and
-                               "kJ/mol" in line):
-                                s = line.split()
-                                rs[i]+=float(s[-2])
-                                break
-
             dGpart = np.mean(rs)
             std = np.std(rs)
             return([dGpart,std])
@@ -101,7 +92,7 @@ class Task_summary_aligned(SGETunedJobTask):
         for l in self.ligands:
             key=l
             folder_path = self.base_path+'/'+p+'/lig_'+l
-            inws.update({key:read_results(inP=False)})
+            inws.update({key:read_results()})
 
         #dG in protein
         inps={}
@@ -109,23 +100,7 @@ class Task_summary_aligned(SGETunedJobTask):
             for l in self.ligands:
                 key=p+' '+l
                 folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                inps.update({key:read_results(inP=True)})
-
-        #read analytical corrections for restraints
-        anacorrs={}
-        for p in self.hosts:
-            for l in self.ligands:
-                key=p+' '+l
-                folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                cors=np.zeros(self.n_repeats)
-                for i in range(self.n_repeats):
-                    with open(folder_path+"/"+self.restrname.format(i=i), 'r') as f:
-                        for line in f:
-                            if("Restraint contribution to free energy " in line and
-                               "kJ/mol" in line):
-                                s=line.split()
-                                cors[i]=float(s[-2])
-                anacorrs.update({key:[np.mean(cors),np.std(cors)]})
+                inps.update({key:read_results()})
 
 
         #print summary table
@@ -133,25 +108,23 @@ class Task_summary_aligned(SGETunedJobTask):
 
             print("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^20s}".format(
                             "host guest","ddG (kJ/mol)","dG in prot+restr" ,
-                            "dG in water", "ana. corr."))
+                            "dG in water"))
             sf.write("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^20s}\n".format(
                             "host guest","ddG (kJ/mol)","dG in prot+restr" ,
-                            "dG in water", "ana. corr."))
+                            "dG in water"))
             for p in self.hosts:
                 for l in self.ligands:
                     key=p+' '+l
                     ddG = inws[l][0] - inps[key][0] #water - (protein + restr corr.)
                     sigma = np.sqrt(inps[key][1]**2 + inws[l][1]**2) #standard dev.
-                    print("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}".format(
+                    print("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}".format(
                         key, ddG, sigma,
                         inps[key][0], inps[key][1],
-                        inws[l][0], inws[l][1],
-                        anacorrs[key][0], anacorrs[key][1]) )
-                    sf.write("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}\n".format(
+                        inws[l][0], inws[l][1]) )
+                    sf.write("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}\n".format(
                         key, ddG, sigma,
                         inps[key][0], inps[key][1],
-                        inws[l][0], inws[l][1],
-                        anacorrs[key][0], anacorrs[key][1]) )
+                        inws[l][0], inws[l][1]) )
 
     def output(self):
         files=[self.outname]
@@ -166,7 +139,7 @@ class Task_summary_aligned(SGETunedJobTask):
             folder_path = self.base_path+'/'+p+'/lig_'+l
             for sTI in self.WL_settings['states']: #uses equil states for TI
                 for i in range(self.WL_settings['n_repeats']):
-                    tasks.append(Task_WL_analysis(
+                    tasks.append(Task_WL_analysis_rel(
                         l = l, i = i,
                         study_settings = self.WL_settings,
                         folder_path = folder_path,
@@ -178,45 +151,7 @@ class Task_summary_aligned(SGETunedJobTask):
                 folder_path = self.base_path+'/prot_'+p+'/lig_'+l
                 for sTI in self.PL_settings['TIstates']:
                     for i in range(self.PL_settings['n_repeats']):
-                        tasks.append(Task_PL_analysis_aligned(
-                            p = p, l = l, i = i,
-                            study_settings = self.PL_settings,
-                            folder_path = folder_path,
-                            parallel_env=self.parallel_env))
-
-        return(tasks)
-
-class Task_summary_aligned2crystal(Task_summary_aligned):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        #overwrite values
-        self.outname="summary_aligned2crystal.txt"
-        self.restrname="out_dg_aligned2crystal_{i}.dat"
-        self.anafolderfmt_P="/analysis/aligned2crystal_repeat{i}"
-
-    def requires(self):
-        tasks=[]
-
-        #Ligand in Water
-        p="water"
-        for l in self.ligands:
-            folder_path = self.base_path+'/'+p+'/lig_'+l
-            for sTI in self.WL_settings['states']: #uses equil states for TI
-                for i in range(self.WL_settings['n_repeats']):
-                    tasks.append(Task_WL_analysis(
-                        l = l, i = i,
-                        study_settings = self.WL_settings,
-                        folder_path = folder_path,
-                        parallel_env=self.parallel_env))
-
-        #Ligand in Protein
-        for p in self.hosts:
-            for l in self.ligands:
-                folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                for sTI in self.PL_settings['TIstates']:
-                    for i in range(self.PL_settings['n_repeats']):
-                        tasks.append(Task_PL_analysis_aligned2crystal(
+                        tasks.append(Task_PL_analysis_rel(
                             p = p, l = l, i = i,
                             study_settings = self.PL_settings,
                             folder_path = folder_path,

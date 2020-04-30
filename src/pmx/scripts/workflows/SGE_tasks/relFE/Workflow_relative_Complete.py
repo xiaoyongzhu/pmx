@@ -8,7 +8,7 @@ if __name__ == '__main__': #mute extraneous missing module warnings from luigi
 import os
 from pmx.scripts.workflows.utils import parse_options
 from pmx.scripts.workflows.SGE_tasks.SGEWorkflow import SGE_Workflow
-from pmx.scripts.workflows.SGE_tasks.absFE.summary import Task_summary_aligned
+from pmx.scripts.workflows.SGE_tasks.relFE.summary import Task_summary_relative
 
 # ==============================================================================
 #                             Workflow Class
@@ -26,7 +26,7 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
         -------
         None.
         """
-        summary=Task_summary_aligned(
+        summary=Task_summary_relative(
             #hosts = self.hosts, ligands = self.ligands,
             study_settings = self.study_settings,
             parallel_env=self.pe)
@@ -58,11 +58,8 @@ def main(args):
 
     w=SGE_Workflow_aligned_complete(
             toppath=toppath, mdppath=mdppath,
-            #hosts=["BRD1", "BAZ2A", "BRD9", "FALZ"], ligands=["lig"],
-            #hosts=["BRD1"], ligands=["l0"],
             basepath=basepath,
             b=args.b,
-            #b=0,
             mdrun=args.mdrun,
             mdrun_opts=args.mdrun_opts,
             pe=args.pe,

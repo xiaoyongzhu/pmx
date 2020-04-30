@@ -13,7 +13,7 @@ from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tun
 # ==============================================================================
 #                         Derivative Task Classes
 # ==============================================================================
-class Gather_Inputs_folder(SGETunedJobTask):
+class Gather_Inputs_folder_rel(SGETunedJobTask):
     #run on the login node
     run_locally = luigi.BoolParameter(
         visibility=ParameterVisibility.HIDDEN,
@@ -211,7 +211,7 @@ class Gather_Inputs_folder(SGETunedJobTask):
         return [luigi.LocalTarget(os.path.join(self.folder_path, f)) for f in files]
 
 
-class Prep_folder(SGETunedJobTask):
+class Prep_folder_rel(SGETunedJobTask):
     #run on the login node
     run_locally = luigi.BoolParameter(
         visibility=ParameterVisibility.HIDDEN,
@@ -241,6 +241,9 @@ class Prep_folder(SGETunedJobTask):
     #request 1 cores
     n_cpu = luigi.IntParameter(default=1, significant=False,
                                visibility=ParameterVisibility.HIDDEN)
+    
+    #variables to be overwriten in sub class' __init__()
+    init_mdp=""
 
     def solvate(self):
         """Solvates the system.
