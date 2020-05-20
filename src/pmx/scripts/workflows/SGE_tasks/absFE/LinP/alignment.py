@@ -154,9 +154,18 @@ class Task_PL_align(SGETunedJobTask):
         #make the ndxs for the chains
         self.gen_ndx_w_chains(self.folder_path+"/ions%d_%d.pdb"%(self.i, self.m),
                               "PL_w_chains.ndx", n_prot_chains) #P+L
+        check_file_ready("PL_w_chains.ndx")
         self.gen_ndx_w_chains(self.base_path+"/prot_{0}/apoP/ions{1}_{2}.pdb".format(
                                 self.p, self.i, self.m),
-                              "P_w_chains.ndx", n_prot_chains) #P                  
+                              "P_w_chains.ndx", n_prot_chains) #P   
+        check_file_ready("P_w_chains.ndx")
+        #LW index
+        os.system("echo 'q' | gmx make_ndx -f {gro} -o {out} "
+                  ">> align.log 2>&1".format(
+                  gro=self.base_path+"/water/lig_{1}/ions{3}_{4}.pdb".format(
+                    self.p, self.l, 'B', self.i, self.m),
+                  out="LW.ndx" ) )
+        check_file_ready("LW.ndx")
 
         #Cut the begining off of trjs and center them
         names = ["A","B","C"]
@@ -198,6 +207,8 @@ class Task_PL_align(SGETunedJobTask):
         m_A.a2nm()
         m_B.a2nm()
         m_C.a2nm()
+        
+        mylog=open("align.log","a")
 
         #find chain and resID of the last residue of the protein
         chID,last_prot_resID = find_last_protein_atom( m_B )
@@ -218,7 +229,8 @@ class Task_PL_align(SGETunedJobTask):
                              atomNum=len(m_A.atoms)) #aligned output
 
         ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
-        ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
+        #ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
+        ndx_file_C = ndx.IndexFile("LW.ndx", verbose=False)
         #p_ndx = np.asarray(ndx_file_A["Protein"].ids)-1
         p_ndx = np.asarray(ndx_file_A["C-alpha"].ids)-1 # as in Vytas' alignment script
         linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
@@ -232,6 +244,8 @@ class Task_PL_align(SGETunedJobTask):
         iter_B = iter(trj_B)
         iter_C = iter(trj_C)
         fridx=0
+        mylog.write("\n\n\n\t\t###################\nStarting looping through frames:\n")
+        mylog.flush()
         while True:
             try:
                 frame_A = next(iter_A)
@@ -252,20 +266,30 @@ class Task_PL_align(SGETunedJobTask):
                 m_B.a2nm()
                 frame_B.update(m_B, uv=True)
                 frame_C.update(m_C, uv=True)
+                mylog.write("frame %d: read models from pdbs\n"%fridx)
+                #mylog.flush()
 
                 # m_A.write("m_A1.gro")
                 # step1: fit prot from prot+lig onto apo protein
                 (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
                 # rotate velocities
                 # not needed. We aren't saving m_A
+                mylog.write("\t\tFit A on B\n")
+                #mylog.flush()
 
                 # step2: ligand onto the ligand from prot+lig structure
                 (v1,v2,R) = fit( m_A, m_C, linA_ndx, l_ndx )
+                mylog.write("\t\tFit C on A\n")
+                #mylog.flush()
                 # rotate velocities
                 rotate_velocities_R( m_C, R )
+                mylog.write("\t\tRotated C velocities\n")
+                #mylog.flush()
 
                 #insert vac ligand into B
                 m_B.insert_residue(chain_local_res_index, m_C.residues[0], chID)
+                mylog.write("\t\tOverwrote ligand in B with that from C\n")
+                #mylog.flush()
 
                 # #zero frame velocities so they don't get written to gro
                 # for atom in m_B.atoms:
@@ -273,6 +297,8 @@ class Task_PL_align(SGETunedJobTask):
                 #         atom.v[r] = 0
                 # output
                 m_B.write("frame%d.gro"%fridx)
+                mylog.write("\t\tWrote B as frame%d.gro\n"%fridx)
+                #mylog.flush()
 
                 x = np.zeros(len(m_B.atoms)*3)
                 v = np.zeros(len(m_B.atoms)*3)
@@ -285,6 +311,8 @@ class Task_PL_align(SGETunedJobTask):
                                         lam=1.0, box=frame_B.box, x=x, v=v,
                                         units=m_B.unity, bTrr=True )
 
+                mylog.write("\t\tWrote B to aligned trajectory\n")
+                #mylog.flush()
 
 
             fridx+=1
