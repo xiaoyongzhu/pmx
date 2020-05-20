@@ -7,6 +7,7 @@ from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tun
 from pmx import ndx
 from pmx.model import Model
 from luigi.parameter import ParameterVisibility
+from pmx.scripts.workflows.utils import check_file_ready
 from pmx.scripts.workflows.fit_ligs_multiframes_python3 import fit,rotate_velocities_R, find_last_protein_atom
 from pmx.scripts.workflows.utils import read_from_mdp
 from pmx.scripts.workflows.SGE_tasks.absFE.LinW.equil_sims import Sim_WL_NPT
@@ -116,37 +117,79 @@ class Task_PL_align(SGETunedJobTask):
 
         return targets
 
+    def gen_ndx_w_chains(self, struct_path, ndx_path, nchains):
+        #create default
+        os.system("echo 'q' | gmx make_ndx -f {gro} -o {out} "
+                  ">> align.log 2>&1".format(
+                    gro=struct_path, out=ndx_path ) )
+        #add chains
+        n = ndx.IndexFile(ndx_path)
+        m = Model(struct_path, bPDBTER=True)
+        for i in range(nchains):
+            ch = m.chains[i]
+            grp = ndx.make_index_group(ch.atoms, "chain_" + ch.id)
+            n.add_group(grp)
+        n.write(ndx_path)
+
 
     def work(self):
-        #make the C state
+        #find number of protein chains
+        m_init = Model(self.folder_path+"/init.pdb", bPDBTER=True)
+        n_prot_chains = len(m_init.chains)-1 #one is ligand
+        if(n_prot_chains<1):
+            raise(Exception("There should be at least one protein chain!"))
+
         os.makedirs(self.sim_path, exist_ok=True)
         os.chdir(self.sim_path)
-
+        if(os.path.isfile("align.log")): #clean old partial log if present
+            os.unlink("align.log")
+        
         trj_A_src=self.folder_path+"/state{2}/repeat{3}/npt{4}/".format(
             self.p, self.l, 'A', self.i, self.m)  #P+L
         trj_B_src=self.base_path+"/prot_{0}/apoP/repeat{3}/npt{4}/".format(
             self.p, self.l, None, self.i, self.m) #apoP
         trj_C_src=self.base_path+"/water/lig_{1}/state{2}/repeat{3}/npt{4}/".format(
             self.p, self.l, 'B', self.i, self.m)  #vacL
+            
+        #make the ndxs for the chains
+        self.gen_ndx_w_chains(self.folder_path+"/ions%d_%d.pdb"%(self.i, self.m),
+                              "PL_w_chains.ndx", n_prot_chains) #P+L
+        self.gen_ndx_w_chains(self.base_path+"/prot_{0}/apoP/ions{1}_{2}.pdb".format(
+                                self.p, self.i, self.m),
+                              "P_w_chains.ndx", n_prot_chains) #P                  
 
         #Cut the begining off of trjs and center them
-        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_A.trr "
-                  "-b {b} -ur compact -pbc mol -center "
-                  "> align.log 2>&1".format(
-                      tpr=trj_A_src+"tpr.tpr", trj=trj_A_src+"traj.trr",
-                      b=self.study_settings['b']) ) #P+L
-        os.system("echo Protein 0 | gmx trjconv -s {tpr} -f {trj} -o trj_B.trr "
-                  "-b {b} -ur compact -pbc mol -center "
+        names = ["A","B","C"]
+        sources = [trj_A_src, trj_B_src, trj_C_src]
+        ndxs = ["-n PL_w_chains.ndx", "-n P_w_chains.ndx", ""]
+        for i in range(3):
+            src=sources[i]
+            
+            #wrap mol centers
+            os.system("echo System | gmx trjconv -s {tpr} -f {trj} -o {out} "
+                  "-b {b} -ur compact -pbc mol"
                   ">> align.log 2>&1".format(
-                      tpr=trj_B_src+"tpr.tpr", trj=trj_B_src+"traj.trr",
-                      b=self.study_settings['b']) ) #apoP
-        os.system("echo 2 0 | gmx trjconv -s {tpr} -f {trj} -o trj_C.trr "
-                  "-b {b} -ur compact -pbc mol -center "
+                      tpr=src+"tpr.tpr", trj=src+"traj.trr",
+                      out="trj_{}_temp_cut_pbc.trr".format(names[i]),
+                      b=self.study_settings['b']) )
+
+            #center on chain_A and rewrap mol centers
+            c = "chain_A"
+            if(i==2): #LW
+                c = "Other"
+            os.system("echo {c} System | gmx trjconv -s {tpr} -f {trj} -o {out} "
+                  "{ndx} -ur compact -center -pbc mol"
                   ">> align.log 2>&1".format(
-                      tpr=trj_C_src+"tpr.tpr", trj=trj_C_src+"traj.trr",
-                      b=self.study_settings['b']) ) #vacL
+                      tpr=src+"tpr.tpr", ndx=ndxs[i], c=c,
+                      trj="trj_{}_temp_cut_pbc.trr".format(names[i]),
+                      out="trj_{}.trr".format(names[i]) ) )
+            
+            check_file_ready("trj_{}.trr".format(names[i]))
+            
+            #clean temp
+            os.unlink("trj_{}_temp_cut_pbc.trr".format(names[i]))
 
-
+        #make the C state
         m_A = Model(self.folder_path+"/ions%d_%d.pdb"%(self.i,self.m),bPDBTER=True)
         m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
             self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP

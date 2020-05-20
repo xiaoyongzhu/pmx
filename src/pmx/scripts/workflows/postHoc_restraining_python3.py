@@ -187,8 +187,13 @@ def check_dist(allModels,ind1,ind2,alphaLevel):
     m = np.mean(dist)
     s = np.sqrt( np.var(dist) )
 
-    if kstest( (dist-m)/s, 'norm')[1] < alphaLevel:
+    pval=kstest( (dist-m)/s, 'norm')[1]
+    if pval < alphaLevel:
+        sys.stdout.write('\t\check_dist fail:{}-{}={}\n'.format(ind1, ind2, pval))
         return(False)
+
+#    if kstest( (dist-m)/s, 'norm')[1] < alphaLevel:
+#        return(False)
     return(True)
 
 def check_dih(allModels,ind1,ind2,ind3,ind4,alphaLevel):
@@ -213,29 +218,39 @@ def identify_atom_pairs( distMatVar, n, N, allModels, RT, ligAtomDict, protAtomD
     minVarList = []
     backupDistMatVar = cp.deepcopy(distMatVar)
 
+    sys.stdout.write('\nStarting anchor search with alphaLevel=%f\n'%alphaLevel)
+    reset_counter=0;
+
     found = 0
     counter = 0
     while found<3:
         if counter==np.shape(distMatVar)[0]:
 #            sys.stdout.write('\nCould not identify atom pairs. Exiting...\n')
-            sys.stdout.write('\nCould not identify atom pairs. Trying again...\n')
+            sys.stdout.write('\nCould not identify atom pairs. Trying again... alphaLevel=%f\treset_counter=%f\n'%(alphaLevel,reset_counter))
+            sys.stdout.flush()
             ligList = []
             protList = []
             counter = 0
             found = 0
             distMatVar = cp.deepcopy(backupDistMatVar)
-#            sys.exit(0)
+            reset_counter+=1
+            #if(reset_counter>2):
+            #    alphaLevel*=0.8;
+            if(reset_counter>10):
+                sys.exit(1)
         counter+=1
         ind = np.argmin(distMatVar)
         ligInd = np.divmod( ind, N )[0]
         protInd = np.divmod( ind, N)[1]
         ligProtInd = str(ligInd)+'_'+str(protInd)
-        if (ligInd not in ligList) and (protInd not in protList) and (ligProtInd not in forbiddenLigProtList):
+        if (ligInd not in ligList) and (protInd not in protList) and (found!=0 or ligProtInd not in forbiddenLigProtList):
 #           and (ligInd not in forbiddenLigList) and (protInd not in forbiddenProtList):
             if found==0:
                 # check dist
                 if check_dist(allModels,ligAtomDict[ligInd],protAtomDict[protInd],alphaLevel)==False:
                     distMatVar[ind] = 99999.99
+                    #sys.stdout.write('\t{} failed found=0\n'.format(ligProtInd))
+                    #sys.stdout.flush()
                     continue
                 else:
                      forbiddenLigProtList.append(ligProtInd)
@@ -245,6 +260,7 @@ def identify_atom_pairs( distMatVar, n, N, allModels, RT, ligAtomDict, protAtomD
                 # check angle1 and dih2
                 if check_angle(allModels,RT,ligAtomDict[ligInd],ligAtomDict[ligList[0]],protAtomDict[protList[0]],alphaLevel)==False or check_dih(allModels,ligAtomDict[ligInd],ligAtomDict[ligList[0]],protAtomDict[protList[0]],protAtomDict[protInd],alphaLevel)==False:
                     distMatVar[ind] = 99999.99
+                    sys.stdout.write('\t{} failed found=1\n'.format(ligProtInd))
                     continue
 #                else:
 #                    forbiddenLigList.append(ligInd)
@@ -253,12 +269,15 @@ def identify_atom_pairs( distMatVar, n, N, allModels, RT, ligAtomDict, protAtomD
                 # check angle2 and dih1 and dih3
                 if check_angle(allModels,RT,ligAtomDict[ligList[0]],protAtomDict[protList[0]],protInd,alphaLevel)==False or check_dih(allModels,ligAtomDict[ligInd],ligAtomDict[ligList[1]],ligAtomDict[ligList[0]],protAtomDict[protList[0]],alphaLevel)==False or check_dih(allModels,ligAtomDict[ligList[0]],protAtomDict[protList[0]],protAtomDict[protList[1]],protAtomDict[protInd],alphaLevel)==False:
                     distMatVar[ind] = 99999.99
+                    sys.stdout.write('\t{} failed found=2\n'.format(ligProtInd))
                     continue
 
             ligList.append(ligInd)
             protList.append(protInd)
             minVarList.append( distMatVar[ind] )
             found+=1
+            sys.stdout.write('\tfound={}: {}\t{}\n'.format(found,ligList, protList))
+            #sys.stdout.flush()
         distMatVar[ind] = 99999.99
 
 #    print ligList
@@ -419,6 +438,9 @@ def main(argv):
             arrProtz = np.vstack([arrProtz,fooProtz])
 
         counter+=1
+        
+    sys.stdout.write('\r Finished reading %d frames\n' % counter)
+    sys.stdout.flush()
 
     # calculate distances
     distMat = calc_distances( arrLigx, arrLigy, arrLigz, arrProtx, arrProty, arrProtz )
@@ -434,8 +456,10 @@ def main(argv):
     R = 8.31445985*0.001  # Gas constant in kJ/mol/K
     RT = cmdl['-T']*R
     sys.stdout.write('Identifying atom pairs...\n')
+    sys.stdout.flush()
     ligList,protList = identify_atom_pairs( distMatVar, n, N, allModels, RT, ligAtomDict, protAtomDict, alphaLevel )
     print("ligList: {}\nprotList: {}\n".format(ligList,protList))
+    sys.stdout.flush()
 
     # calculate restraints
     sys.stdout.write('Calculating restraints...\n')
