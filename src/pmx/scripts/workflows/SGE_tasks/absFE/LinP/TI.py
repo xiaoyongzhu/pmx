@@ -32,6 +32,11 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
     restr_scheme = luigi.Parameter(significant=True,
                  description='Restraint scheme to use. '
                  'Aligned, Aligned_crystal, Fitted or Fixed')
+                 
+    target_success_ratio = luigi.FloatParameter(significant=False,
+                 visibility=ParameterVisibility.HIDDEN,
+                 default=0.90,
+                 description='Successful TI runs ratio before proceding.')
 
     stage="morphes"
     #request 1 core
@@ -132,8 +137,10 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         reqs_complete = all(r.complete() for r in luigi.task.flatten(self.requires()))
         if(reqs_complete):
             outputs = luigi.task.flatten(self.output())
-            all_exist=all(map(lambda output: output.exists(), outputs))
-            return (all_exist and not self._find_unfinished())
+            exist = list(map(lambda output: output.exists(), outputs))
+            unfinished = self._find_unfinished()
+            success_ratio = 1.0 - (float(len(unfinished))/float(len(exist)))
+            return (success_ratio>=self.target_success_ratio)
         else:
             return(reqs_complete)
 
