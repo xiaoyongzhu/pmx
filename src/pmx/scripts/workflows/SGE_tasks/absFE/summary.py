@@ -32,6 +32,9 @@ class Task_summary_aligned(SGETunedJobTask):
                                          
     show_incomplete = luigi.BoolParameter(default=False, significant=True,
                                visibility=ParameterVisibility.HIDDEN)
+                               
+    only_LinW = luigi.BoolParameter(default=False, significant=True,
+                               visibility=ParameterVisibility.HIDDEN)
 
     #TODO: add default
     study_settings = luigi.DictParameter(significant=False,
@@ -125,14 +128,20 @@ class Task_summary_aligned(SGETunedJobTask):
         for p in self.hosts:
             for l in self.ligands:
                 key=p+' '+l
-                folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                inps.update({key:read_results(inP=True)})
+                if(not self.only_LinW):
+                    folder_path = self.base_path+'/prot_'+p+'/lig_'+l
+                    inps.update({key:read_results(inP=True)})
+                else:
+                    inps.update({key:[np.nan,np.nan,0]})
 
         #read analytical corrections for restraints
         anacorrs={}
         for p in self.hosts:
             for l in self.ligands:
                 key=p+' '+l
+                if(self.only_LinW):
+                    anacorrs.update({key:[np.nan, np.nan, 0]})
+                    continue;
                 folder_path = self.base_path+'/prot_'+p+'/lig_'+l
                 cors=np.zeros(self.n_repeats)
                 nfound=0
@@ -166,7 +175,8 @@ class Task_summary_aligned(SGETunedJobTask):
             for p in self.hosts:
                 for l in self.ligands:
                     key=p+' '+l
-                    if(np.isfinite(inws[l][0]) and np.isfinite(inps[key][0]) and np.isfinite(anacorrs[key][0]) ):
+                    if(np.isfinite(inws[l][0]) and np.isfinite(inps[key][0]) and np.isfinite(anacorrs[key][0]) or
+                       (np.isfinite(inws[l][0]) and self.only_LinW) ):
                         ddG = inws[l][0] - inps[key][0] #water - (protein + restr corr.)
                         sigma = np.sqrt(inps[key][1]**2 + inws[l][1]**2) #standard dev.
                         print("{:<20s}:\t{:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}   {:>8.2f} +- {:<8.2f}".format(
@@ -200,16 +210,17 @@ class Task_summary_aligned(SGETunedJobTask):
                             parallel_env=self.parallel_env))
 
             #Ligand in Protein
-            for p in self.hosts:
-                for l in self.ligands:
-                    folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                    for sTI in self.PL_settings['TIstates']:
-                        for i in range(self.PL_settings['n_repeats']):
-                            tasks.append(Task_PL_analysis_aligned(
-                                p = p, l = l, i = i,
-                                study_settings = self.PL_settings,
-                                folder_path = folder_path,
-                                parallel_env=self.parallel_env))
+            if(not self.only_LinW):
+                for p in self.hosts:
+                    for l in self.ligands:
+                        folder_path = self.base_path+'/prot_'+p+'/lig_'+l
+                        for sTI in self.PL_settings['TIstates']:
+                            for i in range(self.PL_settings['n_repeats']):
+                                tasks.append(Task_PL_analysis_aligned(
+                                    p = p, l = l, i = i,
+                                    study_settings = self.PL_settings,
+                                    folder_path = folder_path,
+                                    parallel_env=self.parallel_env))
 
         return(tasks)
 
