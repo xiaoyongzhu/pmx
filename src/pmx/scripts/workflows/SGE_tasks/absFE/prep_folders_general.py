@@ -33,6 +33,11 @@ class Gather_Inputs_folder(SGETunedJobTask):
                  visibility=ParameterVisibility.HIDDEN,
                  description='Dict of study stettings '
                  'used to propagate settings to dependencies')
+                 
+    prot_src_override = luigi.Parameter(significant=False,
+              visibility=ParameterVisibility.HIDDEN,
+              default="",
+              description='Path to protein stucture to use. Use only for Apo simulations. If empty will use default Holo structure.')
 
     #avoid Prameter not a string warnings
     job_name_format = luigi.Parameter(
@@ -89,8 +94,11 @@ class Gather_Inputs_folder(SGETunedJobTask):
             sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_"+self.l+".pdb",
                     self.folder_path+"/init.pdb")
         elif(self.p): #ApoP
-            sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.pdb",
-                    self.folder_path+"/init.pdb")
+            if(self.prot_src_override):
+                sh.copy(self.prot_src_override, self.folder_path+"/init.pdb")
+            else:
+                sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.pdb",
+                        self.folder_path+"/init.pdb")
         elif(self.l): #L
             sh.copy(self.study_settings['top_path']+"/ligand/"+self.l+"/ligand.pdb",
                     self.folder_path+"/init.pdb")

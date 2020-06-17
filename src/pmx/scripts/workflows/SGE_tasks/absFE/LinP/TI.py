@@ -120,7 +120,8 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
 
 
     def output(self):
-        nframes = len(glob.glob1(self.sim_path,"frame*.gro"))
+        #nframes = len(glob.glob1(self.sim_path,"frame*.gro"))
+        nframes = len(glob.glob(self.sim_path+"/frame*.gro", recursive=True))
         if(nframes==0):
             raise(Exception("No frames to run TI on in "+self.sim_path))
 
