@@ -260,7 +260,7 @@ def identify_atom_pairs( distMatVar, n, N, allModels, RT, ligAtomDict, protAtomD
                 # check angle1 and dih2
                 if check_angle(allModels,RT,ligAtomDict[ligInd],ligAtomDict[ligList[0]],protAtomDict[protList[0]],alphaLevel)==False or check_dih(allModels,ligAtomDict[ligInd],ligAtomDict[ligList[0]],protAtomDict[protList[0]],protAtomDict[protInd],alphaLevel)==False:
                     distMatVar[ind] = 99999.99
-                    sys.stdout.write('\t{} failed found=1\n'.format(ligProtInd))
+                    #sys.stdout.write('\t{} failed found=1\n'.format(ligProtInd))
                     continue
 #                else:
 #                    forbiddenLigList.append(ligInd)
@@ -269,14 +269,14 @@ def identify_atom_pairs( distMatVar, n, N, allModels, RT, ligAtomDict, protAtomD
                 # check angle2 and dih1 and dih3
                 if check_angle(allModels,RT,ligAtomDict[ligList[0]],protAtomDict[protList[0]],protInd,alphaLevel)==False or check_dih(allModels,ligAtomDict[ligInd],ligAtomDict[ligList[1]],ligAtomDict[ligList[0]],protAtomDict[protList[0]],alphaLevel)==False or check_dih(allModels,ligAtomDict[ligList[0]],protAtomDict[protList[0]],protAtomDict[protList[1]],protAtomDict[protInd],alphaLevel)==False:
                     distMatVar[ind] = 99999.99
-                    sys.stdout.write('\t{} failed found=2\n'.format(ligProtInd))
+                    #sys.stdout.write('\t{} failed found=2\n'.format(ligProtInd))
                     continue
 
             ligList.append(ligInd)
             protList.append(protInd)
             minVarList.append( distMatVar[ind] )
             found+=1
-            sys.stdout.write('\tfound={}: {}\t{}\n'.format(found,ligList, protList))
+            #sys.stdout.write('\tfound={}: {}\t{}\n'.format(found,ligList, protList))
             #sys.stdout.flush()
         distMatVar[ind] = 99999.99
 
