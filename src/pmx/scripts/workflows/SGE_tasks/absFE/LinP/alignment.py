@@ -139,6 +139,9 @@ class Task_PL_align(SGETunedJobTask):
 
 
     def work(self):
+    
+        mylog=open("align.log","w")
+    
         #find number of protein chains
         m_init = Model(self.folder_path+"/init.pdb", bPDBTER=True)
         n_prot_chains = len(m_init.chains)-1 #one is ligand
@@ -214,7 +217,7 @@ class Task_PL_align(SGETunedJobTask):
         m_B.a2nm()
         m_C.a2nm()
 
-        mylog=open("align.log","a")
+        
 
         #find chain and resID of the last residue of the protein
         chID,last_prot_resID = find_last_protein_atom( m_B )
@@ -231,8 +234,7 @@ class Task_PL_align(SGETunedJobTask):
         trj_B = Trajectory("trj_B.trr") #apoP
         trj_C = Trajectory("trj_C.trr") #vacL
 
-        trj_out = Trajectory("aligned.trr", mode='Out',
-                             atomNum=len(m_A.atoms)) #aligned output
+
 
         ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
         #ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
@@ -241,6 +243,14 @@ class Task_PL_align(SGETunedJobTask):
         p_ndx = np.asarray(ndx_file_A["C-alpha"].ids)-1 # as in Vytas' alignment script
         linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
         l_ndx = np.asarray(ndx_file_C["MOL"].ids)-1
+        
+        num_aligned_atoms = len(m_B.atoms) + l_ndx.shape[0]
+        if(len(m_A.atoms) != num_aligned_atoms):
+            print("\nWARNING: number of atoms in Apo + ligand ({}) does not match that of Holo ({})!\n".format(num_aligned_atoms,len(m_A.atoms)))
+            mylog.write("\nWARNING: number of atoms in Apo + ligand ({}) does not match that of Holo ({})!\n".format(num_aligned_atoms,len(m_A.atoms)))
+            mylog.flush()
+        trj_out = Trajectory("aligned.trr", mode='Out',
+                             atomNum = num_aligned_atoms) #aligned output
 
         #Frames are not acessible individually, just in sequence.
         #pmx.xtc.Trajectory is based on __iter__, so we need a custom
@@ -304,7 +314,7 @@ class Task_PL_align(SGETunedJobTask):
                 # output
                 m_B.write("frame%d.gro"%fridx)
                 mylog.write("\t\tWrote B as frame%d.gro\n"%fridx)
-                #mylog.flush()
+                mylog.flush()
 
                 x = np.zeros(len(m_B.atoms)*3)
                 v = np.zeros(len(m_B.atoms)*3)
@@ -313,17 +323,19 @@ class Task_PL_align(SGETunedJobTask):
                     v[i*3:(i+1)*3]=atom.v
 
                 # v=None
+                mylog.write("\t\t\tSet atomx.x &.v; ready for writing trj frame to aligned.trr\n")
                 trj_out.write_xtc_frame(step=frame_B.step, time=frame_B.time,
                                         lam=1.0, box=frame_B.box, x=x, v=v,
                                         units=m_B.unity, bTrr=True )
 
                 mylog.write("\t\tWrote B to aligned trajectory\n")
-                #mylog.flush()
+                mylog.flush()
 
 
             fridx+=1
 
         trj_out.close()
+        mylog.close()
 
         #restore base path
         os.chdir(self.base_path)

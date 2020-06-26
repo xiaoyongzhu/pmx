@@ -214,29 +214,30 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             #           "-n {ndx} -oii ii_{i}.itp -odg out_dg_{i}.dat > gen_restr{i}.log 2>&1".format(
             #               ap=aligned_trjs, ndx=ndx, i=self.i))
                 
-            oldstdin = sys.stdin
-            oldstdout = sys.stdout
-            oldstderr = sys.stderr
-            
-            sys.stdin = StringIO("3\n22\n")
-            with open("gen_restr{i}.log".format(i=self.i), 'w') as logf:
-                sys.stdout = logf
-                sys.stderr = logf
+            if(not os.path.isfile("ii_{i}.itp".format(i=self.i)) or  not os.path.isfile("out_dg_{i}.dat".format(i=self.i))):
+                oldstdin = sys.stdin
+                oldstdout = sys.stdout
+                oldstderr = sys.stderr
                 
-                g=glob.glob(aligned_trjs)
-                argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", ndx,
-                            "-oii", "ii_{i}.itp".format(i=self.i),
-                            "-odg", "out_dg_{i}.dat".format(i=self.i)]
+                sys.stdin = StringIO("3\n22\n")
+                with open("gen_restr{i}.log".format(i=self.i), 'w') as logf:
+                    sys.stdout = logf
+                    sys.stderr = logf
+                    
+                    g=glob.glob(aligned_trjs)
+                    argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", ndx,
+                                "-oii", "ii_{i}.itp".format(i=self.i),
+                                "-odg", "out_dg_{i}.dat".format(i=self.i)]
 
-                if(self.debug):
-                    print("debug: starting postHoc_restraining")                            
-                main_postHock_restr(argv)
-                if(self.debug):
-                    print("debug: after postHoc_restraining")
+                    if(self.debug):
+                        print("debug: starting postHoc_restraining")                            
+                    main_postHock_restr(argv)
+                    if(self.debug):
+                        print("debug: after postHoc_restraining")
 
-            sys.stdin = oldstdin
-            sys.stdout = oldstdout
-            sys.stderr = oldstderr
+                sys.stdin = oldstdin
+                sys.stdout = oldstdout
+                sys.stderr = oldstderr
 
         elif(self.restr_scheme=="Fitted"):
             if(self.debug):
@@ -258,16 +259,41 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         #with the restraint from the ii.itp files
 
         for m in range(self.study_settings['n_sampling_sims']):
-            top_ions="topol_ions%d_%d.top"%(self.i,m)
-            topAC_ions="topolTI_ions%d_%d.top"%(self.i,m)
-            os.system("cp {} {} > /dev/null 2>&1".format(top_ions,topAC_ions))
-            with open(topAC_ions, 'a') as top:
-                top.write("\n; Include intermolecular restraints\n")
-                top.write("#include \"ii_{i}.itp\"\n".format(i=self.i))
+            for s in ["A","C"]:
+                nWater,nCl,nNa=(0,0,0)
+                top_ions="topol_ions%d_%d.top"%(self.i,m)
+                if(s=="C"): # Apo sim can have different number of waters (if the whole protocol wasn't rerun from scratch after including Apo crystal structure)
+                    top_Apo=self.folder_path+"/../apoP/topol_ions%d_%d.top"%(self.i,m)
+                    with open(top_Apo, 'r') as reftop:
+                        for l in reftop:
+                            if ("SOL " in l):
+                                nWater = int(l.split()[1])
+                            if ("Cl " in l):
+                                nCl = int(l.split()[1])
+                            if ("Na " in l):
+                                nNa = int(l.split()[1])
+                    
+                check_file_ready(top_ions)
+                topAC_ions="topolTI_ions%s%d_%d.top"%(s,self.i,m)
+                #os.system("cp {} {} > /dev/null 2>&1".format(top_ions,topAC_ions))
+                with open(topAC_ions, 'w') as top:
+                    with open(top_ions, 'r') as reftop:
+                        for l in reftop:
+                            if (s=="C" and "SOL " in l):
+                                top.write("SOL    {}\n".format(nWater))
+                            elif (s=="C" and "Cl " in l):
+                                top.write("Cl     {}\n".format(nCl))
+                            elif (s=="C" and "Na " in l):
+                                top.write("Na     {}\n".format(nNa))
+                            else:
+                                top.write(l)
+                    
+                    top.write("\n; Include intermolecular restraints\n")
+                    top.write("#include \"ii_{i}.itp\"\n".format(i=self.i))
 
-            #topsrc=self.study_settings['top_path']+"/topol_abs_prot_restr_amber.top"
-            #os.system("tail -n 3 {} >> {}".format(topsrc,topAC_ions))
-            check_file_ready(topAC_ions)
+                #topsrc=self.study_settings['top_path']+"/topol_abs_prot_restr_amber.top"
+                #os.system("tail -n 3 {} >> {}".format(topsrc,topAC_ions))
+                check_file_ready(topAC_ions)
 
         #restore base path
         os.chdir(self.base_path)
@@ -311,6 +337,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         #         ])
 
         for m in range(self.study_settings['n_sampling_sims']):
-            targets.append(luigi.LocalTarget(os.path.join(self.folder_path,
-                                          "topolTI_ions%d_%d.top"%(self.i,m))))
+            for s in ["A","C"]:
+                targets.append(luigi.LocalTarget(os.path.join(self.folder_path,
+                                          "topolTI_ions%s%d_%d.top"%(s,self.i,m))))
         return targets

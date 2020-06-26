@@ -57,7 +57,7 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         if(self.restr_scheme=="Aligned" or not self.restr_scheme): #not set in WinL
             self.sim_path = self.folder_path+"/state%s/repeat%d/%s%d"%(
                 self.sTI, self.i, self.stage, self.m)
-            self.top = self.folder_path+"/topolTI_ions{3}_{4}.top".format(
+            self.top = self.folder_path+"/topolTI_ions{2}{3}_{4}.top".format(
                 self.p, self.l, self.sTI, self.i, self.m)
         elif(self.restr_scheme=="Aligned_crystal"):
             self.sim_path = self.folder_path+"/state%s/repeat%d/aligned2crystal_%s%d"%(
