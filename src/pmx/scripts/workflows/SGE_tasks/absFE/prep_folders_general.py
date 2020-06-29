@@ -109,9 +109,7 @@ class Gather_Inputs_folder(SGETunedJobTask):
                   "-o index.ndx > setup.log 2>&1")
         #clean dublicate entries
         ndx_file = ndx.IndexFile("index.ndx", verbose=False)
-        print(ndx_file.dic.keys())
-        ndx_file.write("index.ndx")
-                  
+        ndx_file.write("index.ndx")                 
         check_file_ready("index.ndx")
 
         if(self.posre):
