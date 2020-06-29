@@ -203,9 +203,10 @@ class IndexFile:
         group : IndexGroup
             instance of IndexGroup to add
         """
-        if group.name in self.names and verbose:
-            print("IndexFile has group %s !! " % group.name, file=sys.stderr)
-            print("Group %s will be replaced !!" % group.name, file=sys.stderr)
+        if group.name in self.names:
+            if(verbose):
+                print("IndexFile has group %s !! " % group.name, file=sys.stderr)
+                print("Group %s will be replaced !!" % group.name, file=sys.stderr)
             self.delete_group(group.name)
         self.names.append(group.name)
         self.groups.append(group)

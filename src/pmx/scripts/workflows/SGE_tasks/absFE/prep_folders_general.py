@@ -7,6 +7,7 @@ import pmx
 import shutil as sh
 import math
 from luigi.parameter import ParameterVisibility
+from pmx import ndx
 from pmx.scripts.workflows.utils import check_file_ready
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 
@@ -106,6 +107,11 @@ class Gather_Inputs_folder(SGETunedJobTask):
         #generate temporary index file
         os.system("echo 'q\n' | gmx make_ndx -f init.pdb "
                   "-o index.ndx > setup.log 2>&1")
+        #clean dublicate entries
+        ndx_file = ndx.IndexFile("index.ndx", verbose=False)
+        print(ndx_file.dic.keys())
+        ndx_file.write("index.ndx")
+                  
         check_file_ready("index.ndx")
 
         if(self.posre):
