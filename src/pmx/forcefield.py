@@ -279,7 +279,15 @@ class TopolBase:
             atomtype = dict()
             elements = line.split()
             # take into account there can be 2 formats for atomtypes
-            if len(elements) == 7:
+            if len(elements) == 6:
+                atomtype['name'] = str(elements[0])
+                atomtype['bond_type'] = atomtype['name']
+                atomtype['mass'] = float(elements[1])
+                atomtype['charge'] = float(elements[2])
+                atomtype['ptype'] = str(elements[3])
+                atomtype['sigma'] = float(elements[4])
+                atomtype['epsilon'] = float(elements[5])
+            elif len(elements) == 7:
                 atomtype['name'] = str(elements[0])
                 atomtype['bond_type'] = str(elements[1])
                 atomtype['mass'] = float(elements[2])
@@ -450,11 +458,16 @@ class TopolBase:
                     rest = ' '.join(entr[5:])
                 except:
                     rest = ''
-                self.dihedrals.append([self.atoms[idx[0]-1],
+                    
+                try:
+                    self.dihedrals.append([self.atoms[idx[0]-1],
                                        self.atoms[idx[1]-1],
                                        self.atoms[idx[2]-1],
                                        self.atoms[idx[3]-1],
                                        func, rest])
+                except Exception as e:
+                    print("Exception parsing line:\n",line)
+                    raise e
 
     def read_cmap(self, lines):
         starts = []
