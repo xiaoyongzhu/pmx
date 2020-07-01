@@ -7,6 +7,7 @@ import sys
 import glob
 from io import StringIO
 from luigi.parameter import ParameterVisibility
+from pmx import ndx
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.find_anchors_and_write_ii import find_restraints
 from pmx.scripts.workflows.find_anchors_and_write_ii_single_traj import find_restraints_align2crystal
@@ -196,13 +197,16 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             #             plotfile="restraint_coord_distrib_{i}.png".format(i=self.i),
             #             log=False)
 
-            ndx="index_prot_mol_noH_{i}.ndx".format(i=self.i)
-            os.system("echo \"20 & ! a H*\nq\n\" | "
+            #find correct group indeces
+            base_ndx=ndx.IndexFile("index_prot_mol.ndx", verbose=False)
+            mol_id = base_ndx.get_group_id("MOL")
+            my_ndx_file="index_prot_mol_noH_{i}.ndx".format(i=self.i)
+            os.system("echo \"{mol_id} & ! a H*\n\nq\n\" | "
                       "gmx make_ndx -f ions{i}_0.pdb -n index_prot_mol.ndx "
-                      "-o {ndx} > noH_make_ndx_{i}.log 2>&1".format(i=self.i, ndx=ndx))
-            check_file_ready(os.path.join(ndx))
+                      "-o {ndx} > noH_make_ndx_{i}.log 2>&1".format(i=self.i, ndx=my_ndx_file, mol_id=mol_id))
+            check_file_ready(os.path.join(my_ndx_file))
             if(self.debug):
-                print("debug: made {}".format(ndx))
+                print("debug: made {}".format(my_ndx_file))
 
             aligned_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
             aligned_trjs=""
@@ -219,13 +223,16 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                 oldstdout = sys.stdout
                 oldstderr = sys.stderr
                 
-                sys.stdin = StringIO("3\n22\n")
+                my_ndx=ndx.IndexFile(my_ndx_file, verbose=False)
+                prot_id = my_ndx.get_group_id("C-alpha")
+                mol_id = my_ndx.get_group_id("MOL_&_!H*")
+                sys.stdin = StringIO( "{}\n{}\n".format(prot_id, mol_id) )
                 with open("gen_restr{i}.log".format(i=self.i), 'w') as logf:
                     sys.stdout = logf
                     sys.stderr = logf
                     
                     g=glob.glob(aligned_trjs)
-                    argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", ndx,
+                    argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", my_ndx_file,
                                 "-oii", "ii_{i}.itp".format(i=self.i),
                                 "-odg", "out_dg_{i}.dat".format(i=self.i)]
 

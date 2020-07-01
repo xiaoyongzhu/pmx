@@ -230,6 +230,23 @@ class IndexFile:
         del self.groups[idx]
         del self.dic[name]
         self.names.remove(name)
+        
+    def get_group_id(self, name):
+        """Returns a group's index in self.groups.
+
+        Parameters
+        ----------
+        name : str
+            name of the group to remove
+        """
+        idx = -1
+        for i, group in enumerate(self.groups):
+            if group.name == name:
+                idx = i
+                break
+        if(idx == -1):
+            raise(LookupError("No {} group found in index.".format(name)))
+        return idx
 
 
 def get_index(atom_list=None, residue_list=None, chain_list=None):

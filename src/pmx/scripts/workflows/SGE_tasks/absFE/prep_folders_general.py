@@ -324,9 +324,18 @@ class Prep_folder(SGETunedJobTask):
 
         #generate index for alignment
         if(self.p and self.l): #P+L
-            os.system("echo \"1|13\nq\n\" | "
+            os.system("echo \"\nq\n\" | "
                   "gmx make_ndx -f ions0_0.pdb "
                   "-o index_prot_mol.ndx > /dev/null 2>&1")
+                  
+            #clean duplivates and find correct group indeces
+            prot_mol_ndx=ndx.IndexFile("index_prot_mol.ndx", verbose=False)
+            prot_mol_ndx.write("index_prot_mol.ndx")
+            prot_id = prot_mol_ndx.get_group_id("Protein")
+            mol_id = prot_mol_ndx.get_group_id("MOL")
+            os.system("echo \"{}|{}\n\nq\n\" | ".format(prot_id, mol_id) +
+                  "gmx make_ndx -f ions0_0.pdb -n index_prot_mol.ndx "
+                  "-o index_prot_mol.ndx >> setup.log 2>&1")
 
         cleanList = glob.glob(self.folder_path+'/#*')
         for filePath in cleanList:
