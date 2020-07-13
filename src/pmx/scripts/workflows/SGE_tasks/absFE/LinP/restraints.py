@@ -8,6 +8,8 @@ import glob
 from io import StringIO
 from luigi.parameter import ParameterVisibility
 from pmx import ndx
+from pmx.forcefield import Topology
+from pmx.ndx import IndexGroup
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.find_anchors_and_write_ii import find_restraints
 from pmx.scripts.workflows.find_anchors_and_write_ii_single_traj import find_restraints_align2crystal
@@ -17,6 +19,28 @@ from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_align
 from pmx.scripts.workflows.utils import check_file_ready
 from pmx.scripts.workflows.postHoc_restraining_python3 import main as main_postHock_restr
 
+# ==============================================================================
+#                            Helper Functions
+# ==============================================================================
+def clean_virtual_sites_from_ndx(ndx_fn, mol_sel, filteree, itp):
+    my_ndx=ndx.IndexFile(ndx_fn, verbose=False)
+    whole_mol_ids = my_ndx[mol_sel].ids
+    filteree_ids = my_ndx[filteree].ids
+    first_at = whole_mol_ids[0]
+    
+    top = Topology(itp, is_itp=True, assign_types=False)
+    vsites=[] #indeces of virtual sites in ligand
+    for l in [top.virtual_sites2, top.virtual_sites3, top.virtual_sites4]:
+        for vs in l:
+            vsites.append(vs[0].id - 1 + first_at)
+    
+    new_filteree_ids = []
+    for i in filteree_ids:
+        if not (i in vsites):
+            new_filteree_ids.append(i)
+    g = IndexGroup(ids=new_filteree_ids, name=filteree+"_&_!vsites")
+    my_ndx.add_group(g)
+    my_ndx.write(ndx_fn)
 
 # ==============================================================================
 #                         Derivative Task Classes
@@ -59,6 +83,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         description="show debug output in a log.")
 
     extra_packages=[md]
+    
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -204,10 +229,14 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             os.system("echo \"{mol_id} & ! a H*\n\nq\n\" | "
                       "gmx make_ndx -f ions{i}_0.pdb -n index_prot_mol.ndx "
                       "-o {ndx} > noH_make_ndx_{i}.log 2>&1".format(i=self.i, ndx=my_ndx_file, mol_id=mol_id))
+            #modify index file to filter out virtual cites from ligand selection
+            clean_virtual_sites_from_ndx(my_ndx_file, "MOL", "MOL_&_!H*", "lig.itp")
+                      
             check_file_ready(os.path.join(my_ndx_file))
             if(self.debug):
                 print("debug: made {}".format(my_ndx_file))
-
+                
+                
             aligned_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
             aligned_trjs=""
             for m in range(self.study_settings['n_sampling_sims']):
@@ -225,7 +254,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                 
                 my_ndx=ndx.IndexFile(my_ndx_file, verbose=False)
                 prot_id = my_ndx.get_group_id("C-alpha")
-                mol_id = my_ndx.get_group_id("MOL_&_!H*")
+                mol_id = my_ndx.get_group_id("MOL_&_!H*_&_!vsites")
                 sys.stdin = StringIO( "{}\n{}\n".format(prot_id, mol_id) )
                 with open("gen_restr{i}.log".format(i=self.i), 'w') as logf:
                     sys.stdout = logf
