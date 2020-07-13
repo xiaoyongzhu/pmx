@@ -218,18 +218,6 @@ class Task_PL_align(SGETunedJobTask):
         m_C.a2nm()
 
         
-
-        #find chain and resID of the last residue of the protein
-        chID,last_prot_resID = find_last_protein_atom( m_B )
-        #find the residue index to insert the ligand in the same chain as the end of the protein
-        chain_local_res_index = -1;
-        for i,r in enumerate(m_B.chdic[chID].residues):
-            if(r.id==last_prot_resID):
-                chain_local_res_index=i+1;
-                break;
-        if(chain_local_res_index<0):
-            raise("Could not find residue with resID %d in protein chain %s."%(last_prot_resID, chID))
-
         trj_A = Trajectory("trj_A.trr") #P+L
         trj_B = Trajectory("trj_B.trr") #apoP
         trj_C = Trajectory("trj_C.trr") #vacL
@@ -243,6 +231,29 @@ class Task_PL_align(SGETunedJobTask):
         p_ndx = np.asarray(ndx_file_A["C-alpha"].ids)-1 # as in Vytas' alignment script
         linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
         l_ndx = np.asarray(ndx_file_C["MOL"].ids)-1
+        
+        
+        #find chain and resID of the last residue of the protein
+        mol_first_atom = m_A.atoms[linA_ndx[0]]
+        chID = mol_first_atom.chain_id
+        resID = mol_first_atom.resnr
+        chain_local_res_index = -1;
+        for i,r in enumerate(m_B.chdic[chID].residues):
+            if(r.id==resID):
+                chain_local_res_index=i;
+                break;
+        if(chain_local_res_index<0):
+            raise("Could not find residue with resID %d in chain %s."%(last_prot_resID, chID))
+        # chID,last_prot_resID = find_last_protein_atom( m_B )
+        # #find the residue index to insert the ligand in the same chain as the end of the protein
+        # chain_local_res_index = -1;
+        # for i,r in enumerate(m_B.chdic[chID].residues):
+            # if(r.id==last_prot_resID):
+                # chain_local_res_index=i+1;
+                # break;
+        # if(chain_local_res_index<0):
+            # raise("Could not find residue with resID %d in protein chain %s."%(last_prot_resID, chID))
+        
         
         num_aligned_atoms = len(m_B.atoms) + l_ndx.shape[0]
         if(len(m_A.atoms) != num_aligned_atoms):

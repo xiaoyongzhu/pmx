@@ -137,6 +137,7 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         """
         reqs_complete = all(r.complete() for r in luigi.task.flatten(self.requires()))
         if(reqs_complete):
+            #print("\t\treqs_complete\n")
             outputs = luigi.task.flatten(self.output())
             exist = list(map(lambda output: output.exists(), outputs))
             unfinished = self._find_unfinished()
