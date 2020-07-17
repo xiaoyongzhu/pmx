@@ -35,6 +35,8 @@ class Task_summary_aligned(SGETunedJobTask):
                                
     only_LinW = luigi.BoolParameter(default=False, significant=True,
                                visibility=ParameterVisibility.HIDDEN)
+    
+    decor_decoupled = luigi.BoolParameter(default=False, significant=True)    
 
     #TODO: add default
     study_settings = luigi.DictParameter(significant=False,
@@ -64,6 +66,7 @@ class Task_summary_aligned(SGETunedJobTask):
         self.PL_settings=copy.deepcopy(self.study_settings.get_wrapped())
         self.PL_settings['n_repeats']=self.n_repeats
         self.PL_settings['n_sampling_sims']=self.n_sampling_sims
+        self.PL_settings['decor_decoupled']=self.decor_decoupled
         #self.PL_settings=self.study_settings
 
         self.base_path = self.study_settings['base_path']

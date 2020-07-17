@@ -118,8 +118,8 @@ class Task_PL_align(SGETunedJobTask):
             targets.append(luigi.LocalTarget(
                 os.path.join(self.sim_path, 'frame%d.gro'%nf)) )
 
-        targets.append(luigi.LocalTarget(
-            os.path.join(self.sim_path, "aligned.trr")) )
+        # targets.append(luigi.LocalTarget(
+        #     os.path.join(self.sim_path, "aligned.trr")) )
 
         return targets
 

@@ -24,7 +24,7 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
         visibility=ParameterVisibility.HIDDEN,
         description='Path to the protein+ligand folder to set up')
 
-    study_settings = luigi.DictParameter(significant=False,
+    study_settings = luigi.DictParameter(significant=True,
         visibility=ParameterVisibility.HIDDEN,
         description='Dict of study stettings '
         'used to propagate settings to dependencies')
