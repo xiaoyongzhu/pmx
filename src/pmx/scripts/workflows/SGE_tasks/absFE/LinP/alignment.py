@@ -208,11 +208,11 @@ class Task_PL_align(SGETunedJobTask):
             os.unlink("trj_{}_temp_cut_pbc.trr".format(names[i]))
 
         #make the C state
-        m_A = Model(self.folder_path+"/ions%d_%d.pdb"%(self.i,self.m),bPDBTER=True)
+        m_A = Model(self.folder_path+"/ions%d_%d.pdb"%(self.i,self.m),bPDBTER=False)
         m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
-            self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
+            self.p, self.l, None, self.i, self.m),bPDBTER=False) #apoP
         m_C = Model(self.base_path+"/water/lig_{1}/ions{3}_{4}.pdb".format(
-            self.p, self.l, 'B', self.i, self.m),bPDBTER=True) #vacL
+            self.p, self.l, 'B', self.i, self.m),bPDBTER=False) #vacL
         m_A.a2nm()
         m_B.a2nm()
         m_C.a2nm()
@@ -237,13 +237,35 @@ class Task_PL_align(SGETunedJobTask):
         mol_first_atom = m_A.atoms[linA_ndx[0]]
         chID = mol_first_atom.chain_id
         resID = mol_first_atom.resnr
-        chain_local_res_index = -1;
-        for i,r in enumerate(m_B.chdic[chID].residues):
+        #chain_local_res_index = -1;
+        global_res_index=-1;
+        for i,r in enumerate(m_A.chdic[chID].residues):
             if(r.id==resID):
-                chain_local_res_index=i;
+                #chain_local_res_index=i;
+                global_res_index = m_A.residues.index(r)
                 break;
-        if(chain_local_res_index<0):
-            raise("Could not find residue with resID %d in chain %s."%(last_prot_resID, chID))
+        #if(chain_local_res_index<0):           
+        if(global_res_index<0):           
+            raise("Could not find residue with resID %d in protein+ligand."%(resID))
+            
+        
+            
+        # print("mol_first_atom=",mol_first_atom)
+        # print("chID=",chID)
+        # print("resID=",resID)
+        # print("chain_local_res_index=",chain_local_res_index)
+        # print("m_A.chdic.keys()=",m_A.chdic.keys())
+        # print(m_A.chdic[chID])
+        # print("m_B.chdic,keys()=",m_B.chdic.keys())
+        # print(m_B.chdic[chID])
+        # for a in m_B.chdic[chID].atoms:
+            # print(a)
+        # print(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
+            # self.p, self.l, None, self.i, self.m))
+        # raise(Exception("\ndebug quit\n"))
+        
+        
+            
         # chID,last_prot_resID = find_last_protein_atom( m_B )
         # #find the residue index to insert the ligand in the same chain as the end of the protein
         # chain_local_res_index = -1;
@@ -314,8 +336,19 @@ class Task_PL_align(SGETunedJobTask):
                 #mylog.flush()
 
                 #insert vac ligand into B
-                m_B.insert_residue(chain_local_res_index, m_C.residues[0], chID)
-                mylog.write("\t\tOverwrote ligand in B with that from C\n")
+                #m_B.insert_residue(chain_local_res_index, m_C.residues[0], chID)
+                
+                #do the insertion explicitly without relying on chains
+                mol = m_C.residues[0]
+                mol.model = m_B
+                m_B.residues.insert(global_res_index, mol)
+                #don't add to chain, it doesn't matter
+                m_B.al_from_resl()
+                m_B.renumber_atoms()
+                m_B.al_from_resl()
+                
+                
+                mylog.write("\t\tInserted ligand brom C into B\n")
                 #mylog.flush()
 
                 # #zero frame velocities so they don't get written to gro
@@ -342,6 +375,7 @@ class Task_PL_align(SGETunedJobTask):
                 mylog.write("\t\tWrote B to aligned trajectory\n")
                 mylog.flush()
 
+                raise(Exception("\ndebug quit\n"))
 
             fridx+=1
 
