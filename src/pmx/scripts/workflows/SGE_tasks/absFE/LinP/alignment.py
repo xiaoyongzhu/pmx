@@ -79,8 +79,6 @@ class Task_PL_align(SGETunedJobTask):
                          self.sTI, self.__class__.__name__)))
             exit(1);
         # no need to set self.s as it is never used
-        # else:
-        #     self.s="B" # TI stateC depends on NPT sim in stateB
 
     def requires(self):
         #restraints require both state A & B for all repeats and sampling sims
@@ -117,9 +115,6 @@ class Task_PL_align(SGETunedJobTask):
         for nf in range(nframes):
             targets.append(luigi.LocalTarget(
                 os.path.join(self.sim_path, 'frame%d.gro'%nf)) )
-
-        # targets.append(luigi.LocalTarget(
-        #     os.path.join(self.sim_path, "aligned.trr")) )
 
         return targets
 
@@ -225,9 +220,7 @@ class Task_PL_align(SGETunedJobTask):
 
 
         ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
-        #ndx_file_C = ndx.IndexFile(self.base_path+"/water/lig_{}/index.ndx".format(self.l), verbose=False)
         ndx_file_C = ndx.IndexFile("LW.ndx", verbose=False)
-        #p_ndx = np.asarray(ndx_file_A["Protein"].ids)-1
         p_ndx = np.asarray(ndx_file_A["C-alpha"].ids)-1 # as in Vytas' alignment script
         linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
         l_ndx = np.asarray(ndx_file_C["MOL"].ids)-1
@@ -237,45 +230,15 @@ class Task_PL_align(SGETunedJobTask):
         mol_first_atom = m_A.atoms[linA_ndx[0]]
         chID = mol_first_atom.chain_id
         resID = mol_first_atom.resnr
-        #chain_local_res_index = -1;
         global_res_index=-1;
         for i,r in enumerate(m_A.chdic[chID].residues):
             if(r.id==resID):
-                #chain_local_res_index=i;
                 global_res_index = m_A.residues.index(r)
                 break;
-        #if(chain_local_res_index<0):           
+     
         if(global_res_index<0):           
             raise("Could not find residue with resID %d in protein+ligand."%(resID))
-            
-        
-            
-        # print("mol_first_atom=",mol_first_atom)
-        # print("chID=",chID)
-        # print("resID=",resID)
-        # print("chain_local_res_index=",chain_local_res_index)
-        # print("m_A.chdic.keys()=",m_A.chdic.keys())
-        # print(m_A.chdic[chID])
-        # print("m_B.chdic,keys()=",m_B.chdic.keys())
-        # print(m_B.chdic[chID])
-        # for a in m_B.chdic[chID].atoms:
-            # print(a)
-        # print(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
-            # self.p, self.l, None, self.i, self.m))
-        # raise(Exception("\ndebug quit\n"))
-        
-        
-            
-        # chID,last_prot_resID = find_last_protein_atom( m_B )
-        # #find the residue index to insert the ligand in the same chain as the end of the protein
-        # chain_local_res_index = -1;
-        # for i,r in enumerate(m_B.chdic[chID].residues):
-            # if(r.id==last_prot_resID):
-                # chain_local_res_index=i+1;
-                # break;
-        # if(chain_local_res_index<0):
-            # raise("Could not find residue with resID %d in protein chain %s."%(last_prot_resID, chID))
-        
+       
         
         num_aligned_atoms = len(m_B.atoms) + l_ndx.shape[0]
         if(len(m_A.atoms) != num_aligned_atoms):
@@ -335,9 +298,7 @@ class Task_PL_align(SGETunedJobTask):
                 mylog.write("\t\tRotated C velocities\n")
                 #mylog.flush()
 
-                #insert vac ligand into B
-                #m_B.insert_residue(chain_local_res_index, m_C.residues[0], chID)
-                
+                #insert vac ligand into B                
                 #do the insertion explicitly without relying on chains
                 mol = m_C.residues[0]
                 mol.model = m_B
@@ -351,10 +312,6 @@ class Task_PL_align(SGETunedJobTask):
                 mylog.write("\t\tInserted ligand brom C into B\n")
                 #mylog.flush()
 
-                # #zero frame velocities so they don't get written to gro
-                # for atom in m_B.atoms:
-                #     for r in range(3):
-                #         atom.v[r] = 0
                 # output
                 m_B.write("frame%d.gro"%fridx)
                 mylog.write("\t\tWrote B as frame%d.gro\n"%fridx)
@@ -366,7 +323,6 @@ class Task_PL_align(SGETunedJobTask):
                     x[i*3:(i+1)*3]=atom.x
                     v[i*3:(i+1)*3]=atom.v
 
-                # v=None
                 mylog.write("\t\t\tSet atomx.x &.v; ready for writing trj frame to aligned.trr\n")
                 trj_out.write_xtc_frame(step=frame_B.step, time=frame_B.time,
                                         lam=1.0, box=frame_B.box, x=x, v=v,
