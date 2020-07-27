@@ -331,8 +331,6 @@ class Task_PL_align(SGETunedJobTask):
                 mylog.write("\t\tWrote B to aligned trajectory\n")
                 mylog.flush()
 
-                raise(Exception("\ndebug quit\n"))
-
             fridx+=1
 
         trj_out.close()
