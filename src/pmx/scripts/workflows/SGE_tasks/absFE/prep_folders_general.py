@@ -34,7 +34,7 @@ class Gather_Inputs_folder(SGETunedJobTask):
                  visibility=ParameterVisibility.HIDDEN,
                  description='Dict of study stettings '
                  'used to propagate settings to dependencies')
-                 
+
     prot_src_override = luigi.Parameter(significant=False,
               visibility=ParameterVisibility.HIDDEN,
               default="",
@@ -109,7 +109,7 @@ class Gather_Inputs_folder(SGETunedJobTask):
                   "-o index.ndx > setup.log 2>&1")
         #clean dublicate entries
         ndx_file = ndx.IndexFile("index.ndx", verbose=False)
-        ndx_file.write("index.ndx")                 
+        ndx_file.write("index.ndx")
         check_file_ready("index.ndx")
 
         if(self.posre):
@@ -122,11 +122,11 @@ class Gather_Inputs_folder(SGETunedJobTask):
                 if(len(chains)==1):
                     #only one chain; its safe to make a single restraint file
                     #call it prot
-                    os.system("echo 'Protein\n' | gmx genrestr -f init.pdb "
-                              "-fc 9000 9000 9000 -o prot_posre.itp "
+                    os.system("echo 'Backbone\n' | gmx genrestr -f init.pdb "
+                              "-fc 1000 1000 1000 -o prot_posre.itp "
                               "-n index.ndx >> setup.log 2>&1")
                     check_file_ready("prot_posre.itp")
-                    os.system("echo 'Protein\n' | gmx genrestr -f init.pdb "
+                    os.system("echo 'Backbone\n' | gmx genrestr -f init.pdb "
                               "-fc 500 500 500 -o prot_posre_soft.itp "
                               "-n index.ndx >> setup.log 2>&1")
                     check_file_ready("prot_posre_soft.itp")
@@ -169,11 +169,11 @@ class Gather_Inputs_folder(SGETunedJobTask):
                               "-o {ch}.pdb "
                               "-n chains.ndx >> setup.log 2>&1".format(ch=ch, key=ch[-1]))
                         check_file_ready("{ch}.pdb".format(ch=ch))
-                        os.system("echo 'System\n' | gmx genrestr -f {ch}.pdb "
-                              "-fc 9000 9000 9000 -o {ch}_posre.itp "
+                        os.system("echo 'Backbone\n' | gmx genrestr -f {ch}.pdb "
+                              "-fc 1000 1000 1000 -o {ch}_posre.itp "
                               ">> setup.log 2>&1".format(ch=ch, key=ch[-1]))
                         check_file_ready("{ch}_posre.itp".format(ch=ch))
-                        os.system("echo 'System\n' | gmx genrestr -f {ch}.pdb "
+                        os.system("echo 'Backbone\n' | gmx genrestr -f {ch}.pdb "
                               "-fc 500 500 500 -o {ch}_posre_soft.itp "
                               ">> setup.log 2>&1".format(ch=ch, key=ch[-1]))
                         check_file_ready("{ch}_posre_soft.itp".format(ch=ch))
@@ -184,7 +184,7 @@ class Gather_Inputs_folder(SGETunedJobTask):
                           "-o lig.pdb -n index.ndx >> setup.log 2>&1")
                 check_file_ready("lig.pdb")
                 os.system("echo '2\n' | gmx genrestr -f lig.pdb "
-                          "-fc 9000 9000 9000 "
+                          "-fc 1000 1000 1000 "
                           "-o lig_posre.itp >> setup.log  2>&1")
                 check_file_ready("lig_posre.itp")
                 os.system("echo '2\n' | gmx genrestr -f lig.pdb "
@@ -327,7 +327,7 @@ class Prep_folder(SGETunedJobTask):
             os.system("echo \"\nq\n\" | "
                   "gmx make_ndx -f ions0_0.pdb "
                   "-o index_prot_mol.ndx > /dev/null 2>&1")
-                  
+
             #clean duplivates and find correct group indeces
             prot_mol_ndx=ndx.IndexFile("index_prot_mol.ndx", verbose=False)
             prot_mol_ndx.write("index_prot_mol.ndx")
