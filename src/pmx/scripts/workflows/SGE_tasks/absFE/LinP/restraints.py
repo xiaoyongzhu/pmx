@@ -224,6 +224,10 @@ class Task_PL_gen_restraints(SGETunedJobTask):
 
             #find correct group indeces
             base_ndx=ndx.IndexFile("index_prot_mol.ndx", verbose=False)
+            #clean and reload the ndx file (for cases where it was generated with old code that didn't already clean it from duplicates)
+            new_base="index_prot_mol_base_{i}.ndx".format(i=self.i)
+            base_ndx.write(new_base)
+            base_ndx=ndx.IndexFile(new_base, verbose=False)
             mol_id = base_ndx.get_group_id("MOL")
             sys_id = base_ndx.get_group_id("System")
             my_ndx_file="index_prot_mol_noH_{i}.ndx".format(i=self.i)
@@ -236,6 +240,13 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             check_file_ready(os.path.join(my_ndx_file))
             if(self.debug):
                 print("debug: made {}".format(my_ndx_file))
+                
+                
+            #if decorelating, make an index file from the aligned structure. It can have a different number of atoms if Apo differs from holo
+            if('decor_decoupled' in self.study_settings and  self.study_settings['decor_decoupled']):
+                os.system("echo \"q\n\" | "
+                      "gmx make_ndx -f stateC/repeat{i}/morphes{m}/frame0.gro "
+                      "-o decor_{i}.ndx > decor_make_ndx_{i}.log 2>&1".format(i=self.i, m=self.m))
                 
                 
             aligned_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
@@ -377,4 +388,9 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             for s in ["A","C"]:
                 targets.append(luigi.LocalTarget(os.path.join(self.folder_path,
                                           "topolTI_ions%s%d_%d.top"%(s,self.i,m))))
+                                          
+        if('decor_decoupled' in self.study_settings and  self.study_settings['decor_decoupled']):
+            targets.append(luigi.LocalTarget(os.path.join(self.folder_path,
+                                          "decor_%d.ndx"%(self.i))))
+
         return targets

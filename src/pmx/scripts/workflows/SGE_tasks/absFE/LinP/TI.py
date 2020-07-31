@@ -218,7 +218,8 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
             #if startfn wasn't already generated in a previous attempt, do so now.
             if(not os.path.isfile(startfn)):
                 #make tpr
-                ndxf = self.folder_path+"/index_prot_mol_noH_{i}.ndx".format(i=self.i)
+                #ndxf = self.folder_path+"/index_prot_mol_noH_{i}.ndx".format(i=self.i)
+                ndxf = self.folder_path+"/decor_{i}.ndx".format(i=self.i)
                 os.system("gmx grompp -p {top} -c {prevfn} "
                           "-o {D}/pre_ti.tpr -po {D}/preTI_mdout.mdp -f {mdp} "
                           "-n {ndxf} "
