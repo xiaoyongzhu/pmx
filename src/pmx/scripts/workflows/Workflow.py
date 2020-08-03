@@ -11,7 +11,7 @@ class Workflow:
                  # n_repeats=3, n_sampling_sims=1,
                  basepath=os.getcwd(),
                  d=1.5, bt="dodecahedron", salt_conc=0.15,
-                 mdrun="gmx mdrun", mdrun_opts="", b=2256.0):
+                 mdrun="gmx mdrun", mdrun_double="gmx mdrun", mdrun_opts="", b=2256.0):
         self.toppath = toppath
         self.mdppath = mdppath
         # self.n_repeats = n_repeats
