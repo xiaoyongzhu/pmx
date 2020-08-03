@@ -53,6 +53,7 @@ class SGE_Workflow(Workflow):
                              'states':self.states,
                              'TIstates':self.TIstates,
                              'mdrun':self.mdrun,
+                             'mdrun_double':self.mdrun_double,
                              'mdrun_opts':self.mdrun_opts,
                              'b':self.b}
 

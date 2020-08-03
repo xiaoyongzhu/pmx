@@ -168,6 +168,7 @@ def parse_options(SGE=False):
     #                     default="gmx")
 
 
+    mdrun_help=""
     if(SGE):
         parser.add_argument('--pe',
                             dest='pe',
@@ -183,18 +184,19 @@ def parse_options(SGE=False):
                             'config file. '
                             'Otherwize, will use a local scheduler on the '
                             'current machine.')
-        parser.add_argument('--mdrun',
+                            
+        mdrun_help=' For best performance on a cluster make this value aliased for the optimal version of mdrun on each node.'
+    
+    parser.add_argument('--mdrun',
                             dest='mdrun',
                             type=str,
-                            help='Call to mdrun. For best performance on a cluster '
-                            'make this value aliased for the optimal version of '
-                            'mdrun on each node.',
+                            help='Call to mdrun.' + mdrun_help,
                             default="gmx mdrun")
-    else:
-        parser.add_argument('--mdrun',
-                            dest='mdrun',
+                            
+    parser.add_argument('--mdrun_double',
+                            dest='mdrun_double',
                             type=str,
-                            help='Call to mdrun.',
+                            help='Call to mdrun.' + mdrun_help,
                             default="gmx mdrun")
 
     parser.add_argument('--mdrun_opts',

@@ -23,6 +23,7 @@ class Workflow:
         self.bt = bt
         self.salt_conc = salt_conc
         self.mdrun = mdrun
+        self.mdrun_double = mdrun_double
         self.mdrun_opts = mdrun_opts
         self.states=[]
         self.b = b

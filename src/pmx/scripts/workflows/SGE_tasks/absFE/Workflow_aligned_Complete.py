@@ -64,6 +64,7 @@ def main(args):
             b=args.b,
             #b=0,
             mdrun=args.mdrun,
+            mdrun_double=args.mdrun_double,
             mdrun_opts=args.mdrun_opts,
             pe=args.pe,
             rem_sched=args.rem_sched

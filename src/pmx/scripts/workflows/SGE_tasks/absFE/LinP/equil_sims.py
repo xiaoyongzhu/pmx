@@ -43,6 +43,12 @@ class Sim_PL_EM(SGE_Sim):
         significant=False,
         default=False,
         description="restrain to EM or to crystal structure.")
+        
+    use_dbl_precision = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False,
+        default=False,
+        description="Use double precision mdrun instead of single precision.")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -60,6 +66,8 @@ class Sim_PL_EM(SGE_Sim):
         self.posre = self.folder_path+"/ions{3}_{4}.pdb".format(
             self.p, self.l, self.s, self.i, self.m)
         self.mdrun = self.study_settings['mdrun']
+        if(self.use_dbl_precision):
+            self.mdrun = self.study_settings['mdrun_double']
         self.mdrun_opts = self.study_settings['mdrun_opts']
 
     #work(): same as SGE_Sim
