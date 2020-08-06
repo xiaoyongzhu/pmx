@@ -29,14 +29,14 @@ class Task_summary_aligned(SGETunedJobTask):
                                    default=3)
     n_sampling_sims = luigi.IntParameter(description='Number of sampling simulations',
                                          default=1)
-                                         
+
     show_incomplete = luigi.BoolParameter(default=False, significant=True,
                                visibility=ParameterVisibility.HIDDEN)
-                               
+
     only_LinW = luigi.BoolParameter(default=False, significant=True,
                                visibility=ParameterVisibility.HIDDEN)
-    
-    decor_decoupled = luigi.BoolParameter(default=False, significant=True)    
+
+    decor_decoupled = luigi.Parameter(default="False", significant=True)
 
     #TODO: add default
     study_settings = luigi.DictParameter(significant=False,
@@ -54,10 +54,12 @@ class Task_summary_aligned(SGETunedJobTask):
         significant=False, default="pmx_{task_family}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
-        
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+
 
         self.WL_settings=copy.deepcopy(self.study_settings.get_wrapped())
         self.WL_settings['TIstates']=self.WL_settings['states']
@@ -66,8 +68,19 @@ class Task_summary_aligned(SGETunedJobTask):
         self.PL_settings=copy.deepcopy(self.study_settings.get_wrapped())
         self.PL_settings['n_repeats']=self.n_repeats
         self.PL_settings['n_sampling_sims']=self.n_sampling_sims
-        self.PL_settings['decor_decoupled']=self.decor_decoupled
-        #self.PL_settings=self.study_settings
+
+        if(self.decor_decoupled.casefold()=="false" or self.decor_decoupled.casefold()=="no"):
+            self.PL_settings['decor_decoupled']=False
+            self.PL_settings['decor_method']="none"
+        elif(self.decor_decoupled.casefold()=="md"):
+            self.PL_settings['decor_decoupled']=True
+            self.PL_settings['decor_method']="md"
+        elif(self.decor_decoupled.casefold()=="gaussian" or self.decor_decoupled.casefold()=="sampling"):
+            self.PL_settings['decor_decoupled']=True
+            self.PL_settings['decor_method']="sampling"
+        else:
+            raise(Exception("Invalid value for decor_decoupled detected (%s)"%self.decor_decoupled))
+
 
         self.base_path = self.study_settings['base_path']
         self.outname="summary_aligned.txt"
@@ -88,7 +101,7 @@ class Task_summary_aligned(SGETunedJobTask):
                     ana_folder=folder_path+self.anafolderfmt_P.format(i=i)
                 else:
                     ana_folder=folder_path+self.anafolderfmt_W.format(i=i)
-                
+
                 #discard missing pieces
                 if(self.show_incomplete):
                     if(not os.path.isfile(ana_folder+"/results.txt") or (inP and not os.path.isfile(folder_path+"/"+self.restrname.format(i=i)))):
@@ -109,14 +122,14 @@ class Task_summary_aligned(SGETunedJobTask):
                                 rs[nfound]+=float(s[-2])
                                 break
                 nfound+=1
-                
+
             if(nfound>0):
                 dGpart = np.mean(rs[:nfound])
                 std = np.std(rs[:nfound])
                 return([dGpart,std,nfound])
             else:
                 return([np.nan,np.nan,nfound])
-            
+
 
         #dG in water
         inws={}
@@ -149,7 +162,7 @@ class Task_summary_aligned(SGETunedJobTask):
                 cors=np.zeros(self.n_repeats)
                 nfound=0
                 for i in range(self.n_repeats):
-                    if(self.show_incomplete): #skip missing 
+                    if(self.show_incomplete): #skip missing
                         if(not os.path.isfile(folder_path+"/"+self.restrname.format(i=i))):
                             continue;
                     with open(folder_path+"/"+self.restrname.format(i=i), 'r') as f:
@@ -159,7 +172,7 @@ class Task_summary_aligned(SGETunedJobTask):
                                 s=line.split()
                                 cors[nfound]=float(s[-2])
                                 nfound+=1
-                                
+
                 if(nfound>0):
                     anacorrs.update({key:[np.mean(cors[:nfound]), np.std(cors[:nfound]), nfound]})
                 else:

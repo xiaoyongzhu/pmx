@@ -6,6 +6,7 @@ from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.SGETunedArrayJobTask import SGETunedArrayJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.morphes import Task_PL_gen_morphes
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.decorrelate_algortimically import Task_PL_decorelate_alg
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints_align2crystal import Task_PL_gen_restraints_align2crystal
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.morphes_align2crystal import Task_PL_gen_morphes_align2crystal
 from pmx.scripts.workflows.utils import read_from_mdp
@@ -32,7 +33,7 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
     restr_scheme = luigi.Parameter(significant=True,
                  description='Restraint scheme to use. '
                  'Aligned, Aligned_crystal, Fitted or Fixed')
-                 
+
     target_success_ratio = luigi.FloatParameter(significant=False,
                  visibility=ParameterVisibility.HIDDEN,
                  default=0.90,
@@ -70,7 +71,7 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         self.mdp = self.study_settings['mdp_path'] +\
             "/protein/ti_{0}.mdp".format(
                 self.study_settings['TIstates'][self.sTI])
-                
+
         self.preTI_mdp = self.study_settings['mdp_path'] +\
             "/protein/pre_ti_{0}.mdp".format(
                 self.study_settings['TIstates'][self.sTI])
@@ -89,12 +90,23 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                               parallel_env=self.parallel_env,
                               restr_scheme=self.restr_scheme) )
             elif(self.sTI=='C'):
-                tasks.append( Task_PL_gen_restraints(p=self.p, l=self.l,
+                if('decor_decoupled' in self.study_settings and self.study_settings['decor_decoupled']
+                   and self.study_settings['decor_method']=="sampling"):
+                    tasks.append( Task_PL_decorelate_alg(p=self.p, l=self.l,
+                              i=self.i, m=self.m, sTI=self.sTI,
+                              study_settings=self.study_settings,
+                              folder_path=self.folder_path,
+                              parallel_env=self.parallel_env,
+                              restr_scheme=self.restr_scheme) )
+                else:
+                    raise(Exception("\nWe shouldn't be here in this test!\n"))
+                    tasks.append( Task_PL_gen_restraints(p=self.p, l=self.l,
                               i=self.i,
                               study_settings=self.study_settings,
                               folder_path=self.folder_path,
                               parallel_env=self.parallel_env,
                               restr_scheme=self.restr_scheme) )
+
             else:
                 raise(Exception("Unsupported TI state detected."))
         elif(self.restr_scheme=="Aligned_crystal"):
@@ -204,17 +216,18 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
 
         #find temp working dir for this job
         TMPDIR = os.environ['TMPDIR']
-        
+
         startfn = "frame{_id}.gro".format(_id=dHdL_id)
-        
+
         #bring restraint degrees of freedom closer to equilibrium
-        if(self.restr_scheme=="Aligned" and self.sTI=='C' and 
-          ('decor_decoupled' in self.study_settings and  self.study_settings['decor_decoupled']) ):
+        if(self.restr_scheme=="Aligned" and self.sTI=='C' and
+          ('decor_decoupled' in self.study_settings and self.study_settings['decor_decoupled']
+           and self.study_settings['decor_decoupled']=="md") ):
 
             prevfn = startfn
             startfn = "start{_id}.gro".format(_id=dHdL_id)
             frozenfn = "{D}/pre_ti_confout.gro".format(D=TMPDIR)
-            
+
             #if startfn wasn't already generated in a previous attempt, do so now.
             if(not os.path.isfile(startfn)):
                 #make tpr
@@ -225,7 +238,7 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                           "-n {ndxf} "
                           "-v -maxwarn 3 ".format(D=TMPDIR, top=self.top, ndxf=ndxf,
                                                   mdp=self.preTI_mdp, prevfn=prevfn) )
-                                                  
+
                 #run sim
                 os.system(self.mdrun+" -s {D}/pre_ti.tpr -dhdl {D}/pre_ti_dgdl.xvg -cpo "
                           "{D}/pre_ti_state.cpt -e {D}/pre_ti_ener.edr -g {D}/pre_ti_md.log -o "
@@ -233,7 +246,7 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                           "-ntomp {n_cpu} {opts}".format(
                               D=TMPDIR, frozenfn=frozenfn, n_cpu=self.n_cpu,
                               opts=self.mdrun_opts) )
-            
+
                 #Overwrite ligand pos and vel with relaced ones.
                 #Keep original unfrozen velocities for the rest of the system
                 with open(prevfn, 'r') as orig:
@@ -251,8 +264,8 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                                 raise(Exception("Line mismatch between frozen and unfrozen systems:\n{}\n{}\n".format(
                                                  l, frozen_lines[c])))
 
-                
-            
+
+
 
         #make tpr
         os.system("gmx grompp -p {top} -c {startfn} "

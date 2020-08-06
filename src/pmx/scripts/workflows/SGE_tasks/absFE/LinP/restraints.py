@@ -27,13 +27,13 @@ def clean_virtual_sites_from_ndx(ndx_fn, mol_sel, filteree, itp):
     whole_mol_ids = my_ndx[mol_sel].ids
     filteree_ids = my_ndx[filteree].ids
     first_at = whole_mol_ids[0]
-    
+
     top = Topology(itp, is_itp=True, assign_types=False)
     vsites=[] #indeces of virtual sites in ligand
     for l in [top.virtual_sites2, top.virtual_sites3, top.virtual_sites4]:
         for vs in l:
             vsites.append(vs[0].id - 1 + first_at)
-    
+
     new_filteree_ids = []
     for i in filteree_ids:
         if not (i in vsites):
@@ -75,7 +75,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         significant=False, default="pmx_{task_family}_p{p}_l{l}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
-        
+
     #debug output
     debug = luigi.BoolParameter(
         visibility=ParameterVisibility.HIDDEN,
@@ -83,7 +83,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         description="show debug output in a log.")
 
     extra_packages=[md]
-    
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -236,34 +236,34 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                       "-o {ndx} > noH_make_ndx_{i}.log 2>&1".format(i=self.i, ndx=my_ndx_file, mol_id=mol_id, sys_id=sys_id))
             #modify index file to filter out virtual cites from ligand selection
             clean_virtual_sites_from_ndx(my_ndx_file, "MOL", "MOL_&_!H*", "lig.itp")
-                      
+
             check_file_ready(os.path.join(my_ndx_file))
             if(self.debug):
                 print("debug: made {}".format(my_ndx_file))
-                
-                
+
+
             #if decorelating, make an index file from the aligned structure. It can have a different number of atoms if Apo differs from holo
             if('decor_decoupled' in self.study_settings and  self.study_settings['decor_decoupled']):
                 os.system("echo \"q\n\" | "
-                      "gmx make_ndx -f stateC/repeat{i}/morphes{m}/frame0.gro "
-                      "-o decor_{i}.ndx > decor_make_ndx_{i}.log 2>&1".format(i=self.i, m=self.m))
-                
-                
+                      "gmx make_ndx -f stateC/repeat{i}/morphes0/frame0.gro "
+                      "-o decor_{i}.ndx > decor_make_ndx_{i}.log 2>&1".format(i=self.i))
+
+
             aligned_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
             aligned_trjs=""
             for m in range(self.study_settings['n_sampling_sims']):
                 aligned_trjs+=aligned_path.format(self.p,self.l,"C",self.i,m,"morphes")+"/frame*.gro"
-            
+
             # os.system("echo -e \"3\n22\n\" | python /home/ykhalak/custom_scripts/pmx/postHoc_restraining_python3.py "
             #           "-f {ap} "
             #           "-n {ndx} -oii ii_{i}.itp -odg out_dg_{i}.dat > gen_restr{i}.log 2>&1".format(
             #               ap=aligned_trjs, ndx=ndx, i=self.i))
-                
+
             if(not os.path.isfile("ii_{i}.itp".format(i=self.i)) or  not os.path.isfile("out_dg_{i}.dat".format(i=self.i))):
                 oldstdin = sys.stdin
                 oldstdout = sys.stdout
                 oldstderr = sys.stderr
-                
+
                 my_ndx=ndx.IndexFile(my_ndx_file, verbose=False)
                 prot_id = my_ndx.get_group_id("C-alpha")
                 mol_id = my_ndx.get_group_id("MOL_&_!H*_&_!vsites")
@@ -271,14 +271,14 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                 with open("gen_restr{i}.log".format(i=self.i), 'w') as logf:
                     sys.stdout = logf
                     sys.stderr = logf
-                    
+
                     g=glob.glob(aligned_trjs)
                     argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", my_ndx_file,
                                 "-oii", "ii_{i}.itp".format(i=self.i),
                                 "-odg", "out_dg_{i}.dat".format(i=self.i)]
 
                     if(self.debug):
-                        print("debug: starting postHoc_restraining")                            
+                        print("debug: starting postHoc_restraining")
                     main_postHock_restr(argv)
                     if(self.debug):
                         print("debug: after postHoc_restraining")
@@ -320,7 +320,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                                 nCl = int(l.split()[1])
                             if ("Na " in l):
                                 nNa = int(l.split()[1])
-                    
+
                 check_file_ready(top_ions)
                 topAC_ions="topolTI_ions%s%d_%d.top"%(s,self.i,m)
                 #os.system("cp {} {} > /dev/null 2>&1".format(top_ions,topAC_ions))
@@ -335,7 +335,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                                 top.write("Na     {}\n".format(nNa))
                             else:
                                 top.write(l)
-                    
+
                     top.write("\n; Include intermolecular restraints\n")
                     top.write("#include \"ii_{i}.itp\"\n".format(i=self.i))
 
@@ -388,7 +388,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             for s in ["A","C"]:
                 targets.append(luigi.LocalTarget(os.path.join(self.folder_path,
                                           "topolTI_ions%s%d_%d.top"%(s,self.i,m))))
-                                          
+
         if('decor_decoupled' in self.study_settings and  self.study_settings['decor_decoupled']):
             targets.append(luigi.LocalTarget(os.path.join(self.folder_path,
                                           "decor_%d.ndx"%(self.i))))
