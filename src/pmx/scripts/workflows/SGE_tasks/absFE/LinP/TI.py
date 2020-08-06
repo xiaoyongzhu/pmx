@@ -221,48 +221,54 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
 
         #bring restraint degrees of freedom closer to equilibrium
         if(self.restr_scheme=="Aligned" and self.sTI=='C' and
-          ('decor_decoupled' in self.study_settings and self.study_settings['decor_decoupled']
-           and self.study_settings['decor_decoupled']=="md") ):
+          ('decor_decoupled' in self.study_settings and self.study_settings['decor_decoupled'])):
 
-            prevfn = startfn
-            startfn = "start{_id}.gro".format(_id=dHdL_id)
-            frozenfn = "{D}/pre_ti_confout.gro".format(D=TMPDIR)
+            if(self.study_settings['decor_method']=="sampling"):
+                startfn = "start{_id}.gro".format(_id=dHdL_id)
 
-            #if startfn wasn't already generated in a previous attempt, do so now.
-            if(not os.path.isfile(startfn)):
-                #make tpr
-                #ndxf = self.folder_path+"/index_prot_mol_noH_{i}.ndx".format(i=self.i)
-                ndxf = self.folder_path+"/decor_{i}.ndx".format(i=self.i)
-                os.system("gmx grompp -p {top} -c {prevfn} "
-                          "-o {D}/pre_ti.tpr -po {D}/preTI_mdout.mdp -f {mdp} "
-                          "-n {ndxf} "
-                          "-v -maxwarn 3 ".format(D=TMPDIR, top=self.top, ndxf=ndxf,
-                                                  mdp=self.preTI_mdp, prevfn=prevfn) )
+            elif(self.study_settings['decor_method']=="md"):
+                prevfn = startfn
+                startfn = "start{_id}.gro".format(_id=dHdL_id)
+                frozenfn = "{D}/pre_ti_confout.gro".format(D=TMPDIR)
 
-                #run sim
-                os.system(self.mdrun+" -s {D}/pre_ti.tpr -dhdl {D}/pre_ti_dgdl.xvg -cpo "
-                          "{D}/pre_ti_state.cpt -e {D}/pre_ti_ener.edr -g {D}/pre_ti_md.log -o "
-                          "{D}/pre_ti_traj.trr -x {D}/pre_ti_traj.xtc -c {frozenfn} "
-                          "-ntomp {n_cpu} {opts}".format(
-                              D=TMPDIR, frozenfn=frozenfn, n_cpu=self.n_cpu,
-                              opts=self.mdrun_opts) )
+                #if startfn wasn't already generated in a previous attempt, do so now.
+                if(not os.path.isfile(startfn)):
+                    #make tpr
+                    #ndxf = self.folder_path+"/index_prot_mol_noH_{i}.ndx".format(i=self.i)
+                    ndxf = self.folder_path+"/decor_{i}.ndx".format(i=self.i)
+                    os.system("gmx grompp -p {top} -c {prevfn} "
+                              "-o {D}/pre_ti.tpr -po {D}/preTI_mdout.mdp -f {mdp} "
+                              "-n {ndxf} "
+                              "-v -maxwarn 3 ".format(D=TMPDIR, top=self.top, ndxf=ndxf,
+                                                      mdp=self.preTI_mdp, prevfn=prevfn) )
 
-                #Overwrite ligand pos and vel with relaced ones.
-                #Keep original unfrozen velocities for the rest of the system
-                with open(prevfn, 'r') as orig:
-                    orig_lines = orig.readlines()
-                with open(frozenfn, 'r') as frozen:
-                    frozen_lines = frozen.readlines()
-                with open(startfn, 'w') as o:
-                    for c,l in enumerate(orig_lines):
-                        if (not "MOL" in l):
-                            o.write(l)
-                        else:
-                            o.write(frozen_lines[c])
-                            #check for errors
-                            if(not "MOL" in frozen_lines[c]):
-                                raise(Exception("Line mismatch between frozen and unfrozen systems:\n{}\n{}\n".format(
-                                                 l, frozen_lines[c])))
+                    #run sim
+                    os.system(self.mdrun+" -s {D}/pre_ti.tpr -dhdl {D}/pre_ti_dgdl.xvg -cpo "
+                              "{D}/pre_ti_state.cpt -e {D}/pre_ti_ener.edr -g {D}/pre_ti_md.log -o "
+                              "{D}/pre_ti_traj.trr -x {D}/pre_ti_traj.xtc -c {frozenfn} "
+                              "-ntomp {n_cpu} {opts}".format(
+                                  D=TMPDIR, frozenfn=frozenfn, n_cpu=self.n_cpu,
+                                  opts=self.mdrun_opts) )
+
+                    #Overwrite ligand pos and vel with relaced ones.
+                    #Keep original unfrozen velocities for the rest of the system
+                    with open(prevfn, 'r') as orig:
+                        orig_lines = orig.readlines()
+                    with open(frozenfn, 'r') as frozen:
+                        frozen_lines = frozen.readlines()
+                    with open(startfn, 'w') as o:
+                        for c,l in enumerate(orig_lines):
+                            if (not "MOL" in l):
+                                o.write(l)
+                            else:
+                                o.write(frozen_lines[c])
+                                #check for errors
+                                if(not "MOL" in frozen_lines[c]):
+                                    raise(Exception("Line mismatch between frozen and unfrozen systems:\n{}\n{}\n".format(
+                                                     l, frozen_lines[c])))
+
+            else:
+                raise(Exception("\nUnknown decorelation method {}.\n".format(self.study_settings['decor_method'])))
 
 
 
