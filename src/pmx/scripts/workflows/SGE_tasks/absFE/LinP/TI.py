@@ -105,7 +105,6 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                               parallel_env=self.parallel_env,
                               restr_scheme=self.restr_scheme) )
                 else:
-                    raise(Exception("\nWe shouldn't be here in this test!\n"))
                     tasks.append( Task_PL_gen_restraints(p=self.p, l=self.l,
                               i=self.i,
                               study_settings=self.study_settings,
