@@ -307,7 +307,8 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
         trj_A_src=self.sim_path+"/aligned.trr"  #P+L
         trj_A = Trajectory(trj_A_src) #P+L
 
-        m_A = Model(self.folder_path+"/ions%d_%d.pdb"%(self.i,self.m),bPDBTER=True)
+        #m_A = Model(self.folder_path+"/ions%d_%d.pdb"%(self.i,self.m),bPDBTER=True)
+        m_A = Model("frame0.gro",bPDBTER=False)
         m_A.a2nm()
 
         trj_out = Trajectory(self.sim_path+"/decorrelated.trr", mode='Out',
