@@ -38,6 +38,12 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                  visibility=ParameterVisibility.HIDDEN,
                  default=0.90,
                  description='Successful TI runs ratio before proceding.')
+                 
+    save_final = luigi.BoolParameter(
+        default = False,
+        significant=False,
+        parsing=luigi.BoolParameter.EXPLICIT_PARSING,
+        description="Copy over confout*.gro files")
 
     stage="morphes"
     #request 1 core
@@ -295,6 +301,11 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
         #copy dHdl file back
         os.system("rsync {}/dgdl.xvg {}/dHdl{}.xvg".format(
                       TMPDIR, self.sim_path, dHdL_id) )
+      
+        if(self.save_final):
+            #copy the final gro file back
+            os.system("rsync {}/confout.gro {}/confout{}.gro".format(
+                          TMPDIR, self.sim_path, dHdL_id) )
 
         #Return to basepath
         os.chdir(self.base_path)
