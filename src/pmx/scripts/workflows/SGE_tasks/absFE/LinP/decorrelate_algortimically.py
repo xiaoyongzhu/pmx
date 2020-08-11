@@ -233,6 +233,12 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
         significant=False, default="pmx_{task_family}_p{p}_l{l}_{sTI}{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
+        
+    #debug output
+    debug = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False, default=False,
+        description="show debug output in a log.")
 
     extra_packages=[np]
 
@@ -341,6 +347,9 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
                 means[j]*=np.pi/180.0 #convert to rad
                 sigmas[j]*=np.pi/180.0 #convert to rad
             cov_mat[j,j]=sigmas[j]
+            
+        if(self.debug):
+            print("debug: starting on trajectory: {}".format(trj_A_src))
 
         #Frames are not acessible individually, just in sequence.
         #pmx.xtc.Trajectory is based on __iter__, so we need a custom
@@ -356,7 +365,8 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
 
             if(not os.path.isfile("start%d.gro"%fridx)):
                 frame_A.update(m_A)
-
+                if(self.debug):
+                        print("debug: \tframe {}".format(fridx))
                 #draw restraint coords from independent multivariate distribution
                 sample = np.random.multivariate_normal(means, cov_mat) # nm & rad
 
@@ -385,9 +395,14 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
                 m_A.write("start%d.gro"%fridx)
 
             fridx+=1
+            
+        else:
+            if(self.debug):
+                print("debug: \tframe {} exists".format(fridx))
 
         trj_out.close()
-
+        if(self.debug):
+            print("debug: done with trajectory".format(fridx))
 
         # decor_trjs=""
         # for m in range(self.study_settings['n_sampling_sims']):
