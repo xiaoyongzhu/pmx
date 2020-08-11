@@ -232,8 +232,8 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             sys_id = base_ndx.get_group_id("System")
             my_ndx_file="index_prot_mol_noH_{i}.ndx".format(i=self.i)
             os.system("echo \"{mol_id} & ! a H*\n{sys_id} & ! {mol_id}\n\nq\n\" | "
-                      "gmx make_ndx -f ions{i}_0.pdb -n index_prot_mol.ndx "
-                      "-o {ndx} > noH_make_ndx_{i}.log 2>&1".format(i=self.i, ndx=my_ndx_file, mol_id=mol_id, sys_id=sys_id))
+                      "gmx make_ndx -f ions{i}_0.pdb -n {new_base} "
+                      "-o {ndx} > noH_make_ndx_{i}.log 2>&1".format(i=self.i, ndx=my_ndx_file, mol_id=mol_id, sys_id=sys_id, new_base=new_base))
             #modify index file to filter out virtual cites from ligand selection
             clean_virtual_sites_from_ndx(my_ndx_file, "MOL", "MOL_&_!H*", "lig.itp")
 
