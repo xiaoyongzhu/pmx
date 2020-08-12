@@ -5,7 +5,7 @@ import luigi
 import os
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from luigi.parameter import ParameterVisibility
-from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
+#from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
 from pmx.scripts.workflows.utils import read_from_mdp
 
@@ -99,7 +99,7 @@ class Task_PL_gen_morphes(SGETunedJobTask):
                           # parallel_env=self.parallel_env,
                           # restr_scheme=self.restr_scheme) )
                           
-        return( Sim_PL_NPT(p=self.p, l=self.l, i=self.i, m=self.m, s=sTI,
+        return( Sim_PL_NPT(p=self.p, l=self.l, i=self.i, m=self.m, s=self.sTI,
                                   study_settings=self.study_settings,
                                   folder_path=self.folder_path,
                                   parallel_env=self.parallel_env) )
