@@ -16,6 +16,7 @@ from pmx.scripts.workflows.find_anchors_and_write_ii_single_traj import find_res
 from pmx.scripts.workflows.find_avg import find_avg_struct
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_align
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.morphes import Task_PL_gen_morphes
 from pmx.scripts.workflows.utils import check_file_ready
 from pmx.scripts.workflows.postHoc_restraining_python3 import main as main_postHock_restr
 
@@ -81,6 +82,15 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         visibility=ParameterVisibility.HIDDEN,
         significant=False, default=False,
         description="show debug output in a log.")
+        
+    min_ang_K = luigi.FloatParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=0.0, significant=True,
+                               description="Minimal value for an angular force constant (kJ/(mol*rad^2)).")
+                               
+    restr_source = luigi.Parameter(
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False, default="aligned",
+        description="Which trajectory to base restraints on. Options: aligned, coupled.")
 
     extra_packages=[md]
 
@@ -156,9 +166,9 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         #             sel="4 Protein"
         #             ndx=self.base_path+"/prot_{0}/apoP/index.ndx".format(self.p)
         #         if(s=="C"): #explisitly simulated stateC (self.restr_scheme=="Fitted")
-        #             aligned_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
-        #             tpr=aligned_path.format(self.p,self.l,"A",self.i,m,"npt")+"tpr.tpr"
-        #             trj=aligned_path.format(self.p,self.l,s,self.i,m,"morphes")+"aligned.trr"
+        #             frame_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
+        #             tpr=frame_path.format(self.p,self.l,"A",self.i,m,"npt")+"tpr.tpr"
+        #             trj=frame_path.format(self.p,self.l,s,self.i,m,"morphes")+"aligned.trr"
         #             sel="4 Protein_MOL"
         #             ndx="index_prot_mol.ndx"
         #         else:
@@ -248,16 +258,15 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                       "gmx make_ndx -f stateC/repeat{i}/morphes0/frame0.gro "
                       "-o decor_{i}.ndx > decor_make_ndx_{i}.log 2>&1".format(i=self.i))
 
-
-            aligned_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
-            aligned_trjs=""
+            if(self.restr_source=="aligned"):
+                frame_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
+            elif(self.restr_source=="coupled"):
+                frame_path=self.folder_path+"/stateA/repeat{3}/{5}{4}/"
+            else:
+                raise(Exception("\nInvalid value of restr_source={} detected!\n".format(self.restr_source)))
+            frame_trjs=""
             for m in range(self.study_settings['n_sampling_sims']):
-                aligned_trjs+=aligned_path.format(self.p,self.l,"C",self.i,m,"morphes")+"/frame*.gro"
-
-            # os.system("echo -e \"3\n22\n\" | python /home/ykhalak/custom_scripts/pmx/postHoc_restraining_python3.py "
-            #           "-f {ap} "
-            #           "-n {ndx} -oii ii_{i}.itp -odg out_dg_{i}.dat > gen_restr{i}.log 2>&1".format(
-            #               ap=aligned_trjs, ndx=ndx, i=self.i))
+                frame_trjs+=frame_path.format(self.p,self.l,"C",self.i,m,"morphes")+"/frame*.gro"
 
             if(not os.path.isfile("ii_{i}.itp".format(i=self.i)) or  not os.path.isfile("out_dg_{i}.dat".format(i=self.i))):
                 oldstdin = sys.stdin
@@ -272,10 +281,11 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                     sys.stdout = logf
                     sys.stderr = logf
 
-                    g=glob.glob(aligned_trjs)
+                    g=glob.glob(frame_trjs)
                     argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", my_ndx_file,
                                 "-oii", "ii_{i}.itp".format(i=self.i),
-                                "-odg", "out_dg_{i}.dat".format(i=self.i)]
+                                "-odg", "out_dg_{i}.dat".format(i=self.i),
+                                "-min_K", self.min_ang_K]
 
                     if(self.debug):
                         print("debug: starting postHoc_restraining")
@@ -358,6 +368,14 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                                   folder_path=self.folder_path,
                                   parallel_env=self.parallel_env,
                                   restr_scheme=self.restr_scheme)
+                        )
+                if(self.restr_source=="coupled"):
+                    reqs.append(Task_PL_gen_morphes(p=self.p, l=self.l,
+                              i=self.i, m=m, sTI='A',
+                              study_settings=self.study_settings,
+                              folder_path=self.folder_path,
+                              parallel_env=self.parallel_env,
+                              restr_scheme=self.restr_scheme)
                         )
             elif(self.restr_scheme=="Fitted"):
                 for s in self.states:

@@ -104,16 +104,17 @@ class Task_PL_TI_simArray(SGETunedArrayJobTask):
                               folder_path=self.folder_path,
                               parallel_env=self.parallel_env,
                               restr_scheme=self.restr_scheme) )
-                else:
-                    tasks.append( Task_PL_gen_restraints(p=self.p, l=self.l,
-                              i=self.i,
-                              study_settings=self.study_settings,
-                              folder_path=self.folder_path,
-                              parallel_env=self.parallel_env,
-                              restr_scheme=self.restr_scheme) )
-
             else:
                 raise(Exception("Unsupported TI state detected."))
+                
+            #need restraints regardless
+            tasks.append( Task_PL_gen_restraints(p=self.p, l=self.l,
+                          i=self.i,
+                          study_settings=self.study_settings,
+                          folder_path=self.folder_path,
+                          parallel_env=self.parallel_env,
+                          restr_scheme=self.restr_scheme) )
+
         elif(self.restr_scheme=="Aligned_crystal"):
             #need restr anyway
             tasks.append( Task_PL_gen_restraints_align2crystal(

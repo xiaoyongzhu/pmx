@@ -6,6 +6,7 @@ import os
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from luigi.parameter import ParameterVisibility
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
 from pmx.scripts.workflows.utils import read_from_mdp
 
 
@@ -91,12 +92,17 @@ class Task_PL_gen_morphes(SGETunedJobTask):
 
     def requires(self):
         #restraints require both state A & B for all repeats and sampling sims
-        return( Task_PL_gen_restraints(p=self.p, l=self.l,
-                          i=self.i,
-                          study_settings=self.study_settings,
-                          folder_path=self.folder_path,
-                          parallel_env=self.parallel_env,
-                          restr_scheme=self.restr_scheme) )
+        # return( Task_PL_gen_restraints(p=self.p, l=self.l,
+                          # i=self.i,
+                          # study_settings=self.study_settings,
+                          # folder_path=self.folder_path,
+                          # parallel_env=self.parallel_env,
+                          # restr_scheme=self.restr_scheme) )
+                          
+        return( Sim_PL_NPT(p=self.p, l=self.l, i=self.i, m=self.m, s=sTI,
+                                  study_settings=self.study_settings,
+                                  folder_path=self.folder_path,
+                                  parallel_env=self.parallel_env) )
 
     def output(self):
         #find nframes by reading the mdp file

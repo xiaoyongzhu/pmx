@@ -370,6 +370,7 @@ def main(argv):
     options=[
        Option( "-T", "float", 298.0, "temperature"),
        Option( "-alpha", "float", 0.05, "alpha level"),
+       Option( "-min_K", "float", 0.0, "minimal angular force constant"),
         ]
 
     help_text = ('In a generated ensemble of structures with protein and ligand translated+rotated',
@@ -382,6 +383,7 @@ def main(argv):
 
     mNames = cmdl['-f']
     alphaLevel = cmdl['-alpha']
+    min_K = cmdl['-min_K']
 
     nprot = select_ndx(cmdl['-n'],message='Select index group for protein:\n')
     nlig = select_ndx(cmdl['-n'],message='Select index group for ligand:\n')
@@ -512,6 +514,18 @@ def main(argv):
     kdih2 = RT/(np.var(dih2/180.0*np.pi))
     mdih3 = np.mean(dih3)
     kdih3 = RT/(np.var(dih3/180.0*np.pi))
+    
+    #enforce minimal force constants
+    if(kangle1<min_K):
+        kangle1 = min_K
+    if(kangle2<min_K):
+        kangle2 = min_K
+    if(kdih1<min_K):
+        kdih1 = min_K
+    if(kdih2<min_K):
+        kdih2 = min_K
+    if(kdih3<min_K):
+        kdih3 = min_K
 
     # output restraints
     ii = {}
