@@ -82,11 +82,11 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         visibility=ParameterVisibility.HIDDEN,
         significant=False, default=False,
         description="show debug output in a log.")
-        
+
     min_ang_K = luigi.FloatParameter(visibility=ParameterVisibility.HIDDEN,
                                default=0.0, significant=True,
                                description="Minimal value for an angular force constant (kJ/(mol*rad^2)).")
-                               
+
     restr_source = luigi.Parameter(
         visibility=ParameterVisibility.HIDDEN,
         significant=False, default="aligned",
@@ -285,7 +285,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                     argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", my_ndx_file,
                                 "-oii", "ii_{i}.itp".format(i=self.i),
                                 "-odg", "out_dg_{i}.dat".format(i=self.i),
-                                "-min_K", self.min_ang_K]
+                                "-min_K", "%f"%self.min_ang_K]
 
                     if(self.debug):
                         print("debug: starting postHoc_restraining")

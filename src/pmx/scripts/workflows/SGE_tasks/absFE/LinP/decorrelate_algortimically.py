@@ -233,7 +233,7 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
         significant=False, default="pmx_{task_family}_p{p}_l{l}_{sTI}{i}_{m}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
-        
+
     #debug output
     debug = luigi.BoolParameter(
         visibility=ParameterVisibility.HIDDEN,
@@ -347,7 +347,7 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
                 means[j]*=np.pi/180.0 #convert to rad
                 sigmas[j]*=np.pi/180.0 #convert to rad
             cov_mat[j,j]=sigmas[j]
-            
+
         if(self.debug):
             print("debug: starting on trajectory: {}".format(trj_A_src))
 
@@ -393,12 +393,11 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
                                         lam=1.0, box=frame_A.box, x=x, v=v,
                                         units=m_A.unity, bTrr=True )
                 m_A.write("start%d.gro"%fridx)
-
+            else:
+                if(self.debug):
+                    print("debug: \tframe {} exists".format(fridx))
             fridx+=1
-            
-        else:
-            if(self.debug):
-                print("debug: \tframe {} exists".format(fridx))
+
 
         trj_out.close()
         if(self.debug):
