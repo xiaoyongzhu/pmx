@@ -45,9 +45,9 @@ def readii(fii):
                 block=s[1]
                 continue
             s=l.split()
-            if(block=="bonds"):
-                if(int(s[0])<int(s[1])):
-                    ligfirst=False
+            # if(block=="bonds"):
+                # if(int(s[0])<int(s[1])):
+                    # ligfirst=False
 
             #assume lig is first, we'll flip in the end if needed
             if(block=="bonds"):
@@ -72,9 +72,9 @@ def readii(fii):
                 ks[3+ndih]=float(s[-1])
                 ndih+=1
 
-        #flip lig & pro if not ligfirst
-        if(not ligfirst):
-            lig,pro=pro,lig
+        # #flip lig & pro if not ligfirst
+        #if(not ligfirst):
+            #lig,pro=pro,lig
 
     return(np.array(lig), np.array(pro), means, ks) #1-indexed becasue bynum takes that
 
@@ -86,12 +86,12 @@ def update_anchors(model, idx_lig, idx_pro):
 
 def print_cur_rot(anchors, global_idcs, goal):
     order=[ #type, mean&sigma id, anchor indeces
-            ["dih", 3, [5,4,3,2], "dih_A"], #dih_A
-            ["ang", 1,   [4,3,2], "ang_A"], #ang_A
-            ["dist",0,     [3,2], "dist"],  #dist
-            ["dih", 4, [4,3,2,1], "dih_B"], #dih_B
-            ["ang", 2,   [3,2,1], "ang_B"], #ang_B
-            ["dih", 5, [3,2,1,0], "dih_A"]  #dih_C
+            ["dih", 5, [5,4,3,2], "dih_C"], #dih_C [P2, P1, P0, L2]
+            ["ang", 2,   [4,3,2], "ang_B"], #ang_B [P1, P0, P2]
+            ["dist",0,     [3,2], "dist"],  #dist [P0, L2]
+            ["dih", 4, [4,3,2,1], "dih_B"], #dih_B [P1, P0, L2, L1]
+            ["ang", 1,   [3,2,1], "ang_A"], #ang_A [P0, L2, L1]
+            ["dih", 3, [3,2,1,0], "dih_A"]  #dih_A [P0, L2, L1, L0]
           ]
     for op in order:
         cur_val=0
@@ -116,12 +116,12 @@ def rotate_and_translate_Lig_to(g, lig, model, idx_lig, idx_pro, order=None):
     #goal[5]=-goal[5]
     if(not order):
         order=[ #type, mean&sigma id, anchor indeces
-                ["dih", 3, [5,4,3,2], "dih_A"], #dih_A
-                ["ang", 1,   [4,3,2], "ang_A"], #ang_A
-                ["dist",0,     [3,2], "dist"],  #dist
-                ["dih", 4, [4,3,2,1], "dih_B"], #dih_B
-                ["ang", 2,   [3,2,1], "ang_B"], #ang_B
-                ["dih", 5, [3,2,1,0], "dih_A"]  #dih_C
+                ["dih", 5, [5,4,3,2], "dih_C"], #dih_C [P2, P1, P0, L2]
+                ["ang", 2,   [4,3,2], "ang_B"], #ang_B [P1, P0, P2]
+                ["dist",0,     [3,2], "dist"],  #dist [P0, L2]
+                ["dih", 4, [4,3,2,1], "dih_B"], #dih_B [P1, P0, L2, L1]
+                ["ang", 1,   [3,2,1], "ang_A"], #ang_A [P0, L2, L1]
+                ["dih", 3, [3,2,1,0], "dih_A"]  #dih_A [P0, L2, L1, L0]
               ]
 
     #print("lig:",idx_lig,"\tpro:",idx_pro)
