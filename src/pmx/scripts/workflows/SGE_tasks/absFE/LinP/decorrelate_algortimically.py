@@ -337,8 +337,11 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
 
 
         idx_lig, idx_pro, means, ks = readii(self.folder_path+"/ii_{i}.itp".format(i=self.i))
+        conv_ks=ks
+        for k in range(1,6):
+            conv_ks[k]=conv_ks[k]*(np.pi/180.0)**2
         kT = 8.31445985*0.001*self.T
-        sigmas = np.sqrt(kT/(ks/((180/np.pi)**2)))
+        sigmas = np.sqrt(kT/conv_ks)
         #means and sigmas in deg and nm
 
         cov_mat=np.zeros((6,6))
@@ -373,10 +376,13 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
                 #wrap sample so that dihedrals are in (-180,180). Angles shouldn't need this.
                 for k in range(3,len(sample)):
                     #if(k>=3): #dihedrals
-                    if(sample[k]<-180):
-                       sample[k]+=360.
-                    elif(sample[k]>180):
-                        sample[k]-=360.
+                    #wrap sample so that dihedrals are in (-pi,pi). Angles shouldn't need this.
+                    for k in range(3,len(sample)):
+                        #if(k>=3): #dihedrals
+                        if(sample[k]<-np.pi):
+                           sample[k]+=2*np.pi
+                        elif(sample[k]>np.pi):
+                            sample[k]-=2*np.pi
 
                 #rotate ligand to satisfy drawn restraint coords
                 rotate_and_translate_Lig_to(sample, lig, m_A, idx_lig, idx_pro)
