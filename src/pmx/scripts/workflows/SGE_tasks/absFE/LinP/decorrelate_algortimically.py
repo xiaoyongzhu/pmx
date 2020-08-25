@@ -349,7 +349,7 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
             if(j>0): #not the distance
                 means[j]*=np.pi/180.0 #convert to rad
                 sigmas[j]*=np.pi/180.0 #convert to rad
-            cov_mat[j,j]=sigmas[j]
+            cov_mat[j,j]=sigmas[j]*sigmas[j]
 
         if(self.debug):
             print("debug: starting on trajectory: {}".format(trj_A_src))
