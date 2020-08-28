@@ -70,7 +70,7 @@ Some useful methods:
     >>> # return the last residue from chain A
     >>> rl = model.chdic['A'].residues[-1]
     >>> # returns a list with the first residues of each chain
-    >>> rl = list(map(lamda m: m.residues[0], model.chains))
+    >>> rl = map(lamda m: m.residues[0], model.chains)
     >>> # remove chain A
     >>> del model['A']
     >>> # write new structure file
@@ -383,6 +383,27 @@ class Model(Atomselection):
             return(True)
         return(False)
 
+    def __compareWithoutLastChar(self, str1, str2): 
+        if isinstance(str1,int) and isinstance(str2,int): # e.g. 52, 53
+            return(False)
+ 
+        if isinstance(str1,int): # e.g. 52, 52A
+            if str1==int(str2[0:-1]): # 52, 52A
+                return(True)
+            if str1==int(str2[0:-1])-1: # 52, 53A
+                return(True)
+        elif isinstance(str2,int): # e.g. 52A, 52
+            if int(str1[0:-1])==str2: # 52A, 52
+                return(True)
+            if int(str1[0:-1])==str2-1: # 52A, 53
+                return(True)
+        else: # e.g. 52A, 52B
+            if int(str1[0:-1])==int(str2[0:-1]): # 52A, 52B
+                return(True)
+            if int(str1[0:-1])==int(str2[0:-1])-1: # 52A, 53B
+                return(True)
+        return(False)
+        
     # TODO: make readPDB and readPDBTER a single function. It seems like
     # readPDBTER is more general PDB reader?
     def __readPDBTER(self, fname=None, pdbline=None, bNoNewID=True, bPDBGAP=False):
@@ -416,7 +437,9 @@ class Model(Atomselection):
                     bNewChain = True
                 if (a.resnr != prevResID):
                     try:
-                        if a.resnr != prevResID+1:
+                        if self.__compareWithoutLastChar(prevResID,a.resnr)==True: # there are some special cases where residues are named, e.g. 52, 52A, 52B, ...
+                            bNewChain = False
+                        elif a.resnr != prevResID+1:
                             bNewChain = True
                         if (prevAtomName == 'OC2') or (prevAtomName == 'OXT') or (prevAtomName == 'OT2'):
                             bNewChain = True
@@ -431,7 +454,7 @@ class Model(Atomselection):
                 if a.name == 'C':
                     prevCatom = a
                 if bNewChain==True:
-                    if (a.chain_id==' ') or (a.chain_id==chainID) or (a.chain_id in usedChainIDs):
+                    if ((a.chain_id==' ') or (a.chain_id==chainID) or (a.chain_id in usedChainIDs) and bNoNewID==False):
                         # find a new chain id
                         bFound = False
                         while bFound==False:
@@ -728,34 +751,62 @@ class Model(Atomselection):
             Molecule instance of the residue found.
         """
 
+        #########################
+        # generate some residue id lists
+        valid_resids = []
+        for r in self.residues:
+            if isinstance(r.id,str):
+                valid_resids.append(r.id.replace(" ",""))
+            else:
+                valid_resids.append(r.id)
+
+        if chain is not None:        
+            valid_chresids = []
+            for r in self.chdic[chain].residues:
+                if isinstance(r.id,str):
+                    valid_chresids.append(r.id.replace(" ",""))
+                else:
+                    valid_chresids.append(r.id)
+        ##########################
+
+
         # check idx is a valid selection
-        if idx not in [r.id for r in self.residues]:
+        if idx not in valid_resids:#[r.id for r in self.residues]:
             raise ValueError('resid %s not found in Model residues' % idx)
 
         if chain is None:
             # check selection is unique
-            if [r.id for r in self.residues].count(idx) != 1:
+            if [r.id for r in self.residues].count(idx) > 1:
                 raise ValueError('idx choice %s results in non-unique selection' % idx)
         else:
             # check chain is a valid selection
             if chain not in [c.id for c in self.chains]:
                 raise ValueError('chain ID "%s" not found in Model chains' % chain)
             # check idx+chain is a valid selection
-            if idx not in [r.id for r in self.chdic[chain].residues]:
+            if idx not in valid_chresids:#[r.id for r in self.chdic[chain].residues]:
                 raise ValueError('resid %s not found in chain "%s"' % (idx, chain))
             # check selection is unique
-            if [r.id for r in self.chdic[chain].residues].count(idx) != 1:
+            if [r.id for r in self.chdic[chain].residues].count(idx) > 1:
                 raise ValueError('idx choice %s for chain "%s" results in non-unique selection' % (idx, chain))
 
         # then find and return the residue
         if chain is None:
             for r in self.residues:
-                if r.id == idx:
-                    return r
+                if isinstance(r.id,int):
+                    if r.id == idx:
+                        return r
+                else:
+                    if r.id.replace(" ","")==idx:
+                        return r
         elif chain is not None:
             for r in self.chdic[chain].residues:
-                if r.id == idx:
-                    return r
+                if isinstance(r.id,int):
+                    if r.id == idx:
+                        return r
+                else:
+                    if r.id.replace(" ","")==idx:
+                        return r
+            
 
     def fetch_residues(self, key, inv=False):
         """Gets residues using a list of residue names.
