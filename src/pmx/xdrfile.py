@@ -41,7 +41,7 @@ out_mode = 42
 
 class Frame:
 
-    def __init__(self, n, mode, x=None, box=None, units=None, v=False, f=False):
+    def __init__(self, n, mode, x=None, box=None, units=None, v=None, f=None):
         # create vector for x
         self.natoms = n
         # x (coordinates)
@@ -71,10 +71,19 @@ class Frame:
             #self.f=c_size_t(0)#((c_float*3)*n)()
             if(v):
                 self.v=((c_float*3)*n)()
+                i = 0
+                for a in range(0, self.natoms):
+                    for dim in range(0, 3):
+                        self.v[a][dim] = scale*v[i]
+                        i += 1
             else:
                 self.v=c_size_t(0)
             if(f):
                 self.f=((c_float*3)*n)()
+                for a in range(0, self.natoms):
+                    for dim in range(0, 3):
+                        self.f[a][dim] = scale*v[i]
+                        i += 1
             else:
                 self.f=c_size_t(0)
 
@@ -238,7 +247,7 @@ class XDRFile:
               POINTER(c_float),POINTER(c_float)]
 
     def write_xtc_frame( self, step=0, time=0.0, prec=1000.0, lam=0.0, box=None, x=None, v=None, f=None, units='A', bTrr=False ):
-        f = Frame(self.natoms,self.mode,box=box,x=x,v=(v is not None),f=(f is not None),units=units)
+        f = Frame(self.natoms,self.mode,box=box,x=x,v=v,f=f,units=units)
         step = c_int(step)
         time = c_float(time)
         prec = c_float(prec)
