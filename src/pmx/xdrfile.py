@@ -33,6 +33,7 @@
 import numpy as np
 from ctypes import *
 import os.path
+from sys import getsizeof
 
 mTrr, mNumPy = 1, 2
 auto_mode = 0
@@ -42,13 +43,14 @@ out_mode = 42
 class Frame:
 
     def __init__(self, n, mode, x=None, box=None, units=None, v=None, f=None):
+        scale = 1.0
+        if units == 'A':
+            scale = 0.1
+
         # create vector for x
         self.natoms = n
         # x (coordinates)
         if mode == out_mode:
-            scale = 1.0
-            if units == 'A':
-                scale = 0.1
             self.x = ((c_float*3)*n)()
             i = 0
             for a in range(0, self.natoms):
@@ -69,21 +71,24 @@ class Frame:
         else:
             #self.v=c_size_t(0)#((c_float*3)*n)()
             #self.f=c_size_t(0)#((c_float*3)*n)()
-            if(v):
+            if(v is not None):
                 self.v=((c_float*3)*n)()
-                i = 0
-                for a in range(0, self.natoms):
-                    for dim in range(0, 3):
-                        self.v[a][dim] = scale*v[i]
-                        i += 1
+                if(mode==out_mode):
+                    i = 0
+                    for a in range(0, self.natoms):
+                        for dim in range(0, 3):
+                            self.v[a][dim] = scale*v[i]
+                            i += 1
             else:
                 self.v=c_size_t(0)
-            if(f):
+            if(f is not None):
                 self.f=((c_float*3)*n)()
-                for a in range(0, self.natoms):
-                    for dim in range(0, 3):
-                        self.f[a][dim] = scale*v[i]
-                        i += 1
+                if(mode==out_mode):
+                    i = 0
+                    for a in range(0, self.natoms):
+                        for dim in range(0, 3):
+                            self.f[a][dim] = scale*f[i]
+                            i += 1
             else:
                 self.f=c_size_t(0)
 
@@ -110,9 +115,15 @@ class Frame:
                 atom.x[1] = self.x[i][1]*10
                 atom.x[2] = self.x[i][2]*10
                 if(uv):
-                    atom.v = [v/10 for v in self.v[i]]
+                    atom.v = [v*10 for v in self.v[i]]
                 else:
                     atom.v=[0,0,0]
+                    
+                if(uf):
+                    atom.f = [f/10. for f in self.f[i]]
+                else:
+                    atom.f=[0,0,0]
+                    
             else:
                 atom.x[0] = self.x[i][0]
                 atom.x[1] = self.x[i][1]
@@ -121,11 +132,12 @@ class Frame:
                     atom.v = [v for v in self.v[i]]
                 else:
                     atom.v=[0,0,0]
-
-            if(uf): #no force scaling by units
-                atom.f = [f for f in self.f[i]]
-            else:
-                atom.f=[0,0,0]
+                
+                if(uf):
+                    atom.f = [f for f in self.f[i]]
+                else:
+                    atom.f=[0,0,0]
+            
 
     def update( self, atom_sel, uv=False, uf=False ):
         if(len(atom_sel.atoms)!=self.natoms):
