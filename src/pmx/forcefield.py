@@ -820,6 +820,7 @@ class TopolBase:
 
         # write the rest of the header without the
         # line that imports the forcefield
+        self.includes = [] # here collect the included itp's to avoid doubly including them
         self.write_header(fp, write_ff=False)
 
         # write itps included at top of the file
@@ -895,6 +896,9 @@ class TopolBase:
 
         print('', file=fp)
         for line in self.header:
+            if 'include' in line:
+                foo = line.rstrip()
+                self.includes.append(foo.split()[-1])
             if 'forcefield' in line and write_ff is False:
                 continue
             else:
@@ -916,6 +920,8 @@ class TopolBase:
 
         print('', file=fp)
         for itp, where in self.include_itps:
+            if (itp in self.includes) or ('"{0}"'.format(itp) in self.includes): # already included
+                continue
             if where == which:
                 print('#include "{}"'.format(itp), file=fp)
 
