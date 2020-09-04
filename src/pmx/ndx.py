@@ -282,7 +282,7 @@ def create_ndx_freeze( pdbFile, ndxFile='index_FREEZE.ndx', groupname='FREEZE' )
     
     # create index group
     m = Model(pdbFile)
-    i = -1
+    i = 0
     ind = []
     for a in m.atoms:
         i+=1
