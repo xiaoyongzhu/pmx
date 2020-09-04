@@ -95,13 +95,9 @@ class TopolBase:
     """Base class for topology objects. It reads/writes topology files.
     """
 
-    def __init__(self, filename, version='old'):
+    def __init__(self, filename=None, version='old'):
         self.filename = filename
         self.version = version
-        if os.path.splitext(filename)[1] == '.itp':
-            self.is_itp = True
-        else:
-            self.is_itp = False
         self.defaults = ''
         self.header = []
         self.atomtypes = []
@@ -133,7 +129,12 @@ class TopolBase:
         self.qB = 0.
         self.include_itps = []
         self.forcefield = ''
-        self.read()
+        if filename!=None:
+            if os.path.splitext(filename)[1] == '.itp':
+                self.is_itp = True
+            else:
+                self.is_itp = False
+            self.read()
 
     # ==============
     # read functions
@@ -165,6 +166,8 @@ class TopolBase:
             if self.has_posre:
                 self.read_posre(posre_sections)
             self.__make_residues()
+        else: # maybe only atomtypes are available
+            self.read_atomtypes(lines)
         if not self.is_itp:
             self.read_system(lines)
             self.read_molecules(lines)
@@ -278,8 +281,17 @@ class TopolBase:
         for line in lst:
             atomtype = dict()
             elements = line.split()
-            # take into account there can be 2 formats for atomtypes
-            if len(elements) == 7:
+            # take into account there can be 3 formats for atomtypes
+            if len(elements) == 6:
+                atomtype['name'] = str(elements[0])
+                atomtype['bond_type'] = str(elements[0])
+                atomtype['mass'] = float(elements[1])
+                atomtype['charge'] = float(elements[2])
+                atomtype['ptype'] = str(elements[3])
+                atomtype['sigma'] = float(elements[4])
+                atomtype['epsilon'] = float(elements[5])
+                self.atomtypes.append(atomtype)
+            elif len(elements) == 7:
                 atomtype['name'] = str(elements[0])
                 atomtype['bond_type'] = str(elements[1])
                 atomtype['mass'] = float(elements[2])
@@ -1212,6 +1224,12 @@ class TopolBase:
             else:
                 print('%6d %6d %6d %8s' % (p[0].id, p[1].id, p[2], p[3]), file=fp)
 
+    def __print_any_angle(self, ang, fp ):
+        print('%6d %6d %6d %6d' % (ang[0].id, ang[1].id, ang[2].id, ang[3]), file=fp, end='')
+        for p in ang[4]:
+            print('%14.6f ' % p,file=fp,end='')
+        print('\n',file=fp,end='')
+
     def write_angles(self, fp, state='AB'):
         print('\n[ angles ]', file=fp)
         print(';  ai    aj    ak funct            c0            c1            c2            c3', file=fp)
@@ -1237,18 +1255,21 @@ class TopolBase:
 
                 if state == 'AB':
                     # check type here, for charmm its different, Urey-Bradley
-                    if ang[3] == 1:
-                        print('%6d %6d %6d %6d %14.6f %14.6f %14.6f %14.6f ; %s %s %s'
-                              % (ang[0].id, ang[1].id, ang[2].id, ang[3], ang[4][1],
-                                 ang[4][2], ang[5][1], ang[5][2], ang[0].name, ang[1].name, ang[2].name), file=fp)
-                    elif ang[3] == 5:
-                        print('%6d %6d %6d %6d %14.6f %14.6f %14.6f %14.6f %14.6f %14.6f %14.6f %14.6f ; %s %s %s'
-                              % (ang[0].id, ang[1].id, ang[2].id, ang[3], ang[4][1],
-                                 ang[4][2], ang[4][3], ang[4][4], ang[5][1],
-                                 ang[5][2], ang[5][3], ang[5][4],
-                                 ang[0].name, ang[1].name, ang[2].name), file=fp)
-                    else:
-                        raise ValueError("Don't know how to print angletype %d" % ang[3])
+                    try:
+                        if ang[3] == 1:
+                            print('%6d %6d %6d %6d %14.6f %14.6f %14.6f %14.6f ; %s %s %s'
+                                  % (ang[0].id, ang[1].id, ang[2].id, ang[3], ang[4][1],
+                                     ang[4][2], ang[5][1], ang[5][2], ang[0].name, ang[1].name, ang[2].name), file=fp)
+                        elif ang[3] == 5:
+                            print('%6d %6d %6d %6d %14.6f %14.6f %14.6f %14.6f %14.6f %14.6f %14.6f %14.6f ; %s %s %s'
+                                  % (ang[0].id, ang[1].id, ang[2].id, ang[3], ang[4][1],
+                                     ang[4][2], ang[4][3], ang[4][4], ang[5][1],
+                                     ang[5][2], ang[5][3], ang[5][4],
+                                     ang[0].name, ang[1].name, ang[2].name), file=fp)
+                        else:
+                            raise ValueError("Don't know how to print angletype %d" % ang[3])
+                    except:
+                        self.__print_any_angle( ang, fp ) # can be that an angle has parameters for one state only
 
                 elif state == 'AA':
                     if ang[3] == 1:
