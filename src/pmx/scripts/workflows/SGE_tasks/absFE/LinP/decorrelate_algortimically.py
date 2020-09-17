@@ -11,6 +11,7 @@ from pmx.model import Model
 from pmx.scripts.workflows.utils import read_from_mdp
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
+from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_align
 from pmx.xtc import Trajectory
 from pmx.geometry import Rotation
 #import pmx.scripts.workflows.postHoc_restraining_python3
@@ -281,6 +282,12 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
                               folder_path=self.folder_path,
                               parallel_env=self.parallel_env,
                               restr_scheme=self.restr_scheme) )
+
+                tasks.append(Task_PL_align(p=self.p, l=self.l, i=self.i, m=m, sTI='C',
+                                  study_settings=self.study_settings,
+                                  folder_path=self.folder_path,
+                                  parallel_env=self.parallel_env,
+                                  restr_scheme=self.restr_scheme) )
 
         return(tasks)
 

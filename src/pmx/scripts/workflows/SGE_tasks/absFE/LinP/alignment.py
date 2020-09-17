@@ -42,6 +42,11 @@ class Task_PL_align(SGETunedJobTask):
 
     stage="morphes"
 
+    reuse_existing_pbc_fixes = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False, default=False,
+        description="If th trj_?.trr exist, reuse them instead of making new ones.")
+
     #request 1 cores
     n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
                                default=1, significant=False)
@@ -116,6 +121,8 @@ class Task_PL_align(SGETunedJobTask):
             targets.append(luigi.LocalTarget(
                 os.path.join(self.sim_path, 'frame%d.gro'%nf)) )
 
+        targets.append(luigi.LocalTarget(os.path.join(self.sim_path, 'aligned.trr')) )
+
         return targets
 
     def gen_ndx_w_chains(self, struct_path, ndx_path, nchains):
@@ -134,9 +141,9 @@ class Task_PL_align(SGETunedJobTask):
 
 
     def work(self):
-    
-        mylog=open("align.log","w")
-    
+
+        mylog=open("align_py.log","w")
+
         #find number of protein chains
         m_init = Model(self.folder_path+"/init.pdb", bPDBTER=True)
         n_prot_chains = len(m_init.chains)-1 #one is ligand
@@ -177,6 +184,8 @@ class Task_PL_align(SGETunedJobTask):
         ndxs = ["-n PL_w_chains.ndx", "-n P_w_chains.ndx", ""]
         for i in range(3):
             src=sources[i]
+            if(self.reuse_existing_pbc_fixes and os.path.exists("trj_{}.trr".format(names[i]))):
+                continue;
 
             #wrap mol centers
             os.system("echo System | gmx trjconv -s {tpr} -f {trj} -o {out} "
@@ -212,7 +221,7 @@ class Task_PL_align(SGETunedJobTask):
         m_B.a2nm()
         m_C.a2nm()
 
-        
+
         trj_A = Trajectory("trj_A.trr") #P+L
         trj_B = Trajectory("trj_B.trr") #apoP
         trj_C = Trajectory("trj_C.trr") #vacL
@@ -224,8 +233,8 @@ class Task_PL_align(SGETunedJobTask):
         p_ndx = np.asarray(ndx_file_A["C-alpha"].ids)-1 # as in Vytas' alignment script
         linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
         l_ndx = np.asarray(ndx_file_C["MOL"].ids)-1
-        
-        
+
+
         #find chain and resID of the last residue of the protein
         mol_first_atom = m_A.atoms[linA_ndx[0]]
         chID = mol_first_atom.chain_id
@@ -235,11 +244,11 @@ class Task_PL_align(SGETunedJobTask):
             if(r.id==resID):
                 global_res_index = m_A.residues.index(r)
                 break;
-     
-        if(global_res_index<0):           
+
+        if(global_res_index<0):
             raise("Could not find residue with resID %d in protein+ligand."%(resID))
-       
-        
+
+
         num_aligned_atoms = len(m_B.atoms) + l_ndx.shape[0]
         if(len(m_A.atoms) != num_aligned_atoms):
             print("\nWARNING: number of atoms in Apo + ligand ({}) does not match that of Holo ({})!\n".format(num_aligned_atoms,len(m_A.atoms)))
@@ -270,66 +279,67 @@ class Task_PL_align(SGETunedJobTask):
             if(frame_A.time<self.study_settings['b']):
                 continue
 
+
+            frame_A.update(m_A)
+            #m_b needs to be reloaded to have correct # of atoms next iteration
+            m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
+                self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
+            m_B.a2nm()
+            frame_B.update(m_B, uv=True)
+            frame_C.update(m_C, uv=True)
+            mylog.write("frame %d: read models from pdbs\n"%fridx)
+            #mylog.flush()
+
+            # m_A.write("m_A1.gro")
+            # step1: fit prot from prot+lig onto apo protein
+            (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
+            # rotate velocities
+            # not needed. We aren't saving m_A
+            mylog.write("\t\tFit A on B\n")
+            #mylog.flush()
+
+            # step2: ligand onto the ligand from prot+lig structure
+            (v1,v2,R) = fit( m_A, m_C, linA_ndx, l_ndx )
+            mylog.write("\t\tFit C on A\n")
+            #mylog.flush()
+            # rotate velocities
+            rotate_velocities_R( m_C, R )
+            mylog.write("\t\tRotated C velocities\n")
+            #mylog.flush()
+
+            #insert vac ligand into B
+            #do the insertion explicitly without relying on chains
+            mol = m_C.residues[0]
+            mol.model = m_B
+            m_B.residues.insert(global_res_index, mol)
+            #don't add to chain, it doesn't matter
+            m_B.al_from_resl()
+            m_B.renumber_atoms()
+            m_B.al_from_resl()
+
+
+            mylog.write("\t\tInserted ligand brom C into B\n")
+            #mylog.flush()
+
+            # output
             if(not os.path.isfile("frame%d.gro"%fridx)):
-                frame_A.update(m_A)
-                #m_b needs to be reloaded to have correct # of atoms next iteration
-                m_B = Model(self.base_path+"/prot_{0}/apoP/ions{3}_{4}.pdb".format(
-                    self.p, self.l, None, self.i, self.m),bPDBTER=True) #apoP
-                m_B.a2nm()
-                frame_B.update(m_B, uv=True)
-                frame_C.update(m_C, uv=True)
-                mylog.write("frame %d: read models from pdbs\n"%fridx)
-                #mylog.flush()
-
-                # m_A.write("m_A1.gro")
-                # step1: fit prot from prot+lig onto apo protein
-                (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
-                # rotate velocities
-                # not needed. We aren't saving m_A
-                mylog.write("\t\tFit A on B\n")
-                #mylog.flush()
-
-                # step2: ligand onto the ligand from prot+lig structure
-                (v1,v2,R) = fit( m_A, m_C, linA_ndx, l_ndx )
-                mylog.write("\t\tFit C on A\n")
-                #mylog.flush()
-                # rotate velocities
-                rotate_velocities_R( m_C, R )
-                mylog.write("\t\tRotated C velocities\n")
-                #mylog.flush()
-
-                #insert vac ligand into B                
-                #do the insertion explicitly without relying on chains
-                mol = m_C.residues[0]
-                mol.model = m_B
-                m_B.residues.insert(global_res_index, mol)
-                #don't add to chain, it doesn't matter
-                m_B.al_from_resl()
-                m_B.renumber_atoms()
-                m_B.al_from_resl()
-                
-                
-                mylog.write("\t\tInserted ligand brom C into B\n")
-                #mylog.flush()
-
-                # output
                 m_B.write("frame%d.gro"%fridx)
                 mylog.write("\t\tWrote B as frame%d.gro\n"%fridx)
-                mylog.flush()
+            mylog.flush()
 
-                x = np.zeros(len(m_B.atoms)*3)
-                v = np.zeros(len(m_B.atoms)*3)
-                for i, atom in enumerate(m_B.atoms):
-                    x[i*3:(i+1)*3]=atom.x
-                    v[i*3:(i+1)*3]=atom.v
+            x = np.zeros(len(m_B.atoms)*3)
+            v = np.zeros(len(m_B.atoms)*3)
+            for i, atom in enumerate(m_B.atoms):
+                x[i*3:(i+1)*3]=atom.x
+                v[i*3:(i+1)*3]=atom.v
 
-                mylog.write("\t\t\tSet atomx.x &.v; ready for writing trj frame to aligned.trr\n")
-                trj_out.write_xtc_frame(step=frame_B.step, time=frame_B.time,
-                                        lam=1.0, box=frame_B.box, x=x, v=v,
-                                        units=m_B.unity, bTrr=True )
+            mylog.write("\t\t\tSet atomx.x &.v; ready for writing trj frame to aligned.trr\n")
+            trj_out.write_xtc_frame(step=frame_B.step, time=frame_B.time,
+                                    lam=1.0, box=frame_B.box, x=x, v=v,
+                                    units=m_B.unity, bTrr=True )
 
-                mylog.write("\t\tWrote B to aligned trajectory\n")
-                mylog.flush()
+            mylog.write("\t\tWrote B to aligned trajectory\n")
+            mylog.flush()
 
             fridx+=1
 

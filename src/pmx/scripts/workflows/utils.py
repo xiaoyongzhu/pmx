@@ -161,6 +161,11 @@ def parse_options(SGE=False):
                         help='Time (ps) at which to start sampling frames '
                         'from equilibrium simulations.',
                         default=2256.0)
+    parser.add_argument('--workers',
+                        dest='workers',
+                        type=int,
+                        help='How many tasks can be running simultaneously. 0 -> one task per host/guest/repeat/direction/n_sampling sims combo.',
+                        default=0)
     # parser.add_argument('--gmx',
     #                     dest='gmx',
     #                     type=str,
@@ -184,15 +189,15 @@ def parse_options(SGE=False):
                             'config file. '
                             'Otherwize, will use a local scheduler on the '
                             'current machine.')
-                            
+
         mdrun_help=' For best performance on a cluster make this value aliased for the optimal version of mdrun on each node.'
-    
+
     parser.add_argument('--mdrun',
                             dest='mdrun',
                             type=str,
                             help='Call to mdrun.' + mdrun_help,
                             default="gmx mdrun")
-                            
+
     parser.add_argument('--mdrun_double',
                             dest='mdrun_double',
                             type=str,

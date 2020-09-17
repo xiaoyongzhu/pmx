@@ -32,13 +32,16 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
             parallel_env=self.pe)
         self.tasks.append(summary)
 
-        self.n_workers=2*len(summary.hosts)*len(summary.ligands)*len(self.states)*\
+        if(self.n_workers==0):
+            self.n_workers=2*len(summary.hosts)*len(summary.ligands)*len(self.states)*\
                     summary.n_repeats*summary.n_sampling_sims
 
         super().run_everything() #creates the scheduler and runs the workers
 
 
-
+    def __init__(self, n_workers=0, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.n_workers=n_workers
 
 # ==============================================================================
 #                               MAIN
@@ -67,7 +70,8 @@ def main(args):
             mdrun_double=args.mdrun_double,
             mdrun_opts=args.mdrun_opts,
             pe=args.pe,
-            rem_sched=args.rem_sched
+            rem_sched=args.rem_sched,
+            n_workers=args.workers
             )
 
     w.run_everything()
