@@ -108,7 +108,7 @@ def print_cur_rot(anchors, global_idcs, goal):
 
         print("\t{}:\t{:>7.4}  {:>7.4}\t{}".format(op[3], cur_val, goal[op[1]], [global_idcs[a] for a in indeces]))
 
-def rotate_and_translate_Lig_to(g, lig, model, idx_lig, idx_pro, order=None):
+def rotate_and_translate_Lig_to(g, lig, model, idx_lig, idx_pro, order=None, debug=False):
     goal=g
     #goal[1]=np.pi-goal[1]
     #goal[2]=np.pi-goal[2]
@@ -149,9 +149,13 @@ def rotate_and_translate_Lig_to(g, lig, model, idx_lig, idx_pro, order=None):
                 # print("\t\tidx=",num,"\tbefore rot:", a.x)
                 a.x=rot.apply(a.x, delta)
                 # print("\t\tidx=",num,"\tafter rot:", a.x)
-                a.v=rot.apply(a.v, delta)
+                #velocity needs to be roatated around an axis starting at [0,0,0], these shidts achieve that
+                a.v=np.array(rot.apply(np.array(a.v)+np.array(anchors[indeces[2]]), delta))-np.array(anchors[indeces[2]])
             # anchors=update_anchors(model, idx_lig, idx_pro)
             # print("\tdih after rotation={}\t target dih={}".format(calc_dih(anchors,*indeces,False), goal[op[1]]))
+            if(debug):
+                print("\tafter op #", opid, op[3])
+                print("\t",lig[0].x, '\t', lig[0].v, "len vel:", np.linalg.norm(np.array(lig[0].v)))
         elif(op[0] == "ang"):
             cur_val = calc_angle(anchors,*indeces,False)
             delta = goal[op[1]] - cur_val
@@ -168,9 +172,13 @@ def rotate_and_translate_Lig_to(g, lig, model, idx_lig, idx_pro, order=None):
                 #print("\t\tidx=",num,"\tbefore rot:", a.x)
                 a.x=rot.apply(a.x, delta)
                 #print("\t\tidx=",num,"\tafter rot:", a.x)
-                a.v=rot.apply(a.v, delta)
+                #velocity needs to be roatated around an axis starting at [0,0,0], these shidts achieve that
+                a.v=np.array(rot.apply(np.array(a.v)+endp, delta))-endp
             # anchors=update_anchors(model, idx_lig, idx_pro)
             # print("\tang after rotation={}\t target ang={}".format(calc_angle(anchors,*indeces,False), goal[op[1]]))
+            if(debug):
+                print("after op #", opid, op[3])
+                print("\t",lig[0].x, '\t', lig[0].v, "len vel:", np.linalg.norm(np.array(lig[0].v)))
         elif(op[0] == "dist"):
             cur_disp = subtract_vecs(anchors[indeces[1]],
                                      anchors[indeces[0]])
@@ -183,6 +191,11 @@ def rotate_and_translate_Lig_to(g, lig, model, idx_lig, idx_pro, order=None):
             for a in lig:
                 for ax in range(3):
                     a.x[ax] = a.x[ax] + delta[ax]
+                    #no change for velocity here
+
+            if(debug):
+                print("after op #", opid, op[3])
+                print("\t",lig[0].x, '\t', lig[0].v, "len vel:", np.linalg.norm(np.array(lig[0].v)))
         else:
             raise(Exception("Unrecognized restraint type %s"%op[0]))
 
@@ -374,9 +387,12 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
                 break
 
             if(not os.path.isfile("start%d.gro"%fridx)):
-                frame_A.update(m_A)
+                frame_A.update(m_A, uv=True, uf=True)
                 if(self.debug):
-                        print("debug: \tframe {}".format(fridx))
+                    print("debug: \tframe {}".format(fridx))
+
+                    # print(m_A.atoms[l_ndx[0]].x, '\t', m_A.atoms[l_ndx[0]].v, "\tlen vel:", np.linalg.norm(np.array(m_A.atoms[l_ndx[0]].v)))
+
                 #draw restraint coords from independent multivariate distribution
                 sample = np.random.multivariate_normal(means, cov_mat) # nm & rad
 
@@ -392,7 +408,12 @@ class Task_PL_decorelate_alg(SGETunedJobTask):
                             sample[k]-=2*np.pi
 
                 #rotate ligand to satisfy drawn restraint coords
-                rotate_and_translate_Lig_to(sample, lig, m_A, idx_lig, idx_pro)
+                #rotate_and_translate_Lig_to(sample, lig, m_A, idx_lig, idx_pro, debug=self.debug)
+                rotate_and_translate_Lig_to(sample, lig, m_A, idx_lig, idx_pro, debug=False)
+
+                # if(self.debug):
+                #     print("Lig velocities after rotations:")
+                #     print(m_A.atoms[l_ndx[0]].x, '\t', m_A.atoms[l_ndx[0]].v, "\tlen vel:", np.linalg.norm(np.array(m_A.atoms[l_ndx[0]].v)))
 
                 # output
                 x = np.zeros(len(m_A.atoms)*3)
