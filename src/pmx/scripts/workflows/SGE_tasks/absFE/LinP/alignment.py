@@ -45,7 +45,7 @@ class Task_PL_align(SGETunedJobTask):
     reuse_existing_pbc_fixes = luigi.BoolParameter(
         visibility=ParameterVisibility.HIDDEN,
         significant=False, default=False,
-        description="If th trj_?.trr exist, reuse them instead of making new ones.")
+        description="If the trj_?.trr exist, reuse them instead of making new ones.")
 
     #request 1 cores
     n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
@@ -59,6 +59,13 @@ class Task_PL_align(SGETunedJobTask):
         "formatted with class variables to name the job with qsub.")
 
     extra_packages=[np]
+
+    #debug output
+    debug = luigi.BoolParameter(
+        visibility=ParameterVisibility.HIDDEN,
+        significant=False, default=False,
+        description="show debug output in a log.")
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -290,6 +297,19 @@ class Task_PL_align(SGETunedJobTask):
             mylog.write("frame %d: read models from pdbs\n"%fridx)
             #mylog.flush()
 
+            if(self.debug):
+                print("debug: \tframe {} before alignment".format(fridx))
+
+                # # load x and v for output
+                # x = np.zeros(len(m_A.atoms)*3)
+                # v = np.zeros(len(m_A.atoms)*3)
+                # for i, atom in enumerate(m_A.atoms):
+                #     x[i*3:(i+1)*3]=atom.x
+                #     v[i*3:(i+1)*3]=atom.v
+                # print("Lig positions: \n", x[linA_ndx*3])
+                # print("Lig velocities: \n", v[linA_ndx*3])
+
+
             # m_A.write("m_A1.gro")
             # step1: fit prot from prot+lig onto apo protein
             (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
@@ -321,6 +341,23 @@ class Task_PL_align(SGETunedJobTask):
             mylog.write("\t\tInserted ligand brom C into B\n")
             #mylog.flush()
 
+            if(self.debug):
+                print("debug: \tframe {} after alignment".format(fridx))
+
+                # # load x and v for output
+                # x = np.zeros(len(m_B.atoms)*3)
+                # v = np.zeros(len(m_B.atoms)*3)
+                # for i, atom in enumerate(m_B.atoms):
+                #     x[i*3:(i+1)*3]=atom.x
+                #     v[i*3:(i+1)*3]=atom.v
+                # print("Lig positions: \n", x[linA_ndx*3])
+                # print("Lig velocities: \n", v[linA_ndx*3])
+                # print("Lig velocities in atomsB:")
+                # for i, atom in enumerate(m_B.atoms):
+                #     if(i in linA_ndx):
+                #         print(atom.v)
+
+
             # output
             if(not os.path.isfile("frame%d.gro"%fridx)):
                 m_B.write("frame%d.gro"%fridx)
@@ -340,6 +377,9 @@ class Task_PL_align(SGETunedJobTask):
 
             mylog.write("\t\tWrote B to aligned trajectory\n")
             mylog.flush()
+
+            # if(self.debug):
+            #     raise(Exception("Debugging"))
 
             fridx+=1
 
