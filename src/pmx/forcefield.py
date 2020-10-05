@@ -129,6 +129,7 @@ class TopolBase:
         self.qB = 0.
         self.include_itps = []
         self.forcefield = ''
+        self.is_itp = True
         if filename!=None:
             if os.path.splitext(filename)[1] == '.itp':
                 self.is_itp = True
