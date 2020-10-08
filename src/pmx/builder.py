@@ -320,7 +320,7 @@ def build_chain(sequence, dihedrals=None,
     # chirality 
     if chirality==None:
         chirality = ''
-        for s in seq:
+        for s in sequence:
             chirality = chirality+'L'
 
     # if cyclic, form dihedrals
