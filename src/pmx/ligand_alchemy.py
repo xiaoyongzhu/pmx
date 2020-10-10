@@ -2589,8 +2589,8 @@ class LigandHybridTopology:
                 a2 = self.m1.atoms[newid2-1]
                 a3 = self.m1.atoms[newid3-1]
                 vsiteToAdd = [a1,a2,a3,b[3],b[4]]
-                if( self._check_if_vsite_exists( newvsites2, vsiteToAdd )==False ):
-                    newvsites2.append( [a1, a2, a3, b[3], b[4]] )
+                if( self._check_if_vsite_exists( self.newvsites2, vsiteToAdd )==False ):
+                    self.newvsites2.append( [a1, a2, a3, b[3], b[4]] )
 
     def _make_pairs14( self ):
         pp = []
