@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,19 @@
   
 
   
+  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -25,17 +31,12 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../_static/js/versions.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Trajectory" href="trajectory.html" />
@@ -83,6 +84,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -127,6 +129,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -165,7 +168,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="index.html">Classes</a> &raquo;</li>
         
@@ -197,9 +200,9 @@ hybrid systems to be used in alchemical calculations (<a class="reference intern
 acts on this object.</p>
 <div class="section" id="api-reference">
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="pmx.model.Model">
-<em class="property">class </em><code class="sig-prename descclassname">pmx.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param">filename=None</em>, <em class="sig-param">pdbline=None</em>, <em class="sig-param">renumber_atoms=True</em>, <em class="sig-param">renumber_residues=True</em>, <em class="sig-param">rename_atoms=False</em>, <em class="sig-param">scale_coords=None</em>, <em class="sig-param">bPDBTER=True</em>, <em class="sig-param">bNoNewID=True</em>, <em class="sig-param">bPDBGAP=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pmx.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pdbline</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">renumber_atoms</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">renumber_residues</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">rename_atoms</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">scale_coords</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bPDBTER</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">bNoNewID</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">bPDBGAP</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Model Class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -226,7 +229,7 @@ Default is True.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.model.Model.title">
 <code class="sig-name descname">title</code><a class="headerlink" href="#pmx.model.Model.title" title="Permalink to this definition">¶</a></dt>
 <dd><p>title of model. Default is ‘PMX MODEL’.</p>
@@ -237,7 +240,7 @@ Default is True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.model.Model.filename">
 <code class="sig-name descname">filename</code><a class="headerlink" href="#pmx.model.Model.filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>filename from which the Model was imported, otherwise None.</p>
@@ -248,7 +251,7 @@ Default is True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.model.Model.chains">
 <code class="sig-name descname">chains</code><a class="headerlink" href="#pmx.model.Model.chains" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of Chain instances</p>
@@ -259,7 +262,7 @@ Default is True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.model.Model.chdic">
 <code class="sig-name descname">chdic</code><a class="headerlink" href="#pmx.model.Model.chdic" title="Permalink to this definition">¶</a></dt>
 <dd><p>dict with chain IDs as keys and Chain instances as values</p>
@@ -270,7 +273,7 @@ Default is True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.model.Model.residues">
 <code class="sig-name descname">residues</code><a class="headerlink" href="#pmx.model.Model.residues" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of molecules/residues</p>
@@ -281,7 +284,7 @@ Default is True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.model.Model.unity">
 <code class="sig-name descname">unity</code><a class="headerlink" href="#pmx.model.Model.unity" title="Permalink to this definition">¶</a></dt>
 <dd><p>coordinates unit, either ‘A’ or ‘nm’.</p>
@@ -292,7 +295,7 @@ Default is True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.model.Model.box">
 <code class="sig-name descname">box</code><a class="headerlink" href="#pmx.model.Model.box" title="Permalink to this definition">¶</a></dt>
 <dd><p>3x3 array containing the box vectors. See Gromacs manual, Table 3.1</p>
@@ -303,7 +306,7 @@ Default is True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.model.Model.moltype">
 <code class="sig-name descname">moltype</code><a class="headerlink" href="#pmx.model.Model.moltype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Type of system: protein, dna, rna, or unknown if organic molecule or
@@ -322,261 +325,44 @@ a mix of molecules are in the system.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.model.Model.read" title="pmx.model.Model.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(filename[, bPDBTER, bNoNewID, bPDBGAP])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code>(filename[, bPDBTER, bNoNewID, bPDBGAP])</p></td>
 <td><p>PDB/GRO file reader.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.model.Model.write" title="pmx.model.Model.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(fn[, title, nr, bPDBTER, bAssignChainIDs])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code>(fn[, title, nr, bPDBTER, bAssignChainIDs])</p></td>
 <td><p>Writes Model to file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.model.Model.renumber_residues" title="pmx.model.Model.renumber_residues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renumber_residues</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">renumber_residues</span></code>()</p></td>
 <td><p>Renumbers all residues from 1.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.model.Model.renumber_atoms" title="pmx.model.Model.renumber_atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renumber_atoms</span></code></a>([start])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">renumber_atoms</span></code>([start])</p></td>
 <td><p>Renumber all atoms starting from a chosen number (default is 1).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.model.Model.insert_residue" title="pmx.model.Model.insert_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_residue</span></code></a>(pos, res, chain_id)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_residue</span></code>(pos, res, chain_id)</p></td>
 <td><p>Inserts a residue in Model.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.model.Model.insert_chain" title="pmx.model.Model.insert_chain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_chain</span></code></a>(pos, new_chain)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_chain</span></code>(pos, new_chain)</p></td>
 <td><p>Inserts a Chain in Model.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.model.Model.remove_atom" title="pmx.model.Model.remove_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_atom</span></code></a>(atom)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_atom</span></code>(atom)</p></td>
 <td><p>Removes an Atom instance.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.model.Model.remove_residue" title="pmx.model.Model.remove_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_residue</span></code></a>(residue[, renumber_atoms, …])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_residue</span></code>(residue[, renumber_atoms, …])</p></td>
 <td><p>Removes a Molecule/residue instance.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.model.Model.remove_chain" title="pmx.model.Model.remove_chain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_chain</span></code></a>(key)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_chain</span></code>(key)</p></td>
 <td><p>Removes a Chain instance given the chain ID.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.model.Model.replace_residue" title="pmx.model.Model.replace_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_residue</span></code></a>(residue, new[, bKeepResNum])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_residue</span></code>(residue, new[, bKeepResNum])</p></td>
 <td><p>Replaces a residue.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.model.Model.fetch_residue" title="pmx.model.Model.fetch_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_residue</span></code></a>(idx[, chain])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_residue</span></code>(idx[, chain])</p></td>
 <td><p>Get a residue based on its index, or index and chain.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.model.Model.fetch_residues" title="pmx.model.Model.fetch_residues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_residues</span></code></a>(key[, inv])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_residues</span></code>(key[, inv])</p></td>
 <td><p>Gets residues using a list of residue names.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="pmx.model.Model.fetch_atoms">
-<code class="sig-name descname">fetch_atoms</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">how='byname'</em>, <em class="sig-param">wildcard=False</em>, <em class="sig-param">inv=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.fetch_atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find atoms given their name, element, or id.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>str|int</em>) – key used to find the atoms.</p></li>
-<li><p><strong>how</strong> (<em>str</em><em>, </em><em>optional</em>) – the way atoms are identified. Options are “byname”, “byelem”, or
-“byid”. Default is “byname”.</p></li>
-<li><p><strong>wildcard</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to loosely match the atom name. In this case, if the key
-provided is within an atom name, the atom will be selected. E.g. the
-key=’H1’ will select atoms named, for instance, “H12”, “H13”, and
-“HH1”.</p></li>
-<li><p><strong>inv</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to invert the selection. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>atoms</strong> – list of Atom objects found.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.fetch_residue">
-<code class="sig-name descname">fetch_residue</code><span class="sig-paren">(</span><em class="sig-param">idx</em>, <em class="sig-param">chain=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.fetch_residue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a residue based on its index, or index and chain.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>idx</strong> (<em>int</em>) – ID of the residue to fetch.</p></li>
-<li><p><strong>chain</strong> (<em>str</em><em>, </em><em>optional</em>) – chain ID of the residue. This is needed when you have multiple
-chains and you have not renumbered the residues.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>residue</strong> – Molecule instance of the residue found.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule">Molecule</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.fetch_residues">
-<code class="sig-name descname">fetch_residues</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">inv=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.fetch_residues" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets residues using a list of residue names.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>str</em><em> or </em><em>list</em>) – resname</p></li>
-<li><p><strong>inv</strong> (<em>bool</em>) – invert selection. Default is False. If True, it finds all residues
-with resnames different from those in key.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>residues</strong> – list of Molecule instances with the residues</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.insert_chain">
-<code class="sig-name descname">insert_chain</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">new_chain</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.insert_chain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inserts a Chain in Model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pos</strong> (<em>int</em>) – index where to insert the chain within the list of chains</p></li>
-<li><p><strong>new_chain</strong> (<a class="reference internal" href="chain.html#pmx.chain.Chain" title="pmx.chain.Chain"><em>Chain</em></a>) – instance of the Chain to insert in Model</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.insert_residue">
-<code class="sig-name descname">insert_residue</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">res</em>, <em class="sig-param">chain_id</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.insert_residue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inserts a residue in Model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pos</strong> (<em>int</em>) – position/index where to insert the residue</p></li>
-<li><p><strong>res</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – Molecule instance to insert containig the residue of interest</p></li>
-<li><p><strong>chain_id</strong> (<em>str</em>) – ID of the chain where to insert the residue</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.read">
-<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">bPDBTER=False</em>, <em class="sig-param">bNoNewID=True</em>, <em class="sig-param">bPDBGAP=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.read" title="Permalink to this definition">¶</a></dt>
-<dd><p>PDB/GRO file reader.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – name of input file</p></li>
-<li><p><strong>bPDBTER</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the file contains TER records?. Default is False.</p></li>
-<li><p><strong>bNoNewID</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to assign new chain IDs. If True, new chain IDs starting
-with ‘pmx’ will be assigned(?). Only relevant if bPDBTER is also
-True. Default is True.</p></li>
-<li><p><strong>bPDBGAP</strong> (<em>bool</em>) – whether search for gaps in the chain to assign new chain IDs.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.remove_atom">
-<code class="sig-name descname">remove_atom</code><span class="sig-paren">(</span><em class="sig-param">atom</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.remove_atom" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes an Atom instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>atom</strong> (<a class="reference internal" href="atom.html#pmx.atom.Atom" title="pmx.atom.Atom"><em>Atom</em></a>) – Atom instance to remove</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.remove_chain">
-<code class="sig-name descname">remove_chain</code><span class="sig-paren">(</span><em class="sig-param">key</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.remove_chain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes a Chain instance given the chain ID.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – ID of the chain to remove</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.remove_residue">
-<code class="sig-name descname">remove_residue</code><span class="sig-paren">(</span><em class="sig-param">residue</em>, <em class="sig-param">renumber_atoms=True</em>, <em class="sig-param">renumber_residues=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.remove_residue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes a Molecule/residue instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>residue</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – Molecule instance to remove</p></li>
-<li><p><strong>renumber_atoms</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to renumber the atoms of the Model after removing the
-residue. Default is True.</p></li>
-<li><p><strong>renumber_residues</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to renumber the residues of the Model after removing the
-residue. Default is True.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.rename_atoms_to_gmx">
-<code class="sig-name descname">rename_atoms_to_gmx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.rename_atoms_to_gmx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renames atoms to comply with Gromacs syntax. If the name starts with
-a digit, the digit is moved at the end of the name. E.g. “1CA” becomes
-“CA1”.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.renumber_atoms">
-<code class="sig-name descname">renumber_atoms</code><span class="sig-paren">(</span><em class="sig-param">start=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.renumber_atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renumber all atoms starting from a chosen number (default is 1).
-The original atom IDs are stored in the attribute <code class="docutils literal notranslate"><span class="pre">orig_id</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>start</strong> (<em>int</em><em>, </em><em>optional</em>) – integer from which to start the indexing of the atoms</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.renumber_residues">
-<code class="sig-name descname">renumber_residues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.renumber_residues" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renumbers all residues from 1.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.replace_residue">
-<code class="sig-name descname">replace_residue</code><span class="sig-paren">(</span><em class="sig-param">residue</em>, <em class="sig-param">new</em>, <em class="sig-param">bKeepResNum=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.replace_residue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replaces a residue.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>residue</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – residue to replace</p></li>
-<li><p><strong>new</strong> (<a class="reference internal" href="molecule.html#pmx.molecule.Molecule" title="pmx.molecule.Molecule"><em>Molecule</em></a>) – residue to insert</p></li>
-<li><p><strong>bKeepResNum</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to keep residue ID of the residue that is inserted.
-Default is False</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.model.Model.write">
-<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">fn</em>, <em class="sig-param">title=''</em>, <em class="sig-param">nr=1</em>, <em class="sig-param">bPDBTER=False</em>, <em class="sig-param">bAssignChainIDs=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.model.Model.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes Model to file. The format is deduced from the filename
-extension given, and available options are ‘.gro’, ‘.pdb’, ‘.fasta’,
-‘.pir’.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fn</strong> (<em>str</em>) – filename</p></li>
-<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – title of the Model to write in fn</p></li>
-<li><p><strong>nr</strong> (<em>int</em><em>, </em><em>optional</em>) – what is nr?</p></li>
-<li><p><strong>bPDBTER</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to separate chains with TER entries. Only relevant when
-writing PDB files. Default is False.</p></li>
-<li><p><strong>bAssignChainIDs</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to write the chains IDs to file. Only relevant when
-writing PDB files. Default is False.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -602,6 +388,7 @@ writing PDB files. Default is False.</p></li>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, The Authors
 
     </p>

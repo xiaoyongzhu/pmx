@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,19 @@
   
 
   
+  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -25,17 +31,12 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../_static/js/versions.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Chain" href="chain.html" />
@@ -83,6 +84,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -127,6 +129,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -165,7 +168,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="index.html">Classes</a> &raquo;</li>
         
@@ -195,11 +198,11 @@ polymers, such as amino acids within a protein. As such, a <code class="xref py 
 instance has <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">resname</span></code>, and <code class="xref py py-attr docutils literal notranslate"><span class="pre">atoms</span></code> attributes.</p>
 <div class="section" id="api-reference">
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="pmx.molecule.Molecule">
-<em class="property">class </em><code class="sig-prename descclassname">pmx.molecule.</code><code class="sig-name descname">Molecule</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pmx.molecule.</code><code class="sig-name descname">Molecule</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for storing molecule/residue data.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.molecule.Molecule.resname">
 <code class="sig-name descname">resname</code><a class="headerlink" href="#pmx.molecule.Molecule.resname" title="Permalink to this definition">¶</a></dt>
 <dd><p>residue/molecule name</p>
@@ -210,7 +213,7 @@ instance has <code class="xref py py-attr docutils literal notranslate"><span cl
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.molecule.Molecule.id">
 <code class="sig-name descname">id</code><a class="headerlink" href="#pmx.molecule.Molecule.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>residue ID</p>
@@ -221,7 +224,7 @@ instance has <code class="xref py py-attr docutils literal notranslate"><span cl
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.molecule.Molecule.natoms">
 <code class="sig-name descname">natoms</code><a class="headerlink" href="#pmx.molecule.Molecule.natoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>number of atoms in the Molecule</p>
@@ -232,7 +235,7 @@ instance has <code class="xref py py-attr docutils literal notranslate"><span cl
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.molecule.Molecule.atoms">
 <code class="sig-name descname">atoms</code><a class="headerlink" href="#pmx.molecule.Molecule.atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of atoms in Molecule</p>
@@ -243,7 +246,7 @@ instance has <code class="xref py py-attr docutils literal notranslate"><span cl
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.molecule.Molecule.chain">
 <code class="sig-name descname">chain</code><a class="headerlink" href="#pmx.molecule.Molecule.chain" title="Permalink to this definition">¶</a></dt>
 <dd><p>the Chain instance the Molecule is part of</p>
@@ -254,7 +257,7 @@ instance has <code class="xref py py-attr docutils literal notranslate"><span cl
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.molecule.Molecule.chain_id">
 <code class="sig-name descname">chain_id</code><a class="headerlink" href="#pmx.molecule.Molecule.chain_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>ID of the chain the residue is part of</p>
@@ -265,7 +268,7 @@ instance has <code class="xref py py-attr docutils literal notranslate"><span cl
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.molecule.Molecule.moltype">
 <code class="sig-name descname">moltype</code><a class="headerlink" href="#pmx.molecule.Molecule.moltype" title="Permalink to this definition">¶</a></dt>
 <dd><p>the type of molecule/residue (protein, dna, rna, ion, water, or
@@ -284,220 +287,35 @@ unknown).</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.molecule.Molecule.set_resname" title="pmx.molecule.Molecule.set_resname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_resname</span></code></a>(resname)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_resname</span></code>(resname)</p></td>
 <td><p>Set the residue name.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.molecule.Molecule.set_resid" title="pmx.molecule.Molecule.set_resid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_resid</span></code></a>(resid)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_resid</span></code>(resid)</p></td>
 <td><p>Set the residue ID.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.molecule.Molecule.insert_atom" title="pmx.molecule.Molecule.insert_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_atom</span></code></a>(pos, atom[, id])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_atom</span></code>(pos, atom[, id])</p></td>
 <td><p>Insert an atom at a certain position.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.molecule.Molecule.append" title="pmx.molecule.Molecule.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(atom)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code>(atom)</p></td>
 <td><p>Append an atom to the Molecule.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.molecule.Molecule.remove_atom" title="pmx.molecule.Molecule.remove_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_atom</span></code></a>(atom)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_atom</span></code>(atom)</p></td>
 <td><p>Delete an atom from Molecule.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.molecule.Molecule.fetch" title="pmx.molecule.Molecule.fetch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch</span></code></a>(key[, how, wildcard])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch</span></code>(key[, how, wildcard])</p></td>
 <td><p>Fetch atoms.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.molecule.Molecule.fetchm" title="pmx.molecule.Molecule.fetchm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetchm</span></code></a>(keys[, how])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetchm</span></code>(keys[, how])</p></td>
 <td><p>Fetch multiple atoms.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.molecule.Molecule.is_hybrid" title="pmx.molecule.Molecule.is_hybrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hybrid</span></code></a>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hybrid</span></code>()</p></td>
 <td><p>Checks whether the molecule/residue is a pmx hybrid.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.molecule.Molecule.rename_atoms_to_gmx" title="pmx.molecule.Molecule.rename_atoms_to_gmx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rename_atoms_to_gmx</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rename_atoms_to_gmx</span></code>()</p></td>
 <td><p>Renames atoms to comply with Gromacs syntax.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="pmx.molecule.Molecule.append">
-<code class="sig-name descname">append</code><span class="sig-paren">(</span><em class="sig-param">atom</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.append" title="Permalink to this definition">¶</a></dt>
-<dd><p>Append an atom to the Molecule.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>atom</strong> (<a class="reference internal" href="atom.html#pmx.atom.Atom" title="pmx.atom.Atom"><em>Atom</em></a>) – Atom instance to append</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.fetch">
-<code class="sig-name descname">fetch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">how='byname'</em>, <em class="sig-param">wildcard=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.fetch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetch atoms. It selects atoms by name or by element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>str</em>) – atom name or element</p></li>
-<li><p><strong>how</strong> (<em>str</em>) – choose ‘byname’ or ‘byelem’</p></li>
-<li><p><strong>wildcard</strong> (<em>bool</em>) – whether to match the ‘key’ (False) or to check if the ‘key’ is in
-the name/element (True). Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>result</strong> – list of atoms</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.fetch_atoms">
-<code class="sig-name descname">fetch_atoms</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">how='byname'</em>, <em class="sig-param">wildcard=False</em>, <em class="sig-param">inv=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.fetch_atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find atoms given their name, element, or id.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>str|int</em>) – key used to find the atoms.</p></li>
-<li><p><strong>how</strong> (<em>str</em><em>, </em><em>optional</em>) – the way atoms are identified. Options are “byname”, “byelem”, or
-“byid”. Default is “byname”.</p></li>
-<li><p><strong>wildcard</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to loosely match the atom name. In this case, if the key
-provided is within an atom name, the atom will be selected. E.g. the
-key=’H1’ will select atoms named, for instance, “H12”, “H13”, and
-“HH1”.</p></li>
-<li><p><strong>inv</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to invert the selection. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>atoms</strong> – list of Atom objects found.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.fetchm">
-<code class="sig-name descname">fetchm</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">how='byname'</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.fetchm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetch multiple atoms. It select atoms using a list names or
-elements.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>keys</strong> (<em>list</em>) – list of atom names or elements</p></li>
-<li><p><strong>how</strong> (<em>str</em>) – choose ‘byname’ or ‘byelem’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>result</strong> – list of atoms</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.insert_atom">
-<code class="sig-name descname">insert_atom</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">atom</em>, <em class="sig-param">id=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.insert_atom" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insert an atom at a certain position.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pos</strong> (<em>int</em>) – index where to insert the atom</p></li>
-<li><p><strong>atom</strong> (<a class="reference internal" href="atom.html#pmx.atom.Atom" title="pmx.atom.Atom"><em>Atom</em></a>) – Atom instance to insert</p></li>
-<li><p><strong>id</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to assign the resnr, resname, and chain_id attributes from
-Molecule to the Atom instance. Default is True.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.is_hybrid">
-<code class="sig-name descname">is_hybrid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.is_hybrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks whether the molecule/residue is a pmx hybrid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>is_hybrid</strong> – whether the molecule/residue is a pmx hybrid</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.remove_atom">
-<code class="sig-name descname">remove_atom</code><span class="sig-paren">(</span><em class="sig-param">atom</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.remove_atom" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete an atom from Molecule.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>atom</strong> (<a class="reference internal" href="atom.html#pmx.atom.Atom" title="pmx.atom.Atom"><em>Atom</em></a>) – Atom instance to be removed</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.rename_atoms_to_gmx">
-<code class="sig-name descname">rename_atoms_to_gmx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.rename_atoms_to_gmx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renames atoms to comply with Gromacs syntax. If the name starts with
-a digit, the digit is moved at the end of the name. E.g. “1CA” becomes
-“CA1”.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.renumber_atoms">
-<code class="sig-name descname">renumber_atoms</code><span class="sig-paren">(</span><em class="sig-param">start=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.renumber_atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renumber all atoms starting from a chosen number (default is 1).
-The original atom IDs are stored in the attribute <code class="docutils literal notranslate"><span class="pre">orig_id</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>start</strong> (<em>int</em><em>, </em><em>optional</em>) – integer from which to start the indexing of the atoms</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.set_resid">
-<code class="sig-name descname">set_resid</code><span class="sig-paren">(</span><em class="sig-param">resid</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.set_resid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the residue ID.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>resname</strong> (<em>int</em>) – the residue index</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.set_resname">
-<code class="sig-name descname">set_resname</code><span class="sig-paren">(</span><em class="sig-param">resname</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.set_resname" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the residue name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>resname</strong> (<em>str</em>) – the residue name</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.molecule.Molecule.writePDB">
-<code class="sig-name descname">writePDB</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">title=''</em>, <em class="sig-param">nr=1</em>, <em class="sig-param">bPDBTER=False</em>, <em class="sig-param">bAssignChainIDs=False</em>, <em class="sig-param">resnrlist=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.molecule.Molecule.writePDB" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes Atomselection to file in PDB format.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fname</strong> (<em>str</em>) – filename</p></li>
-<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – title of the PDB file. If not given, it is taken from the instance
-title</p></li>
-<li><p><strong>nr</strong> (<em>int</em><em>, </em><em>optional</em>) – what is nr? it seems to choose whether to overwrite or append to a
-file?</p></li>
-<li><p><strong>bPDBTER</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to separate chains with TER entries.</p></li>
-<li><p><strong>bAssignChainIDs</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to write the chains IDs to file. Default is False.</p></li>
-<li><p><strong>resnrlist</strong> (<em>list</em><em>, </em><em>optional</em>) – list of residues to write to file. If empty list provided, all
-residues are written to file, otherwise only the ones in the list
-will be written.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -523,6 +341,7 @@ will be written.</p></li>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, The Authors
 
     </p>

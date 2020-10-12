@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,19 @@
   
 
   
+  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -25,17 +31,12 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../_static/js/versions.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Modules" href="../api/modules.html" />
@@ -83,6 +84,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -127,6 +129,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -165,7 +168,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="index.html">Classes</a> &raquo;</li>
         
@@ -195,9 +198,9 @@ system. In <strong>pmx</strong> you can read, change and write index files with 
 <code class="xref py py-class docutils literal notranslate"><span class="pre">IndexFile</span></code> class.</p>
 <div class="section" id="api-reference">
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="pmx.ndx.IndexGroup">
-<em class="property">class </em><code class="sig-prename descclassname">pmx.ndx.</code><code class="sig-name descname">IndexGroup</code><span class="sig-paren">(</span><em class="sig-param">name=''</em>, <em class="sig-param">ids=[]</em>, <em class="sig-param">atoms=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexGroup" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pmx.ndx.</code><code class="sig-name descname">IndexGroup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">ids</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">atoms</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for storing information about a Gromacs index group.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -209,7 +212,7 @@ the Atom instances.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.ndx.IndexGroup.name">
 <code class="sig-name descname">name</code><a class="headerlink" href="#pmx.ndx.IndexGroup.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>name of the group</p>
@@ -220,7 +223,7 @@ the Atom instances.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.ndx.IndexGroup.ids">
 <code class="sig-name descname">ids</code><a class="headerlink" href="#pmx.ndx.IndexGroup.ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of atom indices</p>
@@ -233,9 +236,9 @@ the Atom instances.</p></li>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pmx.ndx.IndexFile">
-<em class="property">class </em><code class="sig-prename descclassname">pmx.ndx.</code><code class="sig-name descname">IndexFile</code><span class="sig-paren">(</span><em class="sig-param">fname=None</em>, <em class="sig-param">names=[]</em>, <em class="sig-param">groups=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pmx.ndx.</code><code class="sig-name descname">IndexFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">names</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">groups</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for storing <code class="docutils literal notranslate"><span class="pre">ndx</span></code> file information. It can be initialsed as an empty
 index file, or by providing an <code class="docutils literal notranslate"><span class="pre">ndx</span></code> file as input, or by providing a list
 of names and <code class="docutils literal notranslate"><span class="pre">IndexGroup</span></code> instances.</p>
@@ -248,7 +251,7 @@ of names and <code class="docutils literal notranslate"><span class="pre">IndexG
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.ndx.IndexFile.groups">
 <code class="sig-name descname">groups</code><a class="headerlink" href="#pmx.ndx.IndexFile.groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of IndexGroup instances</p>
@@ -259,7 +262,7 @@ of names and <code class="docutils literal notranslate"><span class="pre">IndexG
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.ndx.IndexFile.names">
 <code class="sig-name descname">names</code><a class="headerlink" href="#pmx.ndx.IndexFile.names" title="Permalink to this definition">¶</a></dt>
 <dd><p>list if index group names</p>
@@ -270,7 +273,7 @@ of names and <code class="docutils literal notranslate"><span class="pre">IndexG
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.ndx.IndexFile.dic">
 <code class="sig-name descname">dic</code><a class="headerlink" href="#pmx.ndx.IndexFile.dic" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary containg index group names as keys and <code class="docutils literal notranslate"><span class="pre">IndexGroup</span></code>
@@ -289,69 +292,20 @@ instances as values</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.ndx.IndexFile.add_group" title="pmx.ndx.IndexFile.add_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_group</span></code></a>(group)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_group</span></code>(group)</p></td>
 <td><p>Adds a group to the IndexFile.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.ndx.IndexFile.delete_group" title="pmx.ndx.IndexFile.delete_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_group</span></code></a>(name)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_group</span></code>(name)</p></td>
 <td><p>Removes a group from the IndexFile.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.ndx.IndexFile.parse" title="pmx.ndx.IndexFile.parse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse</span></code></a>(fp)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse</span></code>(fp)</p></td>
 <td><p>Reads an index file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.ndx.IndexFile.write" title="pmx.ndx.IndexFile.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>([fn, fp])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code>([fn, fp])</p></td>
 <td><p>Writes the index file.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="pmx.ndx.IndexFile.add_group">
-<code class="sig-name descname">add_group</code><span class="sig-paren">(</span><em class="sig-param">group</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.add_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds a group to the IndexFile.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>group</strong> (<a class="reference internal" href="#pmx.ndx.IndexGroup" title="pmx.ndx.IndexGroup"><em>IndexGroup</em></a>) – instance of IndexGroup to add</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.ndx.IndexFile.delete_group">
-<code class="sig-name descname">delete_group</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.delete_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes a group from the IndexFile.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – name of the group to remove</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.ndx.IndexFile.parse">
-<code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">fp</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.parse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads an index file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>fp</strong> (<em>str|object</em>) – filename of the index file, or the file object of the ndx file
-already opened.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.ndx.IndexFile.write">
-<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">fn=None</em>, <em class="sig-param">fp=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.ndx.IndexFile.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes the index file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fn</strong> (<em>str</em><em>, </em><em>optional</em>) – filename. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>. If both <code class="docutils literal notranslate"><span class="pre">fn</span></code> and <code class="docutils literal notranslate"><span class="pre">fp</span></code> are
-<code class="docutils literal notranslate"><span class="pre">None</span></code>, the index is printed to screen.</p></li>
-<li><p><strong>fp</strong> (<em>object</em><em>, </em><em>optional</em>) – file object to write the index to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -377,6 +331,7 @@ already opened.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, The Authors
 
     </p>

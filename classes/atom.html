@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,19 @@
   
 
   
+  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -25,17 +31,12 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../_static/js/versions.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Molecule" href="molecule.html" />
@@ -83,6 +84,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -127,6 +129,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -165,7 +168,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="index.html">Classes</a> &raquo;</li>
         
@@ -196,9 +199,9 @@ is converted to an <code class="xref py py-class docutils literal notranslate"><
 of methods that can be used to calculate distances, angles and dihedrals.</p>
 <div class="section" id="api-reference">
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="pmx.atom.Atom">
-<em class="property">class </em><code class="sig-prename descclassname">pmx.atom.</code><code class="sig-name descname">Atom</code><span class="sig-paren">(</span><em class="sig-param">line=None</em>, <em class="sig-param">mol2line=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pmx.atom.</code><code class="sig-name descname">Atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">line</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mol2line</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Atom Class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -208,7 +211,7 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.atom.Atom.id">
 <code class="sig-name descname">id</code><a class="headerlink" href="#pmx.atom.Atom.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>atom id</p>
@@ -219,7 +222,7 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.atom.Atom.name">
 <code class="sig-name descname">name</code><a class="headerlink" href="#pmx.atom.Atom.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>atom name</p>
@@ -230,7 +233,7 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.atom.Atom.resname">
 <code class="sig-name descname">resname</code><a class="headerlink" href="#pmx.atom.Atom.resname" title="Permalink to this definition">¶</a></dt>
 <dd><p>name of residue atom is part of</p>
@@ -241,7 +244,7 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.atom.Atom.chain_id">
 <code class="sig-name descname">chain_id</code><a class="headerlink" href="#pmx.atom.Atom.chain_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>ID of the chain atom belongs to</p>
@@ -252,7 +255,7 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.atom.Atom.x">
 <code class="sig-name descname">x</code><a class="headerlink" href="#pmx.atom.Atom.x" title="Permalink to this definition">¶</a></dt>
 <dd><p>atom coordinates</p>
@@ -263,7 +266,7 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.atom.Atom.occ">
 <code class="sig-name descname">occ</code><a class="headerlink" href="#pmx.atom.Atom.occ" title="Permalink to this definition">¶</a></dt>
 <dd><p>occupancy</p>
@@ -274,7 +277,7 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.atom.Atom.bfac">
 <code class="sig-name descname">bfac</code><a class="headerlink" href="#pmx.atom.Atom.bfac" title="Permalink to this definition">¶</a></dt>
 <dd><p>B-factor</p>
@@ -285,7 +288,7 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.atom.Atom.symbol">
 <code class="sig-name descname">symbol</code><a class="headerlink" href="#pmx.atom.Atom.symbol" title="Permalink to this definition">¶</a></dt>
 <dd><p>chemical element of the atom</p>
@@ -296,7 +299,7 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pmx.atom.Atom.unity">
 <code class="sig-name descname">unity</code><a class="headerlink" href="#pmx.atom.Atom.unity" title="Permalink to this definition">¶</a></dt>
 <dd><p>unit of the coordinates, either ‘A’ or ‘nm’. Default is ‘A’.</p>
@@ -314,158 +317,29 @@ of methods that can be used to calculate distances, angles and dihedrals.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.atom.Atom.dist" title="pmx.atom.Atom.dist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dist</span></code></a>(other)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dist</span></code>(other)</p></td>
 <td><p>Calculates the distance between two atoms.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.atom.Atom.dist2" title="pmx.atom.Atom.dist2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dist2</span></code></a>(other)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dist2</span></code>(other)</p></td>
 <td><p>Calculates the squared distance between two atoms.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.atom.Atom.translate" title="pmx.atom.Atom.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(v)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code>(v)</p></td>
 <td><p>Translates the position of the atom.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.atom.Atom.angle" title="pmx.atom.Atom.angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code></a>(other1, other2[, degree])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code>(other1, other2[, degree])</p></td>
 <td><p>Calcluates the angle between 3 atoms.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.atom.Atom.dihedral" title="pmx.atom.Atom.dihedral"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dihedral</span></code></a>(other1, other2, other3[, degree])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dihedral</span></code>(other1, other2, other3[, degree])</p></td>
 <td><p>Calculates the dihedral angle between four atoms.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pmx.atom.Atom.nm2a" title="pmx.atom.Atom.nm2a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nm2a</span></code></a>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nm2a</span></code>()</p></td>
 <td><p>Converts the Atom coordinates from nanometers (nm) to Angstrom (A).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pmx.atom.Atom.a2nm" title="pmx.atom.Atom.a2nm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2nm</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2nm</span></code>()</p></td>
 <td><p>Converts the Atom coordinates from Angstrom (A) to nanometers (nm).</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="pmx.atom.Atom.a2nm">
-<code class="sig-name descname">a2nm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.a2nm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts the Atom coordinates from Angstrom (A) to nanometers (nm).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.atom.Atom.angle">
-<code class="sig-name descname">angle</code><span class="sig-paren">(</span><em class="sig-param">other1</em>, <em class="sig-param">other2</em>, <em class="sig-param">degree=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calcluates the angle between 3 atoms. Returns radians by default.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>other1</strong> (<a class="reference internal" href="#pmx.atom.Atom" title="pmx.atom.Atom"><em>Atom</em></a>) – second atom</p></li>
-<li><p><strong>other2</strong> (<a class="reference internal" href="#pmx.atom.Atom" title="pmx.atom.Atom"><em>Atom</em></a>) – third atom</p></li>
-<li><p><strong>degree</strong> (<em>bool</em>) – whether to return the angle in degrees rather than radians. Default
-is False.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atom1</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">atom2</span><span class="p">,</span> <span class="n">atom3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mf">1.57079632679</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atom1</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">atom2</span><span class="p">,</span> <span class="n">atom3</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mf">90.0</span>
-</pre></div>
-</div>
-<p class="rubric">Notes</p>
-<p>Note that the angle being calculated is the one where the Atom instance
-is in the middle. Following the example above: <em>atom2 - atom1 - atom3</em>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>angle</strong> – the value of the angle</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.atom.Atom.dihedral">
-<code class="sig-name descname">dihedral</code><span class="sig-paren">(</span><em class="sig-param">other1</em>, <em class="sig-param">other2</em>, <em class="sig-param">other3</em>, <em class="sig-param">degree=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.dihedral" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the dihedral angle between four atoms. Returns radians
-by default.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>other1</strong> (<a class="reference internal" href="#pmx.atom.Atom" title="pmx.atom.Atom"><em>Atom</em></a>) – second atom</p></li>
-<li><p><strong>other2</strong> (<a class="reference internal" href="#pmx.atom.Atom" title="pmx.atom.Atom"><em>Atom</em></a>) – third atom</p></li>
-<li><p><strong>other3</strong> (<a class="reference internal" href="#pmx.atom.Atom" title="pmx.atom.Atom"><em>Atom</em></a>) – fourth atom</p></li>
-<li><p><strong>degree</strong> (<em>bool</em>) – whether to return the angle in degrees rather than radians. Default
-is False.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atom1</span><span class="o">.</span><span class="n">dihedral</span><span class="p">(</span><span class="n">atom2</span><span class="p">,</span> <span class="n">atom3</span><span class="p">,</span> <span class="n">atom4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mf">1.57079632679</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atom1</span><span class="o">.</span><span class="n">dihedral</span><span class="p">(</span><span class="n">atom2</span><span class="p">,</span> <span class="n">atom3</span><span class="p">,</span> <span class="n">atom4</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mf">90.0</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>angle</strong> – the value of the dihedral angle</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.atom.Atom.dist">
-<code class="sig-name descname">dist</code><span class="sig-paren">(</span><em class="sig-param">other</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.dist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the distance between two atoms. This function is also when
-subtracting two atom instances, as in the example.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">atom1</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">atom2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">atom1</span> <span class="o">-</span> <span class="n">atom2</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>dist</strong> – distance between two Atom instances.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.atom.Atom.dist2">
-<code class="sig-name descname">dist2</code><span class="sig-paren">(</span><em class="sig-param">other</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.dist2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the squared distance between two atoms.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">atom1</span><span class="o">.</span><span class="n">dist2</span><span class="p">(</span><span class="n">atom2</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>dist2</strong> – squared of the distance between two Atom instances</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.atom.Atom.nm2a">
-<code class="sig-name descname">nm2a</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.nm2a" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts the Atom coordinates from nanometers (nm) to Angstrom (A).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pmx.atom.Atom.translate">
-<code class="sig-name descname">translate</code><span class="sig-paren">(</span><em class="sig-param">v</em><span class="sig-paren">)</span><a class="headerlink" href="#pmx.atom.Atom.translate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Translates the position of the atom.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>v</strong> (<em>array</em>) – vector of length 3 containing the values by which to translate the
-atom in the x, y, and z dimensions.</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -491,6 +365,7 @@ atom in the x, y, and z dimensions.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, The Authors
 
     </p>
