@@ -2765,3 +2765,59 @@ class LigandHybridTopology:
         doLog(self.logfile,'Charge of state B: %g' % self.qB)
         doLog(self.logfile,'------------------------------------------------------')
 
+#**********************************************#
+#### merge ff itp files ####
+#**********************************************#
+class _FFatom:
+    def __init__(self,list):
+        self.type = list[0]
+        self.sigmaA = list[1]
+        self.epsA = list[2]
+        self.A = list[3]
+        self.sigmaB = list[4]
+        self.epsB = list[5]
+
+class _FFfile:
+    def __init__(self, fname=None):
+        if fname is not None:
+            foo = fname.split('.')
+            bar = re.sub('ff','',foo[0])
+            self.name = bar
+            self.atoms = []
+            self._read_ffitp(fname)
+
+    def _read_ffitp(self,file):
+        l = open(file).readlines()
+        toSkip = "atomtypes"
+        for line in l:
+            if toSkip not in line:
+                self.atoms.append(_FFatom(line.split()))
+
+def _get_FF_atoms( ffs ):
+    atoms = {}
+    for ffile in ffs:
+        ff = _FFfile(ffile)
+        for at1 in ff.atoms:
+            if at1.type in atoms.keys(): # check if atom type already exists
+                at2 = atoms[at1.type]
+                if (at1.type == at2.type and at1.sigmaA == at2.sigmaA and at1.epsA == at2.epsA and at1.sigmaB == at2.sigmaB and at1.epsB == at2.epsB):
+                    continue
+                else:
+                    sys.stdout.write('Found two atoms of type %s, but they have different parameters, consider renaming atom types\n' % at1.type)
+            else:
+                atoms[at1.type] = at1
+
+    return (atoms)
+
+def _write_FF_file(atoms,file):
+    fp = open(file,'w')
+    fp.write('[ atomtypes ]\n')
+    for atype in atoms.keys():
+        at = atoms[atype]
+        fp.write('      %s      %s      %s      %s      %s      %s\n' % (at.type,at.sigmaA,at.epsA,at.A,at.sigmaB,at.epsB) )
+        
+def _merge_FF_files( fnameOut, ffsIn=[] ):
+    atoms = _get_FF_atoms( ffsIn )
+    _write_FF_file( atoms, fnameOut )
+    
+
