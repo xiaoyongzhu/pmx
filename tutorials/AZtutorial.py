@@ -8,6 +8,7 @@ import subprocess
 import glob
 import random
 import pandas as pd
+import numpy as np
 
 class AZtutorial:
     """Class contains parameters for setting up free energy calculations
