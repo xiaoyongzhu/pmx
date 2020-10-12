@@ -7,6 +7,7 @@ import re
 import subprocess
 import glob
 import random
+import pandas as pd
 
 class AZtutorial:
     """Class contains parameters for setting up free energy calculations
