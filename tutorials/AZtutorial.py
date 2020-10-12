@@ -26,6 +26,10 @@ class AZtutorial:
         # set gmxlib path
         gmx.set_gmxlib()
         
+        # the results are summarized in a pandas framework
+        self.resultsAll = pd.DataFrame()
+        self.resultsSummary = pd.DataFrame()
+        
         # paths
         self.workPath = './'
         self.mdpPath = '{0}/mdp'.format(self.workPath)
@@ -770,7 +774,6 @@ class AZtutorial:
         if edges==None:
             edges = self.edges
         for edge in edges:
-            print(edge)
             ligTopPath = self._get_specific_path(edge=edge,wp='water')
             protTopPath = self._get_specific_path(edge=edge,wp='protein')            
             
@@ -779,6 +782,7 @@ class AZtutorial:
                     
                     # ligand
                     if bLig==True:
+                        print('Preparing: LIG {0} {1} run{2}'.format(edge,state,r))
                         wp = 'water'
                         eqpath = self._get_specific_path(edge=edge,wp=wp,state=state,r=r,sim='eq')
                         tipath = simpath = self._get_specific_path(edge=edge,wp=wp,state=state,r=r,sim='transitions')
@@ -790,6 +794,7 @@ class AZtutorial:
                     
                     # protein
                     if bProt==True:
+                        print('Preparing: PROT {0} {1} run{2}'.format(edge,state,r))
                         wp = 'protein'
                         eqpath = self._get_specific_path(edge=edge,wp=wp,state=state,r=r,sim='eq')
                         tipath = simpath = self._get_specific_path(edge=edge,wp=wp,state=state,r=r,sim='transitions')                        
@@ -809,7 +814,7 @@ class AZtutorial:
         wplot = '{0}/wplot.png'.format(analysispath)
         o = '{0}/results.txt'.format(analysispath)
 
-        cmd = 'pmx analyse -fA {0} -fB {1} -o {2} -oA {3} -oB {4} -w {5} -t {6} -b {7} --reverseB'.format(\
+        cmd = 'pmx analyse -fA {0} -fB {1} -o {2} -oA {3} -oB {4} -w {5} -t {6} -b {7}'.format(\
                                                                             fA,fB,o,oA,oB,wplot,298,100) 
         os.system(cmd)
         
@@ -854,4 +859,93 @@ class AZtutorial:
                     stateBpath = self._get_specific_path(edge=edge,wp=wp,state='stateB',r=r,sim='transitions')
                     self._run_analysis_script( analysispath, stateApath, stateBpath, bVerbose=bVerbose )
         print('DONE')
+        
+        
+    def _read_neq_results( self, fname ):
+        fp = open(fname,'r')
+        lines = fp.readlines()
+        fp.close()
+        out = []
+        for l in lines:
+            l = l.rstrip()
+            foo = l.split()
+            if 'BAR: dG' in l:
+                out.append(float(foo[-2]))
+            elif 'BAR: Std Err (bootstrap)' in l:
+                out.append(float(foo[-2]))
+            elif 'BAR: Std Err (analytical)' in l:
+                out.append(float(foo[-2]))      
+            elif '0->1' in l:
+                out.append(int(foo[-1]))      
+            elif '1->0' in l:
+                out.append(int(foo[-1]))
+        return(out)         
+    
+    def _fill_resultsAll( self, res, edge, wp, r ):
+        rowName = '{0}_{1}_{2}'.format(edge,wp,r)
+        self.resultsAll.loc[rowName,'val'] = res[2]
+        self.resultsAll.loc[rowName,'err_analyt'] = res[3]
+        self.resultsAll.loc[rowName,'err_boot'] = res[4]
+        self.resultsAll.loc[rowName,'framesA'] = res[0]
+        self.resultsAll.loc[rowName,'framesB'] = res[1]
+        
+    def _summarize_results( self, edges ):
+        bootnum = 1000
+        for edge in edges:
+            for wp in ['water','protein']:
+                dg = []
+                erra = []
+                errb = []
+                distra = []
+                distrb = []
+                for r in range(1,self.replicas+1):
+                    rowName = '{0}_{1}_{2}'.format(edge,wp,r)
+                    dg.append( self.resultsAll.loc[rowName,'val'] )
+                    erra.append( self.resultsAll.loc[rowName,'err_analyt'] )
+                    errb.append( self.resultsAll.loc[rowName,'err_boot'] )
+                    distra.append(np.random.normal(self.resultsAll.loc[rowName,'val'],self.resultsAll.loc[rowName,'err_analyt'] ,size=bootnum))
+                    distrb.append(np.random.normal(self.resultsAll.loc[rowName,'val'],self.resultsAll.loc[rowName,'err_boot'] ,size=bootnum))
+                  
+                rowName = '{0}_{1}'.format(edge,wp)
+                distra = np.array(distra).flatten()
+                distrb = np.array(distrb).flatten()
+
+                if self.replicas==1:
+                    self.resultsAll.loc[rowName,'val'] = dg[0]                              
+                    self.resultsAll.loc[rowName,'err_analyt'] = erra[0]
+                    self.resultsAll.loc[rowName,'err_boot'] = errb[0]
+                else:
+                    self.resultsAll.loc[rowName,'val'] = np.mean(dg)
+                    self.resultsAll.loc[rowName,'err_analyt'] = np.sqrt(np.var(distra)/float(self.replicas))
+                    self.resultsAll.loc[rowName,'err_boot'] = np.sqrt(np.var(distrb)/float(self.replicas))
+                    
+            #### also collect resultsSummary
+            rowNameWater = '{0}_{1}'.format(edge,'water')
+            rowNameProtein = '{0}_{1}'.format(edge,'protein')            
+            dg = self.resultsAll.loc[rowNameProtein,'val'] - self.resultsAll.loc[rowNameWater,'val']
+            erra = np.sqrt( np.power(self.resultsAll.loc[rowNameProtein,'err_analyt'],2.0) \
+                            - np.power(self.resultsAll.loc[rowNameWater,'err_analyt'],2.0) )
+            errb = np.sqrt( np.power(self.resultsAll.loc[rowNameProtein,'err_boot'],2.0) \
+                            - np.power(self.resultsAll.loc[rowNameWater,'err_boot'],2.0) )
+            rowName = edge
+            self.resultsSummary.loc[rowName,'val'] = dg
+            self.resultsSummary.loc[rowName,'err_analyt'] = erra
+            self.resultsSummary.loc[rowName,'err_boot'] = errb
+            
+                    
+    def analysis_summary( self, edges=None ):
+        if edges==None:
+            edges = self.edges
+            
+        for edge in edges:
+            for r in range(1,self.replicas+1):
+                for wp in ['water','protein']:
+                    analysispath = '{0}/analyse{1}'.format(self._get_specific_path(edge=edge,wp=wp),r)
+                    resultsfile = '{0}/results.txt'.format(analysispath)
+                    res = self._read_neq_results( resultsfile )
+                    self._fill_resultsAll( res, edge, wp, r )
+        
+        # the values have been collected now
+        # let's calculate ddGs
+        self._summarize_results( edges )
 
