@@ -1,8 +1,8 @@
 #include "amber99sb-star-ildn-mut.ff/forcefield.itp"
-#include "/home/vgapsys/project/make_hybrid/AZtutorial/workpath/edge_18625-1_18626-1/hybridStrTop/ffmerged.itp"
-#include "/home/vgapsys/project/make_hybrid/AZtutorial/workpath/edge_18625-1_18626-1/hybridStrTop/merged.itp"
-#include "/home/vgapsys/project/make_hybrid/AZtutorial/input/protein_amber/topol_Protein_chain_A.itp"
-#include "/home/vgapsys/project/make_hybrid/AZtutorial/input/protein_amber/topol_Protein_chain_F.itp"
+#include "../hybridStrTop/ffmerged.itp"
+#include "../hybridStrTop/merged.itp"
+#include "../../../input/protein_amber/topol_Protein_chain_A.itp"
+#include "../../../input/protein_amber/topol_Protein_chain_F.itp"
 #include "amber99sb-star-ildn-mut.ff/tip3p.itp"
 #include "amber99sb-star-ildn-mut.ff/ions.itp"
 

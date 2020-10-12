@@ -1,6 +1,6 @@
 #include "amber99sb-star-ildn-mut.ff/forcefield.itp"
-#include "/home/vgapsys/project/make_hybrid/AZtutorial/workpath/edge_18625-1_18626-1/hybridStrTop/ffmerged.itp"
-#include "/home/vgapsys/project/make_hybrid/AZtutorial/workpath/edge_18625-1_18626-1/hybridStrTop/merged.itp"
+#include "../hybridStrTop/ffmerged.itp"
+#include "../hybridStrTop/merged.itp"
 #include "amber99sb-star-ildn-mut.ff/tip3p.itp"
 #include "amber99sb-star-ildn-mut.ff/ions.itp"
 
