@@ -417,7 +417,7 @@ class LigandAtomMapping:
         if( self.bH2H==True or self.bH2Heavy==True): # consider hydrogens
             na1 = float(self.mol1.GetNumAtoms())
             na2 = float(self.mol2.GetNumAtoms())
-            if self.bH2Hpolar==False:
+            if self.bH2Hpolar==False and self.bH2Heavy==False:
                 # discard polar hydrogens, as they were not considered
                 nhpolar1 = self._calc_polarH( mol1 )
                 nhpolar2 = self._calc_polarH( mol2 )
