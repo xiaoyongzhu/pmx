@@ -524,28 +524,33 @@ class LigandAtomMapping:
             pp.Init(res.smartsString)
         except:
             return(n1_list,n2_list)
-        n1_list = pp.GetMatches(foo)
-        n2_list = pp.GetMatches(bar)
+        n1_list = pp.GetMatches(foo,uniquify=0)
+        n2_list = pp.GetMatches(bar,uniquify=0)
         doLog(self.logfile,'Found %d MCSs in total (mol1: %d, mol2: %d), each with %d atoms and %d bonds' % (len(n1_list)*len(n2_list),len(n1_list),len(n2_list),res.numAtoms,res.numBonds),commandName=self.commandName)
 
         #### NEW ###
-        # there are no hydrogens mapped at this point (unless bH2Heavy was True), map them if needed
-        if (self.bH2Heavy==False and self.bH2H==True):
-            n1_list,n2_list = self._mcsHmap( n1_list, n2_list )
+        # there are no hydrogens mapped at this point (unless bH2Heavy was True), map them if needed in one of the later stages
+#        if (self.bH2Heavy==False and self.bH2H==True):
+#            n1_list,n2_list = self._mcsHmap( n1_list, n2_list )
 
         # from this point n1_list and n2_list elements must match 1to1, i.e. the number of elements in the lists is the same
 
         # triple bond rule: for simulation stability do not allow morphing an atom that is involved in a triple bond
         # into an atom that is involved in a non-triple bond (and vice versa)
         # also checking possible issues with the 1-2, 1-3 and 1-4 interactions
+        # at this point investigate all mcs matches, i.e. two for loops: for n1... for n2...
         n1_foo = []
         n2_foo = []
-        for n1,n2 in list(zip(n1_list,n2_list)):
-#            n1,n2 = tripleBond(mol1,mol2,n1,n2)
-            n1,n2 = self._checkTop(n1,n2)
-            n1,n2 = self._disconnectedRecursive(self.mol1,self.mol2,n1,n2)
-            n1_foo.append(n1)
-            n2_foo.append(n2)
+#        for n1,n2 in list(zip(n1_list,n2_list)):
+        for n1 in n1_list:
+            n1new = cp.deepcopy(n1)
+            for n2 in n2_list:
+                n2new = cp.deepcopy(n2)
+#                n1new,n2new = tripleBond(mol1,mol2,n1new,n2new)
+                n1new,n2new = self._checkTop(n1new,n2new)
+                n1new,n2new = self._disconnectedRecursive(self.mol1,self.mol2,n1new,n2new)
+                n1_foo.append(n1new)
+                n2_foo.append(n2new)
         n1_list = cp.copy(n1_foo)
         n2_list = cp.copy(n2_foo)
 
@@ -624,6 +629,10 @@ class LigandAtomMapping:
 
         # if there are several MCSs, select the one yielding the smallest RMSD
         n1,n2 = self._selectOneMCS(n1_list,n2_list,self.mol1,self.mol2)
+
+        # map hydrogens now
+        if (self.bH2Heavy==False and self.bH2H==True):
+            n1,n2 = self._mapH( n1, n2 )
 
         # one more final check for possible issues with the 1-2, 1-3 and 1-4 interactions
         n1,n2 = self._checkTop(n1,n2) 
@@ -2040,17 +2049,19 @@ class LigandHybridTopology:
         if len(self.pairList)>0:
             for n1, n2 in self.pairList:
                 a1 = self.m1.fetch_atoms(n1,how='byid')[0]
-                a2 = self.m2.fetch_atoms(n2,how='byid')[0]
-                self.atomPairs.append( (a1, a2))
+                a4 = self.m4.fetch_atoms(n2,how='byid')[0]
+                self.atomPairs.append( (a1, a4))
                 for atom3 in self.m3.atoms:
                     if a1.id == atom3.id:
-                        atom3.x = a2.x
+                        atom3.x = a4.x
                         if(self.bFit==True):
-                            a4 = self.m4.fetch_atoms(n2,how='byid')[0]
-                            atom3.x = a4.x
+                            a2 = self.m2.fetch_atoms(n2,how='byid')[0]
+                            atom3.x = a2.x
         elif(self.grps!=None and self.bDist==True):
             lst1 = self.m1.get_by_id(self.grps[0])
-            lst2 = self.m2.get_by_id(self.grps[1])
+            lst2 = self.m4.get_by_id(self.grps[1])
+            if self.bFit==True:
+                lst2 = self.m2.get_by_id(self.grps[1])
             for atom in lst1:
                 mi = self.d # nm
                 keep = None
@@ -2065,10 +2076,13 @@ class LigandHybridTopology:
                         if atom.id == atom3.id:
                             atom3.x = keep.x
         elif(self.bDist==True):
+            mx = m4
+            if bFit==True:
+                mx = m2
             for atom in self.m1.atoms:
                 mi = self.d # nm
                 keep = None
-                for at in self.m2.atoms:
+                for at in self.mx.atoms:
                     d = (atom-at)/10.0
                     if d < mi:
                         keep = at
@@ -2082,18 +2096,19 @@ class LigandHybridTopology:
     def _make_dummies( self ):
         morphsA = list(map(lambda p: p[1], self.atomPairs))
         morphsB = list(map(lambda p: p[0], self.atomPairs))
-        if(self.bFit==False):
-            for atom in self.m2.atoms:
-                if atom not in morphsA:
-                    self.dumsA.append(atom)
-        else:
-            for (atom,at) in list(zip(self.m2.atoms,self.m4.atoms)):
-                if atom not in morphsA:
-                    self.dumsA.append(atom)
-                    self.dumsA_nofit.append(at)
-        for atom in self.m1.atoms:
-            if atom not in morphsB:
-                self.dumsB.append(atom)
+        for (atomfit,atomorig) in list(zip(self.m2.atoms,self.m4.atoms)):
+            if (atomfit not in morphsA) and (atomorig not in morphsA):
+#                self.dumsA.append( cp.deepcopy(atomfit) )
+#                self.dumsA_nofit.append( cp.deepcopy(atomorig) )
+                self.dumsA.append( atomfit )
+                self.dumsA_nofit.append( atomorig )
+        for (atomfit,at) in list(zip(self.m1.atoms,self.m3.atoms)):
+            if atomfit not in morphsB:
+                self.dumsB.append( atomfit )
+#                self.dumsA_nofit_rev.append(at)
+#        for atom in self.m1.atoms:
+#            if atom not in morphsB:
+#                self.dumsB.append(atom)
 
     def _make_Bstates( self ):
         for a1, a2 in self.atomPairs:
@@ -2111,63 +2126,48 @@ class LigandHybridTopology:
 
     def _construct_dummies( self ):
 
+
 #####################################
         # dummies in stateA
         doLog(self.logfile,"Dummies in stateA: ")
-        if( self.bFit==False):
-            for atom in self.dumsA:
-                atom.id_old = atom.id
-                atom.nameB = atom.name
+
+        for (atom,at) in list(zip(self.dumsA,self.dumsA_nofit)):
+            atom.id_old = atom.id
+            atom.nameB = atom.name
+            if atom.name.startswith('H'):
+                atom.name = 'HV'+atom.name[1:]
+            else:
                 atom.name = 'D'+atom.name
-                atom.atomtypeB = atom.atomtype
-                atom.atomtype = 'DUM_'+atom.atomtype
-                atom.qB = atom.q
-                atom.q = 0
-                atom.mB = atom.m
-                atom.m = atom.mB #1.
+            atom.atomtypeB = atom.atomtype
+            atom.atomtype = 'DUM_'+atom.atomtype
+            atom.qB = atom.q
+            atom.q = 0
+            atom.mB = atom.m
+            atom.m = atom.mB #1.
+            atom.m = atom.m*self.scDUMm
+            if( atom.m < 1.0 and atom.mB != 0.0): # exception for virtual particles
+                atom.m = 1.0
+            self.m1.residues[0].append(atom)
 
-                atom.m = atom.m*self.scDUMm
-                if( atom.m < 1.0 and atom.mB != 0.0): # exception for virtual particles
-                    atom.m = 1.0
-
-                self.m1.residues[0].append(atom)
-                self.m3.residues[0].append(atom)
-                doLog(self.logfile, "Dummy...: %4d  %12s | %6.2f | %6.2f -> %12s | %6.2f | %6.2f" %\
-                       (atom.id, atom.atomtype, atom.q, atom.m, atom.atomtypeB, atom.qB, atom.mB))
-        else:
-            for (atom,at) in list(zip(self.dumsA,self.dumsA_nofit)):
-                atom.id_old = atom.id
-                atom.nameB = atom.name
-                atom.name = 'D'+atom.name
-                atom.atomtypeB = atom.atomtype
-                atom.atomtype = 'DUM_'+atom.atomtype
-                atom.qB = atom.q
-                atom.q = 0
-                atom.mB = atom.m
-                atom.m = atom.mB #1.
-
-                atom.m = atom.m*self.scDUMm
-                if( atom.m < 1.0 and atom.mB != 0.0): # exception for virtual particles
-                    atom.m = 1.0
-
-                self.m1.residues[0].append(atom)
-                at.id_old = at.id
-                at.nameB = at.name
+            at.id_old = at.id
+            at.nameB = at.name
+            if at.name.startswith('H'):
+                at.name = 'HV'+at.name[1:]
+            else:
                 at.name = 'D'+at.name
-                at.atomtypeB = at.atomtype
-                at.atomtype = 'DUM_'+at.atomtype
-                at.qB = at.q
-                at.q = 0
-                at.mB = at.m
-                at.m = at.mB #1.
+            at.atomtypeB = at.atomtype
+            at.atomtype = 'DUM_'+at.atomtype
+            at.qB = at.q
+            at.q = 0
+            at.mB = at.m
+            at.m = at.mB #1.
+            at.m = at.m*self.scDUMm
+            if( at.m < 1.0 and at.mB != 0.0): # exception for virtual particles
+                at.m = 1.0
+            self.m3.residues[0].append(at)
 
-                at.m = at.m*self.scDUMm
-                if( at.m < 1.0 and at.mB != 0.0): # exception for virtual particles
-                    at.m = 1.0
-
-                self.m3.residues[0].append(at)
-                doLog(self.logfile, "Dummy...: %4d  %12s | %6.2f | %6.2f -> %12s | %6.2f | %6.2f" %\
-                       (atom.id, atom.atomtype, atom.q, atom.m, atom.atomtypeB, atom.qB, atom.mB))
+            doLog(self.logfile, "Dummy...: %4d  %12s | %6.2f | %6.2f -> %12s | %6.2f | %6.2f" %\
+                     (atom.id, atom.atomtype, atom.q, atom.m, atom.atomtypeB, atom.qB, atom.mB))
 
 #####################################
         # dummies in stateB
@@ -2193,7 +2193,6 @@ class LigandHybridTopology:
             if hasattr(atom,"id_old"):
                 self.id_dicAB[atom.id] = atom.id_old
                 self.id_dicBA[atom.id_old] = atom.id
-
 
 
     def _make_bonds( self ):
@@ -2451,10 +2450,10 @@ class LigandHybridTopology:
             id2 = b[1].id
             id3 = b[2].id
             id4 = b[3].id
-            aB1 = self.m2.atoms[id1-1]
-            aB2 = self.m2.atoms[id2-1]
-            aB3 = self.m2.atoms[id3-1]
-            aB4 = self.m2.atoms[id4-1]
+            aB1 = self.m4.atoms[id1-1]
+            aB2 = self.m4.atoms[id2-1]
+            aB3 = self.m4.atoms[id3-1]
+            aB4 = self.m4.atoms[id4-1]
             newid1 = self.id_dicBA[b[0].id]
             newid2 = self.id_dicBA[b[1].id]
             newid3 = self.id_dicBA[b[2].id]

@@ -294,8 +294,8 @@ def main(args):
 #####################################
     # fitting (optional)
 
-    if(bFit==True):
-        superimposeStructures( args.i1, args.i2, m3, m2, plst, logfile )
+#    if(bFit==True):
+    superimposeStructures( args.i1, args.i2, m3, m2, plst, logfile )
 
 #####################################
     # initialize the main object of the LigandHybridTopology class
@@ -310,12 +310,16 @@ def main(args):
 #####################################
     # write hybrid topology
     doLog(logfile, 'Writing new itp file: "%s"' % args.oitp)
-    hybridTop.newitp.write(args.oitp, target_qB = hybridTop.qB)
+    hybridTop.newitp.write(args.oitp, target_qB = [hybridTop.qB] )
     doLog(logfile, 'Writing dummy forcefield file: "%s"' % args.offitp)
     hybridTop._write_ffitp( args.offitp, m1 )
     # write merged pdb
-    m1.write(args.oA)
-    m3.write(args.oB)
+    if bFit==True:
+        m1.write(args.oA)
+        m1.write(args.oB)
+    else:
+        m1.write(args.oA)
+        m3.write(args.oB)
 
 #####################################
     # write split topology
