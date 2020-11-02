@@ -110,7 +110,10 @@ class Jobscript:
             exportline = '{0}\export load {1}'.format(exportline,e)
         gpuline = ''
         if self.bGPU==True:
-            gpuline = '#$ -l gpu=1'
+            if self.queue == 'SGE':
+                gpuline = '#$ -l gpu=1'
+            elif self.queue == 'SLURM':
+                gpuline = '#SBATCH --gres=gpu:1'
         gmxline = ''
         if self.gmx!=None:
             gmxline = 'export GMXRUN="{gmx} -ntomp {simcpu} -ntmpi 1"'.format(gmx=self.gmx,simcpu=self.simcpu)            
@@ -147,13 +150,14 @@ class Jobscript:
 #SBATCH -N 1
 #SBATCH -n {simcpu}
 #SBATCH -t {simtime}:00:00
+{gpu}
 
 {source}
 {modules}
 {export}
 
 {gmx}
-'''.format(jobname=self.jobname,simcpu=self.simcpu,simtime=self.simtime,
+'''.format(jobname=self.jobname,simcpu=self.simcpu,simtime=self.simtime,gpu=gpuline,
            source=sourceline,modules=moduleline,export=exportline,
            gmx=gmxline)
     
