@@ -736,7 +736,7 @@ class AZtutorial:
             elif self.JOBqueue=='SLURM':
                 cmd1 = 'cd {0}'.format(simpath)
                 cmd2 = 'for i in {1..81};do'
-                cmd3 = '$GMXRUN -s tpr$i.tpr -dhdl dhdl$i'
+                cmd3 = '$GMXRUN -s ti$i.tpr -dhdl dhdl$i'
                 cmd4 = 'done'
                 job.cmds = [cmd1,cmd2,cmd3,cmd4]
         
