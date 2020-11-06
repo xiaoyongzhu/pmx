@@ -76,7 +76,7 @@ class SGETunedJobTask(SGEJobTask):
 
     #change default parallel environment
     parallel_env = luigi.Parameter(
-        default='openmp_fast',
+        default='*',
         visibility=ParameterVisibility.HIDDEN,
         significant=False)
     #poll time in seconds.
