@@ -175,11 +175,11 @@ def parse_options(SGE=False):
 
     mdrun_help=""
     if(SGE):
-        parser.add_argument('--pe',
-                            dest='pe',
-                            type=str,
-                            help='Parellel environment to use for SGE jobs.',
-                            default="openmp_fast")
+        #parser.add_argument('--pe',
+                            #dest='pe',
+                            #type=str,
+                            #help='Parellel environment to use for SGE jobs.',
+                            #default="openmp_fast")
         parser.set_defaults(rem_sched=False)
         parser.add_argument('--rem_sched',  action='store_true',
                             dest='rem_sched',
