@@ -38,6 +38,10 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
         significant=False, default="pmx_{task_family}_p{p}_l{l}_{i}",
         description="A string that can be "
         "formatted with class variables to name the job with qsub.")
+    
+    n_bins = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
+                               default=10, significant=False,
+                               description="Number of histogram bins in plot.")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -69,7 +73,7 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
         sys.argv = [['analyze_dhdl.py'],
                     ['-fA'], dHdlA,
                     ['-fB'], dHdlB,
-                    ['--nbins', "10"]]
+                    ['--nbins', str(int(self.n_bins))]]
         sys.argv = [item for sublist in sys.argv for item in sublist] #flatten argv
 
         with open("analysis.log", "w") as f:

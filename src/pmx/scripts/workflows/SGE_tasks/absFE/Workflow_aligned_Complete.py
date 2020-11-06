@@ -29,7 +29,8 @@ class SGE_Workflow_aligned_complete(SGE_Workflow):
         summary=Task_summary_aligned(
             #hosts = self.hosts, ligands = self.ligands,
             study_settings = self.study_settings,
-            parallel_env=self.pe)
+            #parallel_env=self.pe
+            )
         self.tasks.append(summary)
 
         if(self.n_workers==0):
@@ -69,7 +70,7 @@ def main(args):
             mdrun=args.mdrun,
             mdrun_double=args.mdrun_double,
             mdrun_opts=args.mdrun_opts,
-            pe=args.pe,
+            #pe=args.pe,
             rem_sched=args.rem_sched,
             n_workers=args.workers
             )

@@ -33,7 +33,8 @@ class SGE_wrapper(luigi.task.WrapperTask):
 # ==============================================================================
 class SGE_Workflow(Workflow):
 
-    def __init__(self, pe='openmp_fast', rem_sched=False, n_workers=1,
+    def __init__(self, #pe='openmp_fast',
+                 rem_sched=False, n_workers=1,
                  *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.states={"A":"l0", "B":"l1"} #states and suffixes of mdp files
@@ -41,7 +42,7 @@ class SGE_Workflow(Workflow):
 
         self.tasks=[]
         self.n_workers=n_workers
-        self.pe=pe
+        #self.pe=pe
         self.rem_sched=rem_sched
         self.study_settings={'base_path':self.basepath,
                              'top_path':self.toppath,
