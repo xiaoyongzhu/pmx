@@ -1839,6 +1839,92 @@ class Topology(TopolBase):
 
         self.has_posre = True
 
+    def as_rtp(self):
+        for i, bond in enumerate(self.bonds):
+            id1 = bond[0].id
+            id2 = bond[1].id
+            self.bonds[i][0] = self.atoms[id1-1]
+            self.bonds[i][1] = self.atoms[id2-1]
+        for i, angle in enumerate(self.angles):
+            id1 = angle[0].id
+            id2 = angle[1].id
+            id3 = angle[2].id
+            self.angles[i][0] = self.atoms[id1-1]
+            self.angles[i][1] = self.atoms[id2-1]
+            self.angles[i][2] = self.atoms[id3-1]
+
+        for i, dih in enumerate(self.dihedrals):
+            id1 = dih[0].id
+            id2 = dih[1].id
+            id3 = dih[2].id
+            id4 = dih[3].id
+            self.dihedrals[i][0] = self.atoms[id1-1]
+            self.dihedrals[i][1] = self.atoms[id2-1]
+            self.dihedrals[i][2] = self.atoms[id3-1]
+            self.dihedrals[i][3] = self.atoms[id4-1]
+
+        for i, vs in enumerate(self.virtual_sites2):
+            id1 = dih[0].id
+            id2 = dih[1].id
+            id3 = dih[2].id
+            self.virtual_sites2[i][0] = self.atoms[id1-1]
+            self.virtual_sites2[i][1] = self.atoms[id2-1]
+            self.virtual_sites2[i][2] = self.atoms[id3-1]
+
+
+    def write_rtp(self, filename ='mol.rtp'):
+        fp = open(filename,'w')
+        fp.write('[ {0} ]\n'.format(self.name))
+        fp.write(' [ atoms ]\n')
+        for atom in self.atoms:
+            fp.write("%8s %-12s %8.6f %5d\n" % \
+                  (atom.name,atom.atomtype,atom.q,atom.cgnr) )
+
+        fp.write(' [ bonds ]\n')
+        for bond in self.bonds:
+            if len(bond)<=3:
+                fp.write("%8s %8s\n"% \
+                      (bond[0].name, bond[1].name) )
+            else:
+                fp.write("%8s %8s %8.4f %8.4f\n"% \
+                      (bond[0].name, bond[1].name, bond[3][0], bond[3][1]) )
+
+        fp.write(' [ angles ]\n')
+        for angle in self.angles:
+            if len(angle)<=4:
+                fp.write("%8s %8s %8s\n"% \
+                      (angle[0].name, angle[1].name,angle[2].name) )
+            elif angle[3]==5: # U-B
+                fp.write("%8s %8s %8s %8.4f %8.4f %8.4f %8.4f\n"% \
+                      (angle[0].name, angle[1].name,angle[2].name,
+                        angle[4][0],angle[4][1],angle[4][2],angle[4][3]) )
+            else:
+                fp.write("%8s %8s %8s %8.4f %8.4f\n"% \
+                      (angle[0].name, angle[1].name,angle[2].name,angle[4][0],angle[4][1]) )
+
+
+        fp.write(' [ dihedrals ]\n')
+        for dih in self.dihedrals:
+            if len(dih)<=5: # no parameters
+                fp.write("%8s %8s %8s %s\n"% \
+                      (dih[0].name, dih[1].name,dih[2].name, dih[3].name))
+            elif dih[4]==3:
+                param = dih[5].split()
+                fp.write("%8s %8s %8s %s %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n"% \
+                      (dih[0].name, dih[1].name,dih[2].name, dih[3].name, float(param[0]), float(param[1]), float(param[2]), float(param[3]), float(param[4]), float(param[5])) )
+            elif (dih[4]==1) or (dih[4]==4) or (dih[4]==9):
+                param = dih[5].split()
+                fp.write("%8s %8s %8s %s %8.4f %8.4f %8.4f\n"% \
+                      (dih[0].name, dih[1].name,dih[2].name, dih[3].name,
+                       float(param[0]), float(param[1]), float(param[2])) )
+            elif (dih[4]==2) or (dih[4]==11):
+                param = dih[5].split()
+                fp.write("%8s %8s %8s %s %8.4f %8.4f\n"% \
+                      (dih[0].name, dih[1].name,dih[2].name, dih[3].name,
+                       float(param[0]), float(param([1]))) )
+
+
+
 class MDPError(Exception):
     """MDP Error class.
     """
