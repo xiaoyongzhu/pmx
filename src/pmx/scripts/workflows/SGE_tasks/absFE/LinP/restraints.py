@@ -343,6 +343,11 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                                 top.write("Cl     {}\n".format(nCl))
                             elif (s=="C" and "Na " in l):
                                 top.write("Na     {}\n".format(nNa))
+                                
+                            elif (s=="C" and "#include \"prot.itp\"" in l):
+                                #replace include with prot_apo.itp for C->A TI
+                                top.write("#include \"prot_apo.itp\"")
+                                
                             else:
                                 top.write(l)
 

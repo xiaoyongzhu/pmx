@@ -83,26 +83,48 @@ class Gather_Inputs_folder(SGETunedJobTask):
         os.makedirs(self.folder_path, exist_ok=True)
         os.chdir(self.folder_path)
 
-        #topology
-        sh.copy(self.study_settings['top_path']+"/"+self.srctop, self.folder_path+"/topol.top")
-        if(self.l):
-            sh.copy(self.study_settings['top_path']+"/ligand/"+self.l+"/lig.itp",self.folder_path+"/lig.itp")
-        if(self.p):
-            sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.itp",self.folder_path+"/prot.itp")
-
         #initial coordinates
         if(self.p and self.l): #P+L
             sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_"+self.l+".pdb",
                     self.folder_path+"/init.pdb")
-        elif(self.p): #ApoP
+        elif(self.p and not self.l): #ApoP
             if(self.prot_src_override):
-                sh.copy(self.prot_src_override, self.folder_path+"/init.pdb")
-            else:
+                #sh.copy(self.prot_src_override, self.folder_path+"/init.pdb")
+                raise(ValueError("prot_src_override option is no longer supported. Please use a prot_apo.pdb file in the data/proteins/{}/ folder. A matching prot_apo.itp file is now also required.".format(self.p)))
+            elif(os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo.pdb")):
+                #Replaces prot_src_override functionality and supports missing residues in apo or holo.
+                #Residue numbering needs to match between the two.
+                sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo.pdb", self.folder_path+"/init.pdb")
+                
+            else:  #use holo structure/itp for apo
                 sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.pdb",
                         self.folder_path+"/init.pdb")
         elif(self.l): #L
             sh.copy(self.study_settings['top_path']+"/ligand/"+self.l+"/ligand.pdb",
                     self.folder_path+"/init.pdb")
+        
+        
+        
+        #topology
+        sh.copy(self.study_settings['top_path']+"/"+self.srctop, self.folder_path+"/topol.top")
+        if(self.l):
+            sh.copy(self.study_settings['top_path']+"/ligand/"+self.l+"/lig.itp",self.folder_path+"/lig.itp")
+        if(self.p):
+            #Both ApoP and P+L both need the apo itp as
+            #C->A TI topology will point be importing "prot_apo.itp"
+            if(self.prot_src_override):
+                raise(ValueError("prot_src_override option is no longer supported. Please use a prot_apo.pdb file in the data/proteins/{}/ folder. A matching prot_apo.itp file is now also required.".format(self.p)))
+            elif(os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo.pdb")):
+                if(not os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo.itp")):
+                    raise(RuntimeError("Detected prot_apo.pdb but no matching prot_apo.itp is available in {} .".format(self.study_settings['top_path']+"/proteins/"+self.p+"/")))
+                sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo.itp",self.folder_path+"/prot_apo.itp")
+            else: #use holo structure/itp for apo
+                sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.itp",self.folder_path+"/prot_apo.itp")
+                
+                
+        if(self.p and self.l): #P+L also needs the holo itp
+            sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.itp",self.folder_path+"/prot.itp")
+            
 
         #generate temporary index file
         os.system("echo 'q\n' | gmx make_ndx -f init.pdb "
@@ -117,7 +139,14 @@ class Gather_Inputs_folder(SGETunedJobTask):
             #TODO: rewrite this to use the pmx Topology class
             if(self.p):
                 #find out how many chains (molecule types) there are in the protein
-                chains=self.find_chains("prot.itp")
+                source_itp="prot.itp"
+                if(not self.l): #apoP
+                    source_itp="prot_apo.itp"
+                chains=self.find_chains(source_itp)
+
+                #Position restraints are only needed before NPT,
+                #so TI itp files don't need them
+                #and we can skip generating them for state C->A TI in case of L+P
 
                 if(len(chains)==1):
                     #only one chain; its safe to make a single restraint file
@@ -206,7 +235,9 @@ class Gather_Inputs_folder(SGETunedJobTask):
     def output(self):
         files=["topol.top", "init.pdb" , "index.ndx"]
         if(self.p):
-            files.extend(["prot.itp"])
+            files.extend(["prot_apo.itp"])
+            if(self.l):
+                files.extend(["prot.itp"])
             if(self.posre):
                 chains=self.find_chains(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.itp")
                 if(len(chains)==1):

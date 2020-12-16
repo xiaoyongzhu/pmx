@@ -145,6 +145,63 @@ class Task_PL_align(SGETunedJobTask):
             grp = ndx.make_index_group(ch.atoms, "chain_" + ch.id)
             n.add_group(grp)
         n.write(ndx_path)
+    
+    
+    def gen_ndx_common_Calpha(self, apo_struct_path, holo_struct_path, apo_ndx_path, holo_ndx_path):
+        """Adds an index group of common C-alpha atoms to ndx files of both apo and holo states.
+
+        Args:
+            apo_struct_path  (str): apo structure file.
+            holo_struct_path (str): holo structure file.
+            apo_ndx_path     (str): apo index file.
+            holo_ndx_path    (str): holo index file.
+            
+        """
+        
+        n_a = ndx.IndexFile(apo_ndx_path)
+        n_h = ndx.IndexFile(holo_ndx_path)
+        m_a = Model(apo_struct_path, bPDBTER=True)
+        m_h = Model(holo_struct_path, bPDBTER=True)
+        
+        ready_a = "C-alpha_common" in n_a.names
+        ready_h = "C-alpha_common" in n_h.names
+        if(ready_a and ready_h):
+            return; #this was alredy done before, so skip
+        
+        common_a=[]
+        common_h=[]
+        
+        res_arr_a=[r_a for r_a in m_a.residues if r_a.moltype=='protein']
+        res_arr_h=[r_h for r_h in m_h.residues if r_h.moltype=='protein']
+        
+        for r_a in res_arr_a:
+            for r_h in res_arr_h:
+                if(r_a.orig_id == r_h.orig_id and r_a.resname == r_h.resname and r_a.chain_id == r_h.chain_id): #residue matches
+                    for a_a in r_a.atoms:
+                        for a_h in r_h.atoms:
+                            if(a_a.name == a_h.name and (a_a.id in n_a["C-alpha"].ids) and (a_h.id in n_h["C-alpha"].ids)):
+                                common_a.append(a_a.id)
+                                common_h.append(a_h.id)
+                                
+        common_a.sort()
+        common_h.sort()
+        
+        #add the index groups and write to files
+        if(not ready_a):
+            g_a = ndx.IndexGroup(ids=common_a, name="C-alpha_common")
+            n_a.add_group(g_a)
+            n_a.write(apo_ndx_path)
+        else:
+            if common_a != n_a["C-alpha_common"].ids:
+                raise(Exception("Generated common protein index group does not match the one that already exists: [C-alpha_common] in %s".format(apo_ndx_path)))
+            
+        if(not ready_h):
+            g_h = ndx.IndexGroup(ids=common_h, name="C-alpha_common")
+            n_h.add_group(g_h)
+            n_h.write(holo_ndx_path)
+        else:
+            if common_h != n_h["C-alpha_common"].ids:
+                raise(Exception("Generated common protein index group does not match the one that already exists: [C-alpha_common] in %s".format(holo_ndx_path)))
 
 
     def work(self):
@@ -177,6 +234,14 @@ class Task_PL_align(SGETunedJobTask):
                                 self.p, self.i, self.m),
                               "P_w_chains.ndx", n_prot_chains) #P
         check_file_ready("P_w_chains.ndx")
+        
+        #Update the PL and P ndx files with a group containing common C-alpha atoms.
+        #Used for alignment of structures with missing residues.
+        self.gen_ndx_common_Calpha(
+            self.base_path+"/prot_{0}/apoP/ions{1}_{2}.pdb".format(self.p, self.i, self.m),
+            self.folder_path+"/ions%d_%d.pdb"%(self.i, self.m),
+            "P_w_chains.ndx", "PL_w_chains.ndx")
+                
         #LW index
         os.system("echo 'q' | gmx make_ndx -f {gro} -o {out} "
                   ">> align.log 2>&1".format(
@@ -235,9 +300,13 @@ class Task_PL_align(SGETunedJobTask):
 
 
 
-        ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
+        #ndx_file_A = ndx.IndexFile(self.folder_path+"/index_prot_mol.ndx", verbose=False)
+        ndx_file_A = ndx.IndexFile("PL_w_chains.ndx", verbose=False)
+        ndx_file_B = ndx.IndexFile("P_w_chains.ndx", verbose=False)
         ndx_file_C = ndx.IndexFile("LW.ndx", verbose=False)
-        p_ndx = np.asarray(ndx_file_A["C-alpha"].ids)-1 # as in Vytas' alignment script
+        #p_ndx = np.asarray(ndx_file_A["C-alpha"].ids)-1 # as in Vytas' alignment script
+        pA_ndx = np.asarray(ndx_file_A["C-alpha_common"].ids)-1 # as in Vytas' alignment script
+        pB_ndx = np.asarray(ndx_file_B["C-alpha_common"].ids)-1 # as in Vytas' alignment script
         linA_ndx = np.asarray(ndx_file_A["MOL"].ids)-1
         l_ndx = np.asarray(ndx_file_C["MOL"].ids)-1
 
@@ -257,10 +326,10 @@ class Task_PL_align(SGETunedJobTask):
 
 
         num_aligned_atoms = len(m_B.atoms) + l_ndx.shape[0]
-        if(len(m_A.atoms) != num_aligned_atoms):
-            print("\nWARNING: number of atoms in Apo + ligand ({}) does not match that of Holo ({})!\n".format(num_aligned_atoms,len(m_A.atoms)))
-            mylog.write("\nWARNING: number of atoms in Apo + ligand ({}) does not match that of Holo ({})!\n".format(num_aligned_atoms,len(m_A.atoms)))
-            mylog.flush()
+        #if(len(m_A.atoms) != num_aligned_atoms):
+            #print("\nWARNING: number of atoms in Apo + ligand ({}) does not match that of Holo ({})!\n".format(num_aligned_atoms,len(m_A.atoms)))
+            #mylog.write("\nWARNING: number of atoms in Apo + ligand ({}) does not match that of Holo ({})!\n".format(num_aligned_atoms,len(m_A.atoms)))
+            #mylog.flush()
         trj_out = Trajectory("aligned.trr", mode='Out',
                              atomNum = num_aligned_atoms) #aligned output
 
@@ -312,7 +381,7 @@ class Task_PL_align(SGETunedJobTask):
 
             # m_A.write("m_A1.gro")
             # step1: fit prot from prot+lig onto apo protein
-            (v1,v2,R) = fit( m_B, m_A, p_ndx, p_ndx )
+            (v1,v2,R) = fit( m_B, m_A, pB_ndx, pA_ndx )
             # rotate velocities
             # not needed. We aren't saving m_A
             mylog.write("\t\tFit A on B\n")
