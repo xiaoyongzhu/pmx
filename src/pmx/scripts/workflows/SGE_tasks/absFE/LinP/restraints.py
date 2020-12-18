@@ -273,6 +273,16 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             fn_ndx_common_C_src=self.folder_path+"/stateC/repeat{i}/morphes{m}/P_w_chains.ndx".format(i=self.i, m=0)
             ndx_common_C_src=ndx.IndexFile(fn_ndx_common_C_src, verbose=False)
             base_ndx_C.add_group(ndx_common_C_src["C-alpha_common"])
+                #filter out flexible loops, if exluded ndx is available
+            #fn_ndx_exclude=self.folder_path+"/prot_apo_exclude.ndx"
+            fn_ndx_exclude=self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo_exclude.ndx"
+            if(os.path.isfile(fn_ndx_exclude)):
+                exclude_ndx=ndx.IndexFile(fn_ndx_exclude, verbose=False)
+                if(not "exclude" in exclude_ndx.names):
+                    raise(Exception("Could not find the [ exclude ] group in {}".format(fn_ndx_exclude)))
+                filtered_ids=[j for j in ndx_common_C_src["C-alpha_common"].ids if (not j in exclude_ndx["exclude"].ids)]
+                filtered_g = IndexGroup(ids=filtered_ids, name="C-alpha_common_filtered")
+                base_ndx_C.add_group(filtered_g)
             base_ndx_C.write(fn_ndx_C)
             
                 #Add Protein_MOL group; clean hydrogens and virtual sites
@@ -310,6 +320,8 @@ class Task_PL_gen_restraints(SGETunedJobTask):
 
                 my_ndx=ndx.IndexFile(fn_ref_ndx, verbose=False)
                 prot_id = my_ndx.get_group_id("C-alpha_common")
+                if("C-alpha_common_filtered" in my_ndx.names): #if we have filtered the indeces to exclude flexible loops, use that group
+                    prot_id = my_ndx.get_group_id("C-alpha_common_filtered")
                 mol_id = my_ndx.get_group_id("MOL_&_!H*_&_!?H*_&_!vsites")
                 sys.stdin = StringIO( "{}\n{}\n".format(prot_id, mol_id) )
                 with open("gen_restr{i}.log".format(i=self.i), 'w') as logf:

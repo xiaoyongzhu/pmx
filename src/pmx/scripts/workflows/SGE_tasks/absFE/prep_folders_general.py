@@ -125,6 +125,10 @@ class Gather_Inputs_folder(SGETunedJobTask):
         if(self.p and self.l): #P+L also needs the holo itp
             sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.itp",self.folder_path+"/prot.itp")
             
+            ##if present, copy over the ndx to exclude protein atoms eligible for restraint anchors
+            #if(os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo_exclude.ndx")):
+                #sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo_exclude.ndx",self.folder_path+"/prot_apo_exclude.ndx")
+            
 
         #generate temporary index file
         os.system("echo 'q\n' | gmx make_ndx -f init.pdb "
