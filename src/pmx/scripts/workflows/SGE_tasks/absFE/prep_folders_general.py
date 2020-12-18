@@ -239,7 +239,11 @@ class Gather_Inputs_folder(SGETunedJobTask):
             if(self.l):
                 files.extend(["prot.itp"])
             if(self.posre):
-                chains=self.find_chains(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.itp")
+                chains=[]
+                if(self.l):
+                    chains=self.find_chains(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.itp")
+                else:
+                    chains=self.find_chains(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo.itp")
                 if(len(chains)==1):
                     files.extend(["prot_posre.itp", "prot_posre_soft.itp"])
                 else:
@@ -251,6 +255,7 @@ class Gather_Inputs_folder(SGETunedJobTask):
             files.extend(["lig.itp"])
             if(self.posre):
                 files.extend(["lig_posre.itp", "lig_posre_soft.itp"])
+        
         return [luigi.LocalTarget(os.path.join(self.folder_path, f)) for f in files]
 
 

@@ -1,7 +1,7 @@
 ; Include forcefield parameters
 #include "amber99sb-ildn.ff/forcefield.itp"
 
-#include "prot.itp"
+#include "prot_apo.itp"
 #ifdef POSRES
 #include "prot_posre.itp" ; protein position restraints
 #endif

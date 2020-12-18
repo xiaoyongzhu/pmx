@@ -17,7 +17,7 @@ from pmx.scripts.workflows.find_avg import find_avg_struct
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.equil_sims import Sim_PL_NPT
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_align
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.morphes import Task_PL_gen_morphes
-from pmx.scripts.workflows.utils import check_file_ready
+from pmx.scripts.workflows.utils import check_file_ready, readii_util, writeii_util
 from pmx.scripts.workflows.postHoc_restraining_python3 import main as main_postHock_restr
 
 # ==============================================================================
@@ -42,6 +42,8 @@ def clean_virtual_sites_from_ndx(ndx_fn, mol_sel, filteree, itp):
     g = IndexGroup(ids=new_filteree_ids, name=filteree+"_&_!vsites")
     my_ndx.add_group(g)
     my_ndx.write(ndx_fn)
+
+   
 
 # ==============================================================================
 #                         Derivative Task Classes
@@ -232,58 +234,91 @@ class Task_PL_gen_restraints(SGETunedJobTask):
             #             plotfile="restraint_coord_distrib_{i}.png".format(i=self.i),
             #             log=False)
 
-            #find correct group indeces
-            base_ndx=ndx.IndexFile("index_prot_mol.ndx", verbose=False)
-            #clean and reload the ndx file (for cases where it was generated with old code that didn't already clean it from duplicates)
-            new_base="index_prot_mol_base_{i}.ndx".format(i=self.i)
-            base_ndx.write(new_base)
-            base_ndx=ndx.IndexFile(new_base, verbose=False)
-            mol_id = base_ndx.get_group_id("MOL")
-            sys_id = base_ndx.get_group_id("System")
-            my_ndx_file="index_prot_mol_noH_{i}.ndx".format(i=self.i)
-            os.system("echo \"{mol_id} & ! a H*\n{sys_id} & ! {mol_id}\n\nq\n\" | "
-                      "gmx make_ndx -f ions{i}_0.pdb -n {new_base} "
-                      "-o {ndx} > noH_make_ndx_{i}.log 2>&1".format(i=self.i, ndx=my_ndx_file, mol_id=mol_id, sys_id=sys_id, new_base=new_base))
-            #modify index file to filter out virtual cites from ligand selection
-            clean_virtual_sites_from_ndx(my_ndx_file, "MOL", "MOL_&_!H*", "lig.itp")
-
-            check_file_ready(os.path.join(my_ndx_file))
+            
+            #make index files for TI
+            #A->C
+            base_ndx_A=ndx.IndexFile("index_prot_mol.ndx", verbose=False)
+            fn_ndx_A="index_prot_mol_noH_A_{i}.ndx".format(i=self.i)
+                #add C-alpha_common
+            fn_ndx_common_A_src=self.folder_path+"/stateC/repeat{i}/morphes{m}/PL_w_chains.ndx".format(i=self.i, m=0)
+            ndx_common_A_src=ndx.IndexFile(fn_ndx_common_A_src, verbose=False)
+            #base_ndx_A.add_group(ndx.IndexGroup(ids=ndx_common_A_src["C-alpha_common"].ids, name="C-alpha_common"))
+            base_ndx_A.add_group(ndx_common_A_src["C-alpha_common"])
+            base_ndx_A.write(fn_ndx_A)
+            
+                #clean hydrogens and virtual sites
+            base_ndx_A=ndx.IndexFile(fn_ndx_A, verbose=False) #reload
+            mol_id = base_ndx_A.get_group_id("MOL")
+            sys_id = base_ndx_A.get_group_id("System")
+            #For some reason naming is detected differently in pdb and gro files.
+            #4-symbol names can get frame shifted by one.
+            #So need to filter for 'H' in the second slot too.
+            os.system("echo \"{mol_id} & ! a H* & ! a ?H*\n{sys_id} & ! {mol_id}\n\nq\n\" | "
+                      "gmx make_ndx -f ions{i}_0.pdb -n {inndx} "
+                      "-o {outndx} > noH_make_ndx_{i}.log 2>&1".format(
+                          i=self.i, outndx=fn_ndx_A, mol_id=mol_id, sys_id=sys_id, inndx=fn_ndx_A
+                          ))
+            clean_virtual_sites_from_ndx(fn_ndx_A, "MOL", "MOL_&_!H*_&_!?H*", "lig.itp")
+            check_file_ready(os.path.join(fn_ndx_A))
             if(self.debug):
-                print("debug: made {}".format(my_ndx_file))
+                print("debug: made {}".format(fn_ndx_A))
+                
+            #C->A (decorelation will reuse this)
+            fn_frame_src=self.folder_path+"/stateC/repeat{i}/morphes{m}/frame0.gro".format(i=self.i, m=0)
+            fn_ndx_C="index_prot_mol_noH_C_{i}.ndx".format(i=self.i)
+            os.system("echo \"\nq\n\" | gmx make_ndx -f {} -o {} > /dev/null 2>&1".format(fn_frame_src, fn_ndx_C))
+
+                #add C-alpha_common
+            base_ndx_C=ndx.IndexFile(fn_ndx_C, verbose=False)
+            fn_ndx_common_C_src=self.folder_path+"/stateC/repeat{i}/morphes{m}/P_w_chains.ndx".format(i=self.i, m=0)
+            ndx_common_C_src=ndx.IndexFile(fn_ndx_common_C_src, verbose=False)
+            base_ndx_C.add_group(ndx_common_C_src["C-alpha_common"])
+            base_ndx_C.write(fn_ndx_C)
+            
+                #Add Protein_MOL group; clean hydrogens and virtual sites
+            prot_id = base_ndx_C.get_group_id("Protein")
+            mol_id  = base_ndx_C.get_group_id("MOL")
+            sys_id  = base_ndx_C.get_group_id("System")
+            os.system("echo \"{prot_id}|{mol_id}\n{mol_id} & ! a H* & ! a ?H*\n{sys_id} & ! {mol_id}\n\nq\n\" | ".format(
+                            prot_id=prot_id, mol_id=mol_id, sys_id=sys_id) +
+                      "gmx make_ndx -f {struct} -n {inndx} -o {outndx} > noH_make_ndx_{i}.log 2>&1".format(
+                            struct=fn_frame_src, inndx=fn_ndx_C, outndx=fn_ndx_C, i=self.i))
+            clean_virtual_sites_from_ndx(fn_ndx_C, "MOL", "MOL_&_!H*_&_!?H*", "lig.itp")
+            check_file_ready(os.path.join(fn_ndx_C))
+            if(self.debug):
+                print("debug: made {}".format(fn_ndx_C))
 
 
-            #if decorelating, make an index file from the aligned structure. It can have a different number of atoms if Apo differs from holo
-            if('decor_decoupled' in self.study_settings and  self.study_settings['decor_decoupled']):
-                os.system("echo \"q\n\" | "
-                      "gmx make_ndx -f stateC/repeat{i}/morphes0/frame0.gro "
-                      "-o decor_{i}.ndx > decor_make_ndx_{i}.log 2>&1".format(i=self.i))
+            ##if decorelating, make an index file from the aligned structure. It can have a different number of atoms if Apo differs from holo
+            #if('decor_decoupled' in self.study_settings and  self.study_settings['decor_decoupled']):
+                #os.system("echo \"q\n\" | "
+                      #"gmx make_ndx -f stateC/repeat{i}/morphes0/frame0.gro "
+                      #"-o decor_{i}.ndx > decor_make_ndx_{i}.log 2>&1".format(i=self.i))
 
-            if(self.restr_source=="aligned"):
-                frame_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
-            elif(self.restr_source=="coupled"):
-                frame_path=self.folder_path+"/stateA/repeat{3}/{5}{4}/"
-            else:
-                raise(Exception("\nInvalid value of restr_source={} detected!\n".format(self.restr_source)))
+            
+            frame_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
+            fn_ref_ndx=fn_ndx_C
+            
             frame_trjs=""
             for m in range(self.study_settings['n_sampling_sims']):
                 frame_trjs+=frame_path.format(self.p,self.l,"C",self.i,m,"morphes")+"/frame*.gro"
 
-            if(not os.path.isfile("ii_{i}.itp".format(i=self.i)) or  not os.path.isfile("out_dg_{i}.dat".format(i=self.i))):
+            if(not os.path.isfile("ii_C_{i}.itp".format(i=self.i)) or  not os.path.isfile("out_dg_{i}.dat".format(i=self.i))):
                 oldstdin = sys.stdin
                 oldstdout = sys.stdout
                 oldstderr = sys.stderr
 
-                my_ndx=ndx.IndexFile(my_ndx_file, verbose=False)
-                prot_id = my_ndx.get_group_id("C-alpha")
-                mol_id = my_ndx.get_group_id("MOL_&_!H*_&_!vsites")
+                my_ndx=ndx.IndexFile(fn_ref_ndx, verbose=False)
+                prot_id = my_ndx.get_group_id("C-alpha_common")
+                mol_id = my_ndx.get_group_id("MOL_&_!H*_&_!?H*_&_!vsites")
                 sys.stdin = StringIO( "{}\n{}\n".format(prot_id, mol_id) )
                 with open("gen_restr{i}.log".format(i=self.i), 'w') as logf:
                     sys.stdout = logf
                     sys.stderr = logf
 
                     g=glob.glob(frame_trjs)
-                    argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", my_ndx_file,
-                                "-oii", "ii_{i}.itp".format(i=self.i),
+                    argv = ["postHoc_restraining_python3.py", "-f", *g, "-n", fn_ref_ndx,
+                                "-oii", "ii_C_{i}.itp".format(i=self.i),
                                 "-odg", "out_dg_{i}.dat".format(i=self.i),
                                 "-min_K", "%f"%self.min_ang_K]
 
@@ -296,66 +331,61 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                 sys.stdin = oldstdin
                 sys.stdout = oldstdout
                 sys.stderr = oldstderr
+            
+            
+            #create ii_A_#.itp by remaping the indeces from ii_C_#.itp
+            A_ndx=ndx.IndexFile(fn_ndx_A, verbose=False)
+            C_ndx=ndx.IndexFile(fn_ndx_C, verbose=False)
+            common_A_ids=A_ndx["C-alpha_common"].ids
+            common_C_ids=C_ndx["C-alpha_common"].ids
+            mol_A_ids=A_ndx["MOL_&_!H*_&_!?H*_&_!vsites"].ids
+            mol_C_ids=C_ndx["MOL_&_!H*_&_!?H*_&_!vsites"].ids
+            relevant_A_ids=common_A_ids+mol_A_ids
+            relevant_C_ids=common_C_ids+mol_C_ids
+            C_to_A_dict = {relevant_C_ids[a]: relevant_A_ids[a] for a in range(len(relevant_C_ids))}
+            
+            lig_C_ids, pro_C_ids, means, ks=readii_util("ii_C_{i}.itp".format(i=self.i))
+            lig_A_ids=[C_to_A_dict[a] for a in lig_C_ids]
+            pro_A_ids=[C_to_A_dict[a] for a in pro_C_ids]
+            
+            writeii_util("ii_A_{i}.itp".format(i=self.i), lig_A_ids, pro_A_ids, means, ks)
+            check_file_ready("ii_A_{i}.itp".format(i=self.i))
+        
 
         elif(self.restr_scheme=="Fitted"):
-            if(self.debug):
-                print("debug: launch find_restraints")
-            find_restraints(
-                structA="dumpA_{i}.gro".format(i=self.i),
-                structB="dumpB_{i}.gro".format(i=self.i),
-                ref="averageA_{i}.gro".format(i=self.i),
-                trajA="all_eqA_{i}_fit.xtc".format(i=self.i),
-                trajB="all_eqB_{i}_fit.xtc".format(i=self.i),
-                out="ii_{i}.itp".format(i=self.i),
-                an_cor_file="out_dg_{i}.dat".format(i=self.i),
-                plotfile="restraint_coord_distrib_{i}.png".format(i=self.i),
-                log=False)
+            raise(RuntimeError("restr_scheme = Fitted is no longer supported."))
 
-        check_file_ready(os.path.join("ii_{i}.itp".format(i=self.i)))
+        check_file_ready(os.path.join("ii_C_{i}.itp".format(i=self.i)))
+       
 
         #create a C state topology that holds ligand in place
         #with the restraint from the ii.itp files
 
         for m in range(self.study_settings['n_sampling_sims']):
             for s in ["A","C"]:
-                nWater,nCl,nNa=(0,0,0)
                 top_ions="topol_ions%d_%d.top"%(self.i,m)
                 if(s=="C"): # Apo sim can have different number of waters (if the whole protocol wasn't rerun from scratch after including Apo crystal structure)
-                    top_Apo=self.folder_path+"/../apoP/topol_ions%d_%d.top"%(self.i,m)
-                    with open(top_Apo, 'r') as reftop:
-                        for l in reftop:
-                            if ("SOL " in l):
-                                nWater = int(l.split()[1])
-                            if ("Cl " in l):
-                                nCl = int(l.split()[1])
-                            if ("Na " in l):
-                                nNa = int(l.split()[1])
+                    top_ions=self.folder_path+"/../apoP/topol_ions%d_%d.top"%(self.i,m)
 
                 check_file_ready(top_ions)
                 topAC_ions="topolTI_ions%s%d_%d.top"%(s,self.i,m)
-                #os.system("cp {} {} > /dev/null 2>&1".format(top_ions,topAC_ions))
                 with open(topAC_ions, 'w') as top:
                     with open(top_ions, 'r') as reftop:
                         for l in reftop:
+                            
                             if (s=="C" and "SOL " in l):
-                                top.write("SOL    {}\n".format(nWater))
-                            elif (s=="C" and "Cl " in l):
-                                top.write("Cl     {}\n".format(nCl))
-                            elif (s=="C" and "Na " in l):
-                                top.write("Na     {}\n".format(nNa))
+                                top.write("MOL    1\n") #add ligand into the apo topology
+                                top.write(l)
                                 
-                            elif (s=="C" and "#include \"prot.itp\"" in l):
-                                #replace include with prot_apo.itp for C->A TI
-                                top.write("#include \"prot_apo.itp\"")
-                                
+                            elif (s=="C" and "#include \"prot_apo.itp\"" in l):
+                                top.write("#include \"lig.itp\"\n") #add ligand into the apo topology
+                                top.write(l)
                             else:
                                 top.write(l)
 
                     top.write("\n; Include intermolecular restraints\n")
-                    top.write("#include \"ii_{i}.itp\"\n".format(i=self.i))
+                    top.write("#include \"ii_{s}_{i}.itp\"\n".format(s=s, i=self.i))
 
-                #topsrc=self.study_settings['top_path']+"/topol_abs_prot_restr_amber.top"
-                #os.system("tail -n 3 {} >> {}".format(topsrc,topAC_ions))
                 check_file_ready(topAC_ions)
 
         #restore base path
@@ -396,8 +426,11 @@ class Task_PL_gen_restraints(SGETunedJobTask):
 
     def output(self):
         targets=[
-            luigi.LocalTarget(os.path.join(self.folder_path, "ii_{i}.itp".format(i=self.i))),
+            luigi.LocalTarget(os.path.join(self.folder_path, "ii_A_{i}.itp".format(i=self.i))),
+            luigi.LocalTarget(os.path.join(self.folder_path, "ii_C_{i}.itp".format(i=self.i))),
             luigi.LocalTarget(os.path.join(self.folder_path, "out_dg_{i}.dat".format(i=self.i))),
+            luigi.LocalTarget(os.path.join(self.folder_path, "index_prot_mol_noH_A_{i}.ndx".format(i=self.i))),
+            luigi.LocalTarget(os.path.join(self.folder_path, "index_prot_mol_noH_C_{i}.ndx".format(i=self.i)))
             ]
         if(self.restr_scheme=="Fitted"):
             targets.append([luigi.LocalTarget(os.path.join(self.folder_path, "averageA_{i}.gro".format(i=self.i)))])

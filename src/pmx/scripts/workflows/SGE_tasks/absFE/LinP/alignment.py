@@ -176,7 +176,7 @@ class Task_PL_align(SGETunedJobTask):
         
         for r_a in res_arr_a:
             for r_h in res_arr_h:
-                if(r_a.orig_id == r_h.orig_id and r_a.resname == r_h.resname and r_a.chain_id == r_h.chain_id): #residue matches
+                if(r_a.orig_id == r_h.orig_id and r_a.resname == r_h.resname): #residue matches
                     for a_a in r_a.atoms:
                         for a_h in r_h.atoms:
                             if(a_a.name == a_h.name and (a_a.id in n_a["C-alpha"].ids) and (a_h.id in n_h["C-alpha"].ids)):
@@ -313,17 +313,32 @@ class Task_PL_align(SGETunedJobTask):
 
         #find chain and resID of the last residue of the protein
         mol_first_atom = m_A.atoms[linA_ndx[0]]
-        chID = mol_first_atom.chain_id
-        resID = mol_first_atom.resnr
-        global_res_index=-1;
-        for i,r in enumerate(m_A.chdic[chID].residues):
+        #chID = mol_first_atom.chain_id
+        resID = mol_first_atom.resnr #internal numbering (residue.id, not residue.orig_id)
+        A_mol_res_index=-1;
+        A_prot_end_res_index=-1;
+        for i,r in enumerate(m_A.residues):
+            if(r.moltype=='protein'):
+                A_prot_end_res_index = m_A.residues.index(r)
             if(r.id==resID):
-                global_res_index = m_A.residues.index(r)
+                A_mol_res_index = m_A.residues.index(r)
                 break;
-
-        if(global_res_index<0):
+        if(A_mol_res_index<0):
             raise("Could not find residue with resID %d in protein+ligand."%(resID))
+        if(A_prot_end_res_index<0):
+            raise("Could not find the last protein residue in protein+ligand.")
+        
+        mol_res_index_shift=A_mol_res_index-A_prot_end_res_index
+        
+        B_prot_end_res_index=-1;
+        for i,r in enumerate(m_B.residues):
+            if(r.moltype=='protein'):
+                B_prot_end_res_index = m_B.residues.index(r)
+        if(B_prot_end_res_index<0):
+            raise("Could not find the last protein residue in ApoP.")
+        B_mol_res_index=B_prot_end_res_index+mol_res_index_shift #this is where the ligand will go
 
+        
 
         num_aligned_atoms = len(m_B.atoms) + l_ndx.shape[0]
         #if(len(m_A.atoms) != num_aligned_atoms):
@@ -400,7 +415,7 @@ class Task_PL_align(SGETunedJobTask):
             #do the insertion explicitly without relying on chains
             mol = m_C.residues[0]
             mol.model = m_B
-            m_B.residues.insert(global_res_index, mol)
+            m_B.residues.insert(B_mol_res_index, mol)
             #don't add to chain, it doesn't matter
             m_B.al_from_resl()
             m_B.renumber_atoms()

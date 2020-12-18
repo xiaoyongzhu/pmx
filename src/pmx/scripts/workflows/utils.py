@@ -105,7 +105,90 @@ def confirm_defNO(msg):
     else:
         sys.stderr.write("Unexpected input string. Assuming no.\n")
         return False
+    
+    
+    
+def readii_util(fii):
+    lig=[-1,-1,-1]
+    pro=[-1,-1,-1]
+    ligfirst=True;
+    nang=0
+    ndih=0
+    means=[.0,.0,.0,.0,.0,.0]
+    ks=[.0,.0,.0,.0,.0,.0]
+    with open(fii,'r') as f:
+        block=""
+        for cnt, line in enumerate(f):
+            l=line.strip()
+            if(not l): #empty line
+                continue
+            if('['in l): #read block name
+                s=l.split()
+                block=s[1]
+                continue
+            s=l.split()
+            # if(block=="bonds"):
+                # if(int(s[0])<int(s[1])):
+                    # ligfirst=False
 
+            #assume lig is first, we'll flip in the end if needed
+            if(block=="bonds"):
+                lig[0]=int(s[0])
+                pro[0]=int(s[1])
+                means[0]=float(s[3])
+                ks[0]=float(s[-1])
+
+            elif(block=="angles"):
+                means[1+nang]=float(s[4])
+                ks[1+nang]=float(s[-1])
+                nang+=1
+
+            elif(block=="dihedrals"):
+                if(ndih==0):
+                    lig=[int(i) for i in s[0:3]] #reverse order
+                    lig=lig[::-1]
+                elif(ndih==2):
+                    pro=[int(i) for i in s[1:4]]
+
+                means[3+ndih]=float(s[5])
+                ks[3+ndih]=float(s[-1])
+                ndih+=1
+
+        # #flip lig & pro if not ligfirst
+        #if(not ligfirst):
+            #lig,pro=pro,lig
+
+    return(lig, pro, means, ks) #1-indexed becasue bynum takes that
+
+
+
+def writeii_util(fii, lig, pro, means, ks):
+    fp = open(fii, 'w')
+    fp.write('\n [ intermolecular_interactions ]\n')
+    
+    # bonds
+    fp.write(' [ bonds ]\n')
+    fp.write('%6d %6d %6d %14.6f %14.6f %14.6f %14.6f\n' % ( lig[0], pro[0], 6, means[0], 0.0, means[0], ks[0]))
+    fp.write('\n')
+    
+    # angles
+    fp.write(' [ angles ]\n')
+    fp.write('%6d %6d %6d %6d %14.6f %14.6f %14.6f %14.6f\n' % ( lig[1], lig[0], pro[0], 1, means[1], 0.0, means[1], ks[1]))
+    fp.write('%6d %6d %6d %6d %14.6f %14.6f %14.6f %14.6f\n' % ( lig[0], pro[0], pro[1], 1, means[2], 0.0, means[2], ks[2]))
+    fp.write('\n')
+
+    # dihedrals
+    fp.write(' [ dihedrals ]\n')
+    fp.write('%6d %6d %6d %6d %6d %14.6f %14.6f %14.6f %14.6f\n' % ( lig[2], lig[1], lig[0], pro[0], 2,
+                                                              means[3], 0.0, means[3], ks[3]))
+    fp.write('%6d %6d %6d %6d %6d %14.6f %14.6f %14.6f %14.6f\n' % ( lig[1], lig[0], pro[0], pro[1], 2,
+                                                              means[4], 0.0, means[4], ks[4]))
+    fp.write('%6d %6d %6d %6d %6d %14.6f %14.6f %14.6f %14.6f\n' % ( lig[0], pro[0], pro[1], pro[2], 2,
+                                                              means[5], 0.0, means[5], ks[5]))
+    fp.write('\n')
+    
+    fp.close()
+    
 
 # ==============================================================================
 #                      COMMAND LINE OPTIONS AND MAIN

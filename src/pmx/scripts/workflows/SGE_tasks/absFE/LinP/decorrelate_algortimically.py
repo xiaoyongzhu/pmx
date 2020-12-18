@@ -8,7 +8,7 @@ from luigi.parameter import ParameterVisibility
 from pmx import ndx
 from pmx.model import Model
 #from pmx.scripts.workflows.utils import read_from_mdp, bootstrap_Pearson, Pearson_err_func
-from pmx.scripts.workflows.utils import read_from_mdp
+from pmx.scripts.workflows.utils import read_from_mdp, readii_util
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.restraints import Task_PL_gen_restraints
 from pmx.scripts.workflows.SGE_tasks.absFE.LinP.alignment import Task_PL_align
@@ -28,56 +28,9 @@ from pmx.scripts.workflows.postHoc_restraining_python3 import calc_dist, calc_an
 #                               Helper Functions
 # ==============================================================================
 def readii(fii):
-    lig=[-1,-1,-1]
-    pro=[-1,-1,-1]
-    ligfirst=True;
-    nang=0
-    ndih=0
-    means=np.zeros(6)
-    ks=np.zeros(6)
-    with open(fii,'r') as f:
-        block=""
-        for cnt, line in enumerate(f):
-            l=line.strip()
-            if(not l): #empty line
-                continue
-            if('['in l): #read block name
-                s=l.split()
-                block=s[1]
-                continue
-            s=l.split()
-            # if(block=="bonds"):
-                # if(int(s[0])<int(s[1])):
-                    # ligfirst=False
-
-            #assume lig is first, we'll flip in the end if needed
-            if(block=="bonds"):
-                lig[0]=int(s[0])
-                pro[0]=int(s[1])
-                means[0]=float(s[3])
-                ks[0]=float(s[-1])
-
-            elif(block=="angles"):
-                means[1+nang]=float(s[4])
-                ks[1+nang]=float(s[-1])
-                nang+=1
-
-            elif(block=="dihedrals"):
-                if(ndih==0):
-                    lig=[int(i) for i in s[0:3]] #reverse order
-                    lig=lig[::-1]
-                elif(ndih==2):
-                    pro=[int(i) for i in s[1:4]]
-
-                means[3+ndih]=float(s[5])
-                ks[3+ndih]=float(s[-1])
-                ndih+=1
-
-        # #flip lig & pro if not ligfirst
-        #if(not ligfirst):
-            #lig,pro=pro,lig
-
-    return(np.array(lig), np.array(pro), means, ks) #1-indexed becasue bynum takes that
+    #Keep this function around becasue other external scripts (eg energetic decorelation) import it
+    lig, pro, means, ks = readii_util(fii)
+    return(np.array(lig), np.array(pro), np.array(means), np.array(ks)) #1-indexed becasue bynum takes that
 
 def update_anchors(model, idx_lig, idx_pro):
         L=[model.atoms[idx_lig[a]-1].x for a in range(3)]
