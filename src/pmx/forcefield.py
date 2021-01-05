@@ -742,7 +742,7 @@ class TopolBase:
     def write(self, outfile, stateBonded='AB', stateTypes='AB', stateQ='AB',
               scale_mass=False, dummy_qA='on', dummy_qB='on', target_qB=None,
               full_morphe=True, write_atypes=True, posre_ifdef=True, posre_include=False,
-              verbose=False):
+              verbose=False, qPrec=6):
         """Writes the Topology to file.
 
         The parameters ``stateBonded``, ``stateTypes``, and ``stateQ`` control
@@ -793,6 +793,8 @@ class TopolBase:
         verbose : bool, optional
             whether to print out information about each atom written. Default
             is False.
+        qPrec : int, optional
+            number of significant digits for charges in topology. Default is 6.
         """
         # open file for writing
         fp = open(outfile, 'w')
@@ -833,7 +835,7 @@ class TopolBase:
             self.write_atoms(fp, charges=stateQ, atomtypes=stateTypes,
                              dummy_qA=dummy_qA, dummy_qB=dummy_qB,
                              scale_mass=scale_mass, target_qB=target_qB,
-                             full_morphe=full_morphe, verbose=verbose)
+                             full_morphe=full_morphe, verbose=verbose, qPrec=qPrec)
             self.write_bonds(fp, state=stateBonded)
             if self.have_constraints:
                 self.write_constraints(fp)
@@ -1056,7 +1058,11 @@ class TopolBase:
 
     def write_atoms(self, fp, charges='AB', atomtypes='AB', dummy_qA='on',
                     dummy_qB='on', scale_mass=True, target_qB=[],
-                    full_morphe=True, verbose=False):
+                    full_morphe=True, verbose=False, qPrec=6):
+
+        # number of significant digits for charges in topology
+        if qPrec>10:
+            qPrec=10
 
         self.qA = 0
         self.qB = 0
@@ -1171,13 +1177,13 @@ class TopolBase:
                 else:
                     qqA = atom.q
                     qqB = atom.qB
-                print('%6d %11s%7d%7s%7s%7d%11.6f%11.4f %11s%11.6f%11.4f'
+                print('%6d %11s%7d%7s%7s%7d %11.{0}f%11.4f %11s %11.{0}f%11.4f'.format(qPrec)
                       % (atom.id, atA, atom.resnr, atom.resname,
                          atom.name, atom.cgnr, qqA, mA, atB, qqB, mB), file=fp)
                 self.qA += qqA
                 self.qB += qqB
             else:
-                print('%6d %11s%7d%7s%7s%7d%11.6f%11.4f'
+                print('%6d %11s%7d%7s%7s%7d %11.{0}f%11.4f'.format(qPrec)
                       % (atom.id, atom.atomtype, atom.resnr, atom.resname,
                          atom.name, atom.cgnr, atom.q, atom.m), file=fp)
                 self.qA += atom.q
