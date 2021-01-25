@@ -103,6 +103,10 @@ def calc_dih( m, ind1, ind2, ind3, ind4, bDegree=True ):
     c1 = vector_prod(v_ba,v_cb)
     c2 = vector_prod(v_cb,v_dc)
     cosdih = np.dot(c1,c2)/np.sqrt(np.dot(c1,c1)*np.dot(c2,c2))
+    if(cosdih>1.0):
+        cosdih=1.0
+    elif(cosdih<-1.0):
+        cosdih=-1.0
     dih = np.arccos(cosdih)
     direction = np.dot(v_ba,c2)
     sign = 1.0
@@ -440,7 +444,7 @@ def main(argv):
             arrProtz = np.vstack([arrProtz,fooProtz])
 
         counter+=1
-        
+
     sys.stdout.write('\r Finished reading %d frames\n' % counter)
     sys.stdout.flush()
 
@@ -514,7 +518,7 @@ def main(argv):
     kdih2 = RT/(np.var(dih2/180.0*np.pi))
     mdih3 = np.mean(dih3)
     kdih3 = RT/(np.var(dih3/180.0*np.pi))
-    
+
     #enforce minimal force constants
     if(kangle1<min_K):
         kangle1 = min_K
