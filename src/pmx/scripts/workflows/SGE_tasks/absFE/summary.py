@@ -32,6 +32,9 @@ class Task_summary_aligned(SGETunedJobTask):
 
     show_incomplete = luigi.BoolParameter(default=False, significant=True,
                                visibility=ParameterVisibility.HIDDEN)
+    
+    show_sep_repeats = luigi.BoolParameter(default=False, significant=True,
+                               visibility=ParameterVisibility.HIDDEN)
 
     only_LinW = luigi.BoolParameter(default=False, significant=True,
                                visibility=ParameterVisibility.HIDDEN)
@@ -126,32 +129,39 @@ class Task_summary_aligned(SGETunedJobTask):
             if(nfound>0):
                 dGpart = np.mean(rs[:nfound])
                 std = np.std(rs[:nfound])
-                return([dGpart,std,nfound])
+                return([dGpart,std,nfound], rs)
             else:
-                return([np.nan,np.nan,nfound])
+                return([np.nan,np.nan,nfound], rs)
 
 
         #dG in water
         inws={}
         p="water"
+        w_reps={}
         for l in self.ligands:
             key=l
             folder_path = self.base_path+'/'+p+'/lig_'+l
-            inws.update({key:read_results(inP=False)})
+            tup, rs=read_results(inP=False)
+            inws.update({key:tup})
+            w_reps.update({key:rs})
 
         #dG in protein
         inps={}
+        p_reps={}
         for p in self.hosts:
             for l in self.ligands:
                 key=p+' '+l
                 if(not self.only_LinW):
                     folder_path = self.base_path+'/prot_'+p+'/lig_'+l
-                    inps.update({key:read_results(inP=True)})
+                    tup, rs=read_results(inP=True)
+                    inps.update({key:tup})
+                    p_reps.update({key:rs})
                 else:
                     inps.update({key:[np.nan,np.nan,0]})
 
         #read analytical corrections for restraints
         anacorrs={}
+        corrs_reps={}
         for p in self.hosts:
             for l in self.ligands:
                 key=p+' '+l
@@ -177,9 +187,14 @@ class Task_summary_aligned(SGETunedJobTask):
                     anacorrs.update({key:[np.mean(cors[:nfound]), np.std(cors[:nfound]), nfound]})
                 else:
                     anacorrs.update({key:[np.nan, np.nan, nfound]})
+                    
+                corrs_reps.update({key:cors})
 
 
         #print summary table
+        if(self.show_sep_repeats):
+            rep_file=open("sep_repeats_"+self.outname, 'w')
+        
         with open(self.outname, 'w') as sf:
 
             print("{:^20s} \t{:^20s}   {:^20s}   {:^20s}   {:^20s}".format(
@@ -191,6 +206,9 @@ class Task_summary_aligned(SGETunedJobTask):
             for p in self.hosts:
                 for l in self.ligands:
                     key=p+' '+l
+                    if(self.show_sep_repeats):
+                        rep_file.write("{:<20s}:\t".format(key))
+                    
                     if(np.isfinite(inws[l][0]) and np.isfinite(inps[key][0]) and np.isfinite(anacorrs[key][0]) or
                        (np.isfinite(inws[l][0]) and self.only_LinW) ):
                         ddG = inws[l][0] - inps[key][0] #water - (protein + restr corr.)
@@ -205,9 +223,20 @@ class Task_summary_aligned(SGETunedJobTask):
                             inps[key][0], inps[key][1],
                             inws[l][0], inws[l][1],
                             anacorrs[key][0], anacorrs[key][1]) )
+                        
+                        if(self.show_sep_repeats):
+                            for r in range(self.n_repeats):
+                                dG = w_reps[l][r] - p_reps[key][r]
+                                rep_file.write("{:>8.2f}:\t".format(dG))
+                            rep_file.write("\n")
+
+        if(self.show_sep_repeats):
+            rep_file.close()
 
     def output(self):
         files=[self.outname]
+        if(self.show_sep_repeats):
+            files.append("sep_repeats_"+self.outname)
         return([luigi.LocalTarget(os.path.join(self.base_path, f)) for f in files])
 
     def requires(self):

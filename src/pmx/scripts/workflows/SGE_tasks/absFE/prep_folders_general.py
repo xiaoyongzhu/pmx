@@ -340,7 +340,7 @@ class Prep_folder(SGETunedJobTask):
 
         check_file_ready("water.pdb")
         os.system("gmx grompp -p topol_solvated.top -c water.pdb -o tpr.tpr "\
-                  "-f {} -v -maxwarn 2 "\
+                  "-f {} -v -maxwarn 3 "\
                   ">> prep.log 2>&1".format(self.init_mdp))
         check_file_ready("tpr.tpr")
 
