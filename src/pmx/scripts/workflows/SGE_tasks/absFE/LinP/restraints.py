@@ -389,7 +389,7 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                                 top.write("MOL    1\n") #add ligand into the apo topology
                                 top.write(l)
                                 
-                            elif (s=="C" and "#include \"prot_apo.itp\"" in l):
+                            elif (s=="C" and ("#include \"prot_apo.itp\"" in l or "#include \"prot.itp\"")):
                                 top.write("#include \"lig.itp\"\n") #add ligand into the apo topology
                                 top.write(l)
                             else:
