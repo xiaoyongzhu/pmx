@@ -38,12 +38,12 @@ def _parse_qstat_state_opt_header(qstat_out, job_id, header=True):
                 return state
     return 'u'
 
-def extended_build_qsub_command(cmd, job_name, outfile, errfile, pe, n_cpu, runtime=None):
+def extended_build_qsub_command(cmd, job_name, outfile, errfile, pe, n_cpu, runtime=None, extra_options=""):
     """Submit shell command to SGE queue via `qsub`"""
     h_rt=""
     if(runtime):
         h_rt="-l h_rt="+runtime
-    qsub_template = """echo {cmd} | qsub -o ":{outfile}" -e ":{errfile}" -V -r y {h_rt} -pe {pe} {n_cpu} -N {job_name}"""
+    qsub_template = """echo {cmd} | qsub -o ":{outfile}" -e ":{errfile}" -V -r y {h_rt} -pe {pe} {n_cpu} -N {job_name} {extra_options}"""
     return qsub_template.format(
         cmd=cmd, job_name=job_name, outfile=outfile, errfile=errfile,
         pe=pe, n_cpu=n_cpu, h_rt=h_rt)
@@ -76,7 +76,7 @@ class SGETunedJobTask(SGEJobTask):
 
     #change default parallel environment
     parallel_env = luigi.Parameter(
-        default='*',
+        default='*fast',
         visibility=ParameterVisibility.HIDDEN,
         significant=False)
     #poll time in seconds.
@@ -104,6 +104,11 @@ class SGETunedJobTask(SGEJobTask):
         significant=False, default="",
         visibility=ParameterVisibility.HIDDEN,
         description="Explicit job name given via qsub.")
+        
+    qsub_extra_options = luigi.Parameter(
+        significant=False, default="",
+        visibility=ParameterVisibility.HIDDEN,
+        description="Extra options passed to qsub.")
 
     #set runtime
     runtime = luigi.Parameter(
@@ -235,7 +240,7 @@ class SGETunedJobTask(SGEJobTask):
         self.errfile = os.path.join(self.tmp_dir, 'job.err')
         submit_cmd = extended_build_qsub_command(job_str, self.job_name,
                              self.outfile, self.errfile, self.parallel_env,
-                             self.n_cpu, self.runtime)
+                             self.n_cpu, self.runtime, self.qsub_extra_options)
         logger.debug('qsub command: \n' + submit_cmd)
 
         # Submit the job and grab job ID
