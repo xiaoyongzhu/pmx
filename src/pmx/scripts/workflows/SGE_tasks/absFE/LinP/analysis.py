@@ -32,7 +32,7 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
     #request 1 core
     n_cpu = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
                                default=1, significant=False)
-
+                               
     job_name_format = luigi.Parameter(
         visibility=ParameterVisibility.HIDDEN,
         significant=False, default="pmx_{task_family}_p{p}_l{l}_{i}",
@@ -42,6 +42,9 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
     n_bins = luigi.IntParameter(visibility=ParameterVisibility.HIDDEN,
                                default=10, significant=False,
                                description="Number of histogram bins in plot.")
+                               
+    n_bootstrap = luigi.IntParameter(default=0, significant=True,
+                               description="Number of times estimators are bootstrapped.")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,7 +76,8 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
         sys.argv = [['analyze_dhdl.py'],
                     ['-fA'], dHdlA,
                     ['-fB'], dHdlB,
-                    ['--nbins', str(int(self.n_bins))]]
+                    ['--nbins', str(int(self.n_bins))],
+                    ['-b', str(int(self.n_bootstrap))]]
         sys.argv = [item for sublist in sys.argv for item in sublist] #flatten argv
 
         with open("analysis.log", "w") as f:
@@ -91,6 +95,25 @@ class Task_PL_analysis_aligned(SGETunedJobTask):
     def output(self):
         files=['wplot.png', 'analysis.log', 'integA.dat', 'integB.dat', 'results.txt']
         return([luigi.LocalTarget(os.path.join(self.ana_folder, f)) for f in files])
+        
+    def complete(self):
+        """
+        Check if Bootstraping was done (if required).
+        """
+        c=super().complete()
+        if(c and self.n_bootstrap>0):
+            found_boots=0
+            with open(os.path.join(self.ana_folder, 'analysis.log'), "r") as anaf:
+                content = anaf.readlines()
+                for l in content:
+                    if("Bootstrap (Std Err): iteration" in l):
+                        s=l.split('/')
+                        found_boots=int(s[-1])
+                        break;
+            if(found_boots!=self.n_bootstrap):
+                c=False
+            
+        return(c)
 
     def requires(self):
         tasks=[]
