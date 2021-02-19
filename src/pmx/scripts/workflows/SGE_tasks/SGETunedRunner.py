@@ -81,7 +81,10 @@ def _do_work_on_compute_node(work_dir, tarball=True, arrayjob=False):
         job = pickle.load(f)
         
     #record hostname
-    print("SGE job: {}:{}".format(int(os.environ['JOB_ID']), int(os.environ['SGE_TASK_ID'])))
+    if(arrayjob):
+        print("SGE job: {}:{}".format(int(os.environ['JOB_ID']), int(os.environ['SGE_TASK_ID'])))
+    else:
+        print("SGE job: {}".format(int(os.environ['JOB_ID'])))
     print("hostname: ", os.environ['HOSTNAME'])
 
     # Do the work contained
