@@ -46,7 +46,7 @@ def extended_build_qsub_command(cmd, job_name, outfile, errfile, pe, n_cpu, runt
     qsub_template = """echo {cmd} | qsub -o ":{outfile}" -e ":{errfile}" -V -r y {h_rt} -pe {pe} {n_cpu} -N {job_name} {extra_options}"""
     return qsub_template.format(
         cmd=cmd, job_name=job_name, outfile=outfile, errfile=errfile,
-        pe=pe, n_cpu=n_cpu, h_rt=h_rt)
+        pe=pe, n_cpu=n_cpu, h_rt=h_rt, extra_options=extra_options)
 
 
 class SGETunedJobTask(SGEJobTask):
