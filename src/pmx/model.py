@@ -87,6 +87,7 @@ from . import chain
 from .atomselection import Atomselection
 from .molecule import Molecule
 from .atom import Atom
+from string import digits
 
 
 __all__ = ['Model']
@@ -203,6 +204,9 @@ class Model(Atomselection):
                 raise ValueError('unknown unit %s for coordinates' % scale_coords)
 
         self.assign_moltype()
+
+        assign_masses_to_model( self )
+
 
     def __str__(self):
         s = '< Model: moltype=%s, nchain=%d, nres=%d, natom=%d >' %\
@@ -931,7 +935,7 @@ def merge_models(*args):
     return model
 
 
-def assign_masses_to_model(model, topology):
+def assign_masses_to_model(model, topology=None):
     '''Assigns masses to the Model atoms given the ones present in the Topology.
 
     Parameters
@@ -939,14 +943,24 @@ def assign_masses_to_model(model, topology):
     model : Model
         Model object of the molecule.
     topology : Topology
-        Topology object of the same molecule.
+        Topology object of the same molecule. When no topology provided, standard library masses are used.
     '''
-    for ma, ta in zip(model.atoms, topology.atoms):
-        if ma.name != ta.name:
-            raise ValueError('mismatch of atom names between Model and '
-                             'Topology objects provided')
-        ma.m = ta.m
-
+    
+    if topology!=None:
+        for ma, ta in zip(model.atoms, topology.atoms):
+            if ma.name != ta.name:
+                raise ValueError('mismatch of atom names between Model and '
+                                 'Topology objects provided')
+            ma.m = ta.m
+    else:
+        for a in model.atoms:
+            aname = a.name
+            aname = aname.upper()
+            aname = aname.translate(str.maketrans('','',digits))
+            if aname not in library._atommass.keys():
+                a.m = 0.0
+            else:
+                a.m = library._atommass[aname]
 
 def double_box(m1, m2, r=2.5, d=1.5, bLongestAxis=False, verbose=False):
     '''Places two structures (two Model objects) into a single box.
