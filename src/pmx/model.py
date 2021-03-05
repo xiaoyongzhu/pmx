@@ -126,6 +126,9 @@ class Model(Atomselection):
         Default is True.
     bPDBGAP : bool
         whether search for gaps in the chain to assign new chain IDs.
+    bPDBMASS : bool
+        whether to guess masses from the atom library (will fail for
+        complex atom naming, e.g. ND will not be interpreted as nitrogen)
 
     Attributes
     ----------
@@ -149,7 +152,7 @@ class Model(Atomselection):
     """
     def __init__(self, filename=None, pdbline=None, renumber_atoms=True,
                  renumber_residues=True, rename_atoms=False, scale_coords=None,
-                 bPDBTER=True, bNoNewID=True, bPDBGAP=False,
+                 bPDBTER=True, bNoNewID=True, bPDBGAP=False, bPDBMASS=False,
                  **kwargs):
 
         Atomselection.__init__(self)
@@ -167,7 +170,7 @@ class Model(Atomselection):
             setattr(self, key, val)
 
         if filename is not None:
-            self.read(filename=filename, bPDBTER=bPDBTER, bNoNewID=bNoNewID, bPDBGAP=bPDBGAP)
+            self.read(filename=filename, bPDBTER=bPDBTER, bNoNewID=bNoNewID, bPDBGAP=bPDBGAP, bPDBMASS=bPDBMASS)
         if pdbline is not None:
             self.__readPDB(pdbline=pdbline)
         if self.atoms:
@@ -205,7 +208,6 @@ class Model(Atomselection):
 
         self.assign_moltype()
 
-        assign_masses_to_model( self )
 
 
     def __str__(self):
@@ -410,7 +412,7 @@ class Model(Atomselection):
         
     # TODO: make readPDB and readPDBTER a single function. It seems like
     # readPDBTER is more general PDB reader?
-    def __readPDBTER(self, fname=None, pdbline=None, bNoNewID=True, bPDBGAP=False):
+    def __readPDBTER(self, fname=None, pdbline=None, bNoNewID=True, bPDBGAP=False, bPDBMASS=False):
         """Reads a PDB file with more options than __readPDB ?"""
         if pdbline:
             lines = pdbline.split('\n')
@@ -505,6 +507,10 @@ class Model(Atomselection):
         self.make_chains()
         self.make_residues()
         self.unity = 'A'
+
+        if bPDBMASS==True:
+            assign_masses_to_model( self )
+
         return self
 
     def __readGRO(self, filename):
@@ -588,7 +594,7 @@ class Model(Atomselection):
         else:
             self.moltype = 'unknown'
 
-    def read(self, filename, bPDBTER=False, bNoNewID=True, bPDBGAP=False):
+    def read(self, filename, bPDBTER=False, bNoNewID=True, bPDBGAP=False, bPDBMASS=False):
         """PDB/GRO file reader.
 
         Parameters
@@ -609,7 +615,7 @@ class Model(Atomselection):
             if bPDBTER is True:
                 return self.__readPDBTER(fname=filename,
                                          pdbline=None,
-                                         bNoNewID=bNoNewID, bPDBGAP=bPDBGAP)
+                                         bNoNewID=bNoNewID, bPDBGAP=bPDBGAP, bPDBMASS=bPDBMASS)
             else:
                 return self.__readPDB(fname=filename)
         elif ext == 'gro':
