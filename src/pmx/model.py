@@ -87,6 +87,7 @@ from . import chain
 from .atomselection import Atomselection
 from .molecule import Molecule
 from .atom import Atom
+from string import digits
 
 
 __all__ = ['Model']
@@ -125,6 +126,9 @@ class Model(Atomselection):
         Default is True.
     bPDBGAP : bool
         whether search for gaps in the chain to assign new chain IDs.
+    bPDBMASS : bool
+        whether to guess masses from the atom library (will fail for
+        complex atom naming, e.g. ND will not be interpreted as nitrogen)
 
     Attributes
     ----------
@@ -148,7 +152,7 @@ class Model(Atomselection):
     """
     def __init__(self, filename=None, pdbline=None, renumber_atoms=True,
                  renumber_residues=True, rename_atoms=False, scale_coords=None,
-                 bPDBTER=True, bNoNewID=True, bPDBGAP=False,
+                 bPDBTER=True, bNoNewID=True, bPDBGAP=False, bPDBMASS=False,
                  **kwargs):
 
         Atomselection.__init__(self)
@@ -166,7 +170,7 @@ class Model(Atomselection):
             setattr(self, key, val)
 
         if filename is not None:
-            self.read(filename=filename, bPDBTER=bPDBTER, bNoNewID=bNoNewID, bPDBGAP=bPDBGAP)
+            self.read(filename=filename, bPDBTER=bPDBTER, bNoNewID=bNoNewID, bPDBGAP=bPDBGAP, bPDBMASS=bPDBMASS)
         if pdbline is not None:
             self.__readPDB(pdbline=pdbline)
         if self.atoms:
@@ -203,6 +207,8 @@ class Model(Atomselection):
                 raise ValueError('unknown unit %s for coordinates' % scale_coords)
 
         self.assign_moltype()
+
+
 
     def __str__(self):
         s = '< Model: moltype=%s, nchain=%d, nres=%d, natom=%d >' %\
@@ -383,9 +389,30 @@ class Model(Atomselection):
             return(True)
         return(False)
 
+    def __compareWithoutLastChar(self, str1, str2): 
+        if isinstance(str1,int) and isinstance(str2,int): # e.g. 52, 53
+            return(False)
+ 
+        if isinstance(str1,int): # e.g. 52, 52A
+            if str1==int(str2[0:-1]): # 52, 52A
+                return(True)
+            if str1==int(str2[0:-1])-1: # 52, 53A
+                return(True)
+        elif isinstance(str2,int): # e.g. 52A, 52
+            if int(str1[0:-1])==str2: # 52A, 52
+                return(True)
+            if int(str1[0:-1])==str2-1: # 52A, 53
+                return(True)
+        else: # e.g. 52A, 52B
+            if int(str1[0:-1])==int(str2[0:-1]): # 52A, 52B
+                return(True)
+            if int(str1[0:-1])==int(str2[0:-1])-1: # 52A, 53B
+                return(True)
+        return(False)
+        
     # TODO: make readPDB and readPDBTER a single function. It seems like
     # readPDBTER is more general PDB reader?
-    def __readPDBTER(self, fname=None, pdbline=None, bNoNewID=True, bPDBGAP=False):
+    def __readPDBTER(self, fname=None, pdbline=None, bNoNewID=True, bPDBGAP=False, bPDBMASS=False):
         """Reads a PDB file with more options than __readPDB ?"""
         if pdbline:
             lines = pdbline.split('\n')
@@ -416,7 +443,9 @@ class Model(Atomselection):
                     bNewChain = True
                 if (a.resnr != prevResID):
                     try:
-                        if a.resnr != prevResID+1:
+                        if self.__compareWithoutLastChar(prevResID,a.resnr)==True: # there are some special cases where residues are named, e.g. 52, 52A, 52B, ...
+                            bNewChain = False
+                        elif a.resnr != prevResID+1:
                             bNewChain = True
                         if (prevAtomName == 'OC2') or (prevAtomName == 'OXT') or (prevAtomName == 'OT2'):
                             bNewChain = True
@@ -431,7 +460,7 @@ class Model(Atomselection):
                 if a.name == 'C':
                     prevCatom = a
                 if bNewChain==True:
-                    if (a.chain_id==' ') or (a.chain_id==chainID) or (a.chain_id in usedChainIDs):
+                    if ((a.chain_id==' ') or (a.chain_id==chainID) or (a.chain_id in usedChainIDs) and bNoNewID==False):
                         # find a new chain id
                         bFound = False
                         while bFound==False:
@@ -478,6 +507,10 @@ class Model(Atomselection):
         self.make_chains()
         self.make_residues()
         self.unity = 'A'
+
+        if bPDBMASS==True:
+            assign_masses_to_model( self )
+
         return self
 
     def __readGRO(self, filename):
@@ -561,7 +594,7 @@ class Model(Atomselection):
         else:
             self.moltype = 'unknown'
 
-    def read(self, filename, bPDBTER=False, bNoNewID=True, bPDBGAP=False):
+    def read(self, filename, bPDBTER=False, bNoNewID=True, bPDBGAP=False, bPDBMASS=False):
         """PDB/GRO file reader.
 
         Parameters
@@ -582,7 +615,7 @@ class Model(Atomselection):
             if bPDBTER is True:
                 return self.__readPDBTER(fname=filename,
                                          pdbline=None,
-                                         bNoNewID=bNoNewID, bPDBGAP=bPDBGAP)
+                                         bNoNewID=bNoNewID, bPDBGAP=bPDBGAP, bPDBMASS=bPDBMASS)
             else:
                 return self.__readPDB(fname=filename)
         elif ext == 'gro':
@@ -728,34 +761,62 @@ class Model(Atomselection):
             Molecule instance of the residue found.
         """
 
+        #########################
+        # generate some residue id lists
+        valid_resids = []
+        for r in self.residues:
+            if isinstance(r.id,str):
+                valid_resids.append(r.id.replace(" ",""))
+            else:
+                valid_resids.append(r.id)
+
+        if chain is not None:        
+            valid_chresids = []
+            for r in self.chdic[chain].residues:
+                if isinstance(r.id,str):
+                    valid_chresids.append(r.id.replace(" ",""))
+                else:
+                    valid_chresids.append(r.id)
+        ##########################
+
+
         # check idx is a valid selection
-        if idx not in [r.id for r in self.residues]:
+        if idx not in valid_resids:#[r.id for r in self.residues]:
             raise ValueError('resid %s not found in Model residues' % idx)
 
         if chain is None:
             # check selection is unique
-            if [r.id for r in self.residues].count(idx) != 1:
+            if [r.id for r in self.residues].count(idx) > 1:
                 raise ValueError('idx choice %s results in non-unique selection' % idx)
         else:
             # check chain is a valid selection
             if chain not in [c.id for c in self.chains]:
                 raise ValueError('chain ID "%s" not found in Model chains' % chain)
             # check idx+chain is a valid selection
-            if idx not in [r.id for r in self.chdic[chain].residues]:
+            if idx not in valid_chresids:#[r.id for r in self.chdic[chain].residues]:
                 raise ValueError('resid %s not found in chain "%s"' % (idx, chain))
             # check selection is unique
-            if [r.id for r in self.chdic[chain].residues].count(idx) != 1:
+            if [r.id for r in self.chdic[chain].residues].count(idx) > 1:
                 raise ValueError('idx choice %s for chain "%s" results in non-unique selection' % (idx, chain))
 
         # then find and return the residue
         if chain is None:
             for r in self.residues:
-                if r.id == idx:
-                    return r
+                if isinstance(r.id,int):
+                    if r.id == idx:
+                        return r
+                else:
+                    if r.id.replace(" ","")==idx:
+                        return r
         elif chain is not None:
             for r in self.chdic[chain].residues:
-                if r.id == idx:
-                    return r
+                if isinstance(r.id,int):
+                    if r.id == idx:
+                        return r
+                else:
+                    if r.id.replace(" ","")==idx:
+                        return r
+            
 
     def fetch_residues(self, key, inv=False):
         """Gets residues using a list of residue names.
@@ -880,7 +941,7 @@ def merge_models(*args):
     return model
 
 
-def assign_masses_to_model(model, topology):
+def assign_masses_to_model(model, topology=None):
     '''Assigns masses to the Model atoms given the ones present in the Topology.
 
     Parameters
@@ -888,14 +949,24 @@ def assign_masses_to_model(model, topology):
     model : Model
         Model object of the molecule.
     topology : Topology
-        Topology object of the same molecule.
+        Topology object of the same molecule. When no topology provided, standard library masses are used.
     '''
-    for ma, ta in zip(model.atoms, topology.atoms):
-        if ma.name != ta.name:
-            raise ValueError('mismatch of atom names between Model and '
-                             'Topology objects provided')
-        ma.m = ta.m
-
+    
+    if topology!=None:
+        for ma, ta in zip(model.atoms, topology.atoms):
+            if ma.name != ta.name:
+                raise ValueError('mismatch of atom names between Model and '
+                                 'Topology objects provided')
+            ma.m = ta.m
+    else:
+        for a in model.atoms:
+            aname = a.name
+            aname = aname.upper()
+            aname = aname.translate(str.maketrans('','',digits))
+            if aname not in library._atommass.keys():
+                a.m = 0.0
+            else:
+                a.m = library._atommass[aname]
 
 def double_box(m1, m2, r=2.5, d=1.5, bLongestAxis=False, verbose=False):
     '''Places two structures (two Model objects) into a single box.

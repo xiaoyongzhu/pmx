@@ -352,13 +352,20 @@ def plot_work_dist(wf, wr, fname='Wdist.png', nbins=20, dG=None, dGerr=None,
     maxi = max(wf+wr)
     mini = min(wf+wr)
 
-    sm1 = smooth(np.array(wf))
-    sm2 = smooth(np.array(wr))
     plt.subplot(1, 2, 1)
     plt.plot(x1, wf, 'g-', linewidth=2, label="Forward (0->1)", alpha=.3)
-    plt.plot(x1, sm1, 'g-', linewidth=3)
     plt.plot(x2, wr, 'b-', linewidth=2, label="Backward (1->0)", alpha=.3)
-    plt.plot(x2, sm2, 'b-', linewidth=3)
+    ### smoothing ###
+    try:
+        sm1 = smooth(np.array(wf))
+        plt.plot(x1, sm1, 'g-', linewidth=3)
+    except:
+        print("Plotting: no smoothing for Wf")
+    try:
+        sm2 = smooth(np.array(wr))
+        plt.plot(x2, sm2, 'b-', linewidth=3)
+    except:
+        print("Plotting: no smoothing for Wr")
     plt.legend(shadow=True, fancybox=True, loc='upper center',
                prop={'size': 12})
     plt.ylabel(r'W [kJ/mol]', fontsize=20)

@@ -45,6 +45,15 @@ from glob import glob
 # =============
 # File IO utils
 # =============
+
+# create a folder
+def create_folder( path, fname=False ):
+    if fname==False:
+        if not os.path.exists(path):
+            os.makedirs(path)
+    elif not os.path.exists(path+'/'+fname):
+        os.makedirs(path+'/'+fname)
+
 def show_ff(gmxlib=None):
     """Prints the list of forcefields available in GMXLIB.
 
@@ -97,6 +106,11 @@ def ffopen(filename, mode='r', backup=True):
     else:
         return open(filename, mode)
 
+# this function echanges netmount with home
+def remove_netmount( string ): 
+    regexp = re.compile('netmount')
+    string = regexp.sub('home',string)
+    return(string)
 
 def get_ff_path(ff, verbose=False):
     """Get path of force field.
@@ -322,6 +336,12 @@ def removeBackups(dir, check=True):
 # ======
 # Others
 # ======
+def doLog(fp, s, commandName='ligandHybridTop'):
+    l = '{0}__log_> {1}'.format(commandName,s)
+#   print(sys.stderr,l)
+    print(l)
+    fp.write(l+'\n')
+
 def data2gauss(data):
     '''Takes a one dimensional array and fits a Gaussian.
 
@@ -494,3 +514,13 @@ class MissingTopolParamError(Exception):
 
     def __str__(self):
         return repr(self.s)
+
+class importError(Exception):
+    """Exceptions class for importing a module.
+    """
+    def __init__(self, s):
+        self.s = "Could not import: {0}".format(s)
+
+    def __str__(self):
+        return repr(self.s)
+

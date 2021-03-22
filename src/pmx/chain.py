@@ -305,11 +305,42 @@ class Chain(Atomselection):
             self.insert_residue(idx, new, residue.id)
         else:
             self.insert_residue(idx, new)
-        self.remove_residue(residue, bKeepResNum)
+
+        bRenumberRes = True
+        if bKeepResNum==True:
+            bRenumberRes = False
+        self.remove_residue(residue, renumber_residues=bRenumberRes)
 
     def remove_atom(self, atom):
         m = atom.molecule
         m.remove_atom(atom)
+
+    def fetch_residue(self, idx ):
+        """Get a residue based on its index
+                                                                                                                       
+        Parameters                                                                                                     
+        ----------                                                                                                     
+        idx : int                                                                                                      
+            ID of the residue to fetch.                                                                                
+                                                                                                                       
+        Returns                                                                                                        
+        -------                                                                                                        
+        residue : Molecule                                                                                             
+            Molecule instance of the residue found.                                                                    
+        """                                                                                                            
+                                                                                                                       
+        # check idx is a valid selection                                                                               
+        if idx not in [r.id for r in self.residues]:                                                                   
+            raise ValueError('resid %s not found in Model residues' % idx)                                             
+                                                                                                                       
+        # check selection is unique                                                                                
+        if [r.id for r in self.residues].count(idx) != 1:                                                          
+            raise ValueError('idx choice %s results in non-unique selection' % idx)                                
+                                                                                                                       
+        # then find and return the residue                                                                             
+        for r in self.residues:                                                                                    
+            if r.id == idx:                                                                                        
+                return r                                                                                           
 
     def fetch_residues(self, key, inv=False):
         """Fetch residues by residue names.
@@ -356,19 +387,21 @@ class Chain(Atomselection):
             self.model.chdic[chain_id] = self
             del self.model.chdic[old_id]
 
-    def append(self, mol):
+    def append(self, mol, newResNum=False):
         """Appends a residue to the Chain.
 
         Parameters
         ----------
         mol : Molecule
             Molecule instance to append
+        newResNum : int, optional
+            assigns a specific residue number that differs from the ID in pos
         """
         if not isinstance(mol, Molecule):
             raise(TypeError, "%s is not a Molecule instance" % str(mol))
         else:
             n = len(self.residues)
-            self.insert_residue(n, mol)
+            self.insert_residue(n, mol, newResNum=newResNum)
 
     def copy(self):
         return copy.deepcopy(self)
@@ -666,7 +699,7 @@ class Chain(Atomselection):
             x = 1./linalg.norm(v1)
             H.x = N.x + v1*x
             H.x = r.apply(H.x, 2*pi/3.)
-        self.append(new)
+        self.append(new,newResNum=self.residues[-1].id+1)
         cterm.set_omega(180)
         cterm.set_psi(psi, propagate=True)
         new.set_phi(next_phi)
@@ -782,7 +815,7 @@ class Chain(Atomselection):
         r = Rotation(N.x, C.x)
         O.x = r.apply(O.x, delta)
 
-        self.insert_residue(0, new)
+        self.insert_residue(0, new, newResNum=self.residues[0].id-1)
         new.set_omega_down(180)
         nterm.set_phi_down(phi, True)
         new.set_psi_down(psi, True)
