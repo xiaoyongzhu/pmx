@@ -2,7 +2,9 @@ import errno
 import logging
 import luigi
 import os
+import shutil
 import subprocess
+import tempfile
 import pmx.scripts.workflows.SGE_tasks.SGETunedRunner as sge_runner
 from luigi.contrib.sge import logger
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
@@ -61,6 +63,20 @@ class SGETunedArrayJobTask(SGETunedJobTask):
         super()._init_local()
 
 
+    def run(self):
+        if self.run_locally:
+            self.unfinished=self._find_unfinished()
+            #loop over each instance and run them separately
+            for t in range(len(self.unfinished)):
+                with tempfile.TemporaryDirectory() as dirpath:
+                    os.environ['SGE_TASK_ID']="%d"%(t+1)
+                    os.environ['TMPDIR']=dirpath
+                    self.work()
+                    os.environ['SGE_TASK_ID']=""
+                    os.environ['TMPDIR']=""
+        else:
+            self._init_local()
+            self._run_job()
 
     def _run_job(self):
 
