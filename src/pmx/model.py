@@ -451,6 +451,13 @@ class Model(Atomselection):
                             bNewChain = True
                         if (prevAtomName == 'HH33') and ((prevResName=='NME') or (prevResName=='NAC') or (prevResName=='CT3')): # NME cap
                             bNewChain = True
+                        # do not assign new chain IDs for waters, ions 
+                        if (a.resname=='WAT') or (a.resname=='SOL') or (a.resname=='TIP3') or (a.resname=='HOH') \
+                           or (a.resname=='NA') or (a.resname=='CL') \
+                           or (a.resname=='NaJ') or (a.resname=='Na') or (a.resname=='Cl') or (a.resname=='K') or (a.resname=='KJ') \
+                           or (a.resname=='MG') or (a.resname=='Mg') or (a.resname=='CA') or (a.resname=='Ca') or (a.resname=='CaJ') \
+                           or (a.resname=='ZN') or (a.resname=='Zn'): # add other ions when needed
+                            bNewChain = False
                     except TypeError:
                         bNewChain = False
                 prevID = a.chain_id
