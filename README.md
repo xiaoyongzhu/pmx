@@ -22,6 +22,11 @@ Checkout the source code and run the usual python installation
 git clone https://github.com/deGrootLab/pmx pmx
 cd pmx
 ```
+The 'master' branch is written in Python 2.
+For Python 3 version use 'develop' branch:
+```
+git checkout develop
+```
 For installation type the command:
 ```
 python setup.py install
