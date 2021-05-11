@@ -55,7 +55,7 @@ def clean_gromacs_backup_files( path ):
         path where to delete files starting with #
     """
 
-    toclean = glob.glob('{0}/*#'.format(path)) 
+    toclean = glob('{0}/*#'.format(path)) 
     for clean in toclean:
         os.remove(clean)     
 
