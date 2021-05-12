@@ -160,4 +160,19 @@ class Jobscript:
 '''.format(jobname=self.jobname,simcpu=self.simcpu,simtime=self.simtime,gpu=gpuline,
            source=sourceline,modules=moduleline,export=exportline,
            gmx=gmxline)
+
+    def _submission_script( self, jobfolder, counter, simType='eq' ):
+        fname = '{0}/submit.py'.format(jobfolder)
+        fp = open(fname,'w')
+        fp.write('import os\n')
+        fp.write('for i in range(0,{0}):\n'.format(counter))
+        if self.queue=='SGE':
+            cmd = '\'qsub jobscript{0}\'.format(i)'
+            if simType=='transitions':
+                cmd = '\'qsub -t 1-80:1 jobscript{0}\'.format(i)'
+        elif self.queue=='SLURM':
+            cmd = '\'sbatch jobscript{0}\'.format(i)'
+        fp.write('    os.system({0})\n'.format(cmd))
+        fp.close()
+
     
