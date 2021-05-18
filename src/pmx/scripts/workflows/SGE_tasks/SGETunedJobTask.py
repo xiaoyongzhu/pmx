@@ -246,8 +246,8 @@ class SGETunedJobTask(SGEJobTask):
         # Submit the job and grab job ID
         output = subprocess.check_output(submit_cmd, shell=True).decode('utf-8')
         logger.debug("Submitted job to qsub with response:\n" + output)
+        output=output.strip().split("\n")[-1] # remove AWS SGE warning about LD_LIBRARY_PATH
         self.job_id = _parse_qsub_job_id(output)
-        #logger.debug("Submitted job to qsub with response:\n" + output)
 
         self._track_job()
 
