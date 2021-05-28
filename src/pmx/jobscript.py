@@ -125,7 +125,7 @@ class Jobscript:
         elif self.queue=='SLURM':
             self._create_SLURM_header(moduleline,sourceline,exportline,gpuline,gmxline,partitionline)
         
-    def _create_SGE_header( self,moduleline,sourceline,exportline,gpuline,gmxline ):    
+    def _create_SGE_header( self,moduleline,sourceline,exportline,gpuline,gmxline, partitionline ):    
         self.header = '''#$ -S /bin/bash
 #$ -N {jobname}
 #$ -l h_rt={simtime}:00:00
