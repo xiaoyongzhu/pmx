@@ -87,6 +87,12 @@ class Gather_Inputs_folder(SGETunedJobTask):
         if(self.p and self.l): #P+L
             sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_"+self.l+".pdb",
                     self.folder_path+"/init.pdb")
+            #append crystalographic solvent, if any
+            if(os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/water.pdb")):
+                os.system("cat {} >> {}".format(
+                    self.study_settings['top_path']+"/proteins/"+self.p+"/water.pdb",
+                    self.folder_path+"/init.pdb")
+                    )
         elif(self.p and not self.l): #ApoP
             if(self.prot_src_override):
                 #sh.copy(self.prot_src_override, self.folder_path+"/init.pdb")
@@ -96,9 +102,23 @@ class Gather_Inputs_folder(SGETunedJobTask):
                 #Residue numbering needs to match between the two.
                 sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo.pdb", self.folder_path+"/init.pdb")
                 
+                #append crystalographic solvent, if any
+                if(os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/water_apo.pdb")):
+                    os.system("cat {} >> {}".format(
+                        self.study_settings['top_path']+"/proteins/"+self.p+"/water_apo.pdb",
+                        self.folder_path+"/init.pdb")
+                        )
+                
             else:  #use holo structure/itp for apo
                 sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.pdb",
                         self.folder_path+"/init.pdb")
+                        
+                #append crystalographic solvent, if any
+                if(os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/water.pdb")):
+                    os.system("cat {} >> {}".format(
+                        self.study_settings['top_path']+"/proteins/"+self.p+"/water.pdb",
+                        self.folder_path+"/init.pdb")
+                        )
         elif(self.l): #L
             sh.copy(self.study_settings['top_path']+"/ligand/"+self.l+"/ligand.pdb",
                     self.folder_path+"/init.pdb")
@@ -293,6 +313,8 @@ class Prep_folder(SGETunedJobTask):
     #request 1 cores
     n_cpu = luigi.IntParameter(default=1, significant=False,
                                visibility=ParameterVisibility.HIDDEN)
+                               
+    _found_xray_SOL=False;
 
     def solvate(self):
         """Solvates the system.
@@ -339,9 +361,21 @@ class Prep_folder(SGETunedJobTask):
         os.environ["GMXLIB"] = orig_GMXLIB
 
         check_file_ready("water.pdb")
+        
+        #find solvent that is not crystalographic and replace only it with ions
+        n = ndx.IndexFile("index.ndx")
+        if("SOL" in n.names):
+            self._found_xray_SOL = True
+            xray_SOL_gid=n.names.index("SOL")
+            n_gids=len(n.names)
+            os.system("echo \"name {xr} xraySOL\n\nr HOH | r SOL & ! {xr}\n\nname {last} SOL\n\nq\n\" | ".format(
+                        xr=xray_SOL_gid, last=n_gids) +
+                        "gmx make_ndx -f water.pdb -n index.ndx -o gen_ion.ndx >> prep.log 2>&1")
+            check_file_ready("gen_ion.ndx")
+                        
         os.system("gmx grompp -p topol_solvated.top -c water.pdb -o tpr.tpr "\
-                  "-f {} -v -maxwarn 3 "\
-                  ">> prep.log 2>&1".format(self.init_mdp))
+                  "-f {mdp} {ndx} -v -maxwarn 3 "\
+                  ">> prep.log 2>&1".format(mdp=self.init_mdp, ndx="" if not self._found_xray_SOL else "-n gen_ion.ndx"))
         check_file_ready("tpr.tpr")
 
         #generate ions for each
@@ -354,11 +388,6 @@ class Prep_folder(SGETunedJobTask):
                 if(os.path.isfile(pdb_ions)): #skip if it already exists
                     continue
                 sh.copy("topol_solvated.top", top_ions)
-                # os.system("echo 'SOL' | gmx genion -s tpr.tpr "
-                #           "-p %s -conc %f "
-                #           "-neutral -nname Cl -pname Na "
-                #           "-o %s >> genion.log 2>&1" %(
-                #               top_ions, self.study_settings['salt_conc'], pdb_ions) )
                 self.gen_ions(top_ions,pdb_ions)
                 check_file_ready(pdb_ions)
 
