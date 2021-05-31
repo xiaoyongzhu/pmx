@@ -46,8 +46,46 @@ from glob import glob
 # File IO utils
 # =============
 
-# create a folder
+def clean_gromacs_backup_files( path ):
+    """Clean gromacs backup files.
+
+    Parameters
+    ----------
+    path: str
+        path where to delete files starting with #
+    """
+
+    toclean = glob('{0}/*#'.format(path)) 
+    for clean in toclean:
+        os.remove(clean)     
+
+def copy_files_folders( source, target ):
+    """Copy files or folders.
+
+    Parameters
+    ----------
+    source: str
+        path to files/folders
+    target: str
+        target path
+    """
+
+    cmd = 'cp {0} {1} -r'.format(source,target)
+    if os.path.isdir(target):
+        cmd = 'cp {0} {1}/. -r'.format(source,target)
+    os.system(cmd)
+
 def create_folder( path, fname=False ):
+    """Create a folder.
+
+    Parameters
+    ----------
+    path: str
+        full path to the folder. Alternatively, if fname is given,
+        folder fname will be created in this path
+    fname: str, optional
+        name of the folder to create
+    """ 
     if fname==False:
         if not os.path.exists(path):
             os.makedirs(path)

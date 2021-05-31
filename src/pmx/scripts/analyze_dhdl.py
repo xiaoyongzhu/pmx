@@ -543,6 +543,8 @@ def main(args):
 
         if nboots > 0:
             _tee(out, '  BAR: Conv Std Err (bootstrap) = %8.2f' % bar.conv_err_boot, quiet=quiet)
+        if nblocks > 1:
+            _tee(out, '  BAR: Conv Std Err (blocks) = %8.2f' % bar.conv_err_blocks, quiet=quiet)
 
     # =========
     # Jarzynski

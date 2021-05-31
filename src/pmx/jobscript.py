@@ -68,6 +68,7 @@ class Jobscript:
         self.gmx = None
         self.header = ''
         self.cmdline = ''
+        self.partition = ''
         
         for key, val in kwargs.items():
             setattr(self,key,val)                 
@@ -102,6 +103,7 @@ class Jobscript:
         moduleline = ''
         sourceline = ''
         exportline = ''
+        partitionline = self.partition
         for m in self.modules:
             moduleline = '{0}\nmodule load {1}'.format(moduleline,m)
         for s in self.source:
@@ -119,11 +121,11 @@ class Jobscript:
             gmxline = 'export GMXRUN="{gmx} -ntomp {simcpu} -ntmpi 1"'.format(gmx=self.gmx,simcpu=self.simcpu)            
             
         if self.queue=='SGE':
-            self._create_SGE_header(moduleline,sourceline,exportline,gpuline,gmxline)
+            self._create_SGE_header(moduleline,sourceline,exportline,gpuline,gmxline,partitionline)
         elif self.queue=='SLURM':
-            self._create_SLURM_header(moduleline,sourceline,exportline,gpuline,gmxline)
+            self._create_SLURM_header(moduleline,sourceline,exportline,gpuline,gmxline,partitionline)
         
-    def _create_SGE_header( self,moduleline,sourceline,exportline,gpuline,gmxline ):    
+    def _create_SGE_header( self,moduleline,sourceline,exportline,gpuline,gmxline, partitionline ):    
         self.header = '''#$ -S /bin/bash
 #$ -N {jobname}
 #$ -l h_rt={simtime}:00:00
@@ -141,8 +143,13 @@ class Jobscript:
            gmx=gmxline)
         
         
-    def _create_SLURM_header( self,moduleline,sourceline,exportline,gpuline,gmxline):
+    def _create_SLURM_header( self,moduleline,sourceline,exportline,gpuline,gmxline,partitionline):
         fp = open(self.fname,'w')
+
+        # optionally, can create a partition entry
+        partition = ''
+        if partitionline!=None and partitionline!='':
+            partition = "#SBATCH --partition={0}\n".format(partitionline)
 
         self.header = '''#!/bin/bash
 #SBATCH --job-name={jobname}
@@ -150,6 +157,7 @@ class Jobscript:
 #SBATCH -N 1
 #SBATCH -n {simcpu}
 #SBATCH -t {simtime}:00:00
+{partition}
 {gpu}
 
 {source}
@@ -157,7 +165,24 @@ class Jobscript:
 {export}
 
 {gmx}
-'''.format(jobname=self.jobname,simcpu=self.simcpu,simtime=self.simtime,gpu=gpuline,
-           source=sourceline,modules=moduleline,export=exportline,
+'''.format(jobname=self.jobname,simcpu=self.simcpu,simtime=self.simtime,partition=partition,
+           gpu=gpuline,source=sourceline,modules=moduleline,export=exportline,
            gmx=gmxline)
+
+    def _submission_script( self, jobfolder, counter, simType='eq', frNum=80, bArray=True ):
+        fname = '{0}/submit.py'.format(jobfolder)
+        fp = open(fname,'w')
+        fp.write('import os\n')
+        fp.write('for i in range(0,{0}):\n'.format(counter))
+        if self.queue=='SGE':
+            cmd = '\'qsub jobscript{0}\'.format(i)'
+            if ((simType=='ti') or ('transition' in simType)) and (bArray==True):
+                cmd = '\'qsub -t 1-'+str(frNum)+':1 jobscript{0}\'.format(i)'
+        elif self.queue=='SLURM':
+            cmd = '\'sbatch jobscript{0}\'.format(i)'
+            if ((simType=='ti') or ('transition' in simType)) and (bArray==True):
+                cmd = '\'sbatch --array=1-'+str(frNum)+' jobscript{0}\'.format(i)'
+        fp.write('    os.system({0})\n'.format(cmd))
+        fp.close()
+
     
