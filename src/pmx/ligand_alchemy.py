@@ -1515,6 +1515,16 @@ class LigandAtomMapping:
 
         return(n1_out,n2_out)
 
+    def _removeInd( self, n1,n2,rem1,rem2 ):
+        n1_out = []
+        n2_out = []
+        for i1,i2 in zip(n1,n2):
+            if( (i1 in rem1) or (i2 in rem2) ):
+                continue
+            n1_out.append(i1)
+            n2_out.append(i2)
+        return(n1_out,n2_out)
+
     def _isMapped(self,ring,ind):
         for a in ring:
             if( a in ind):
