@@ -354,7 +354,7 @@ class Prep_folder(SGETunedJobTask):
             #number of protein chains
         m_box = Model("box.pdb", bPDBTER=True)
         n_prot_chains=0 #count number of protein chains. Assume that they are all the ones before the ligand.
-        for c in m_init.chains:
+        for c in m_box.chains:
             if("-MOL-" in c.get_sequence()):
                 break;
             else:
