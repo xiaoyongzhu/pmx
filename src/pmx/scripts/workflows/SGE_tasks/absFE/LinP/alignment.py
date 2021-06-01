@@ -210,9 +210,14 @@ class Task_PL_align(SGETunedJobTask):
 
         #find number of protein chains
         m_init = Model(self.folder_path+"/init.pdb", bPDBTER=True)
-        n_prot_chains = len(m_init.chains)-1 #one is ligand
+        n_prot_chains=0 #count number of protein chains. Assume that they are all the ones before the ligand
+        for c in m_init.chains:
+            if("-MOL-" in c.get_sequence()):
+                break;
+            else:
+                n_prot_chains+=1
         if(n_prot_chains<1):
-            raise(Exception("There should be at least one protein chain!"))
+            raise(RuntimeError("There should be at least one protein chain before the ligand! Check if the ligand has the same chain id as the protein!"))
 
         os.makedirs(self.sim_path, exist_ok=True)
         os.chdir(self.sim_path)

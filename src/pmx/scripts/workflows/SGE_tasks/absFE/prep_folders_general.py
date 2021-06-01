@@ -8,6 +8,7 @@ import shutil as sh
 import math
 from luigi.parameter import ParameterVisibility
 from pmx import ndx
+from pmx.model import Model
 from pmx.scripts.workflows.utils import check_file_ready
 from pmx.scripts.workflows.SGE_tasks.SGETunedJobTask import SGETunedJobTask #tuned for the owl cluster
 
@@ -347,6 +348,20 @@ class Prep_folder(SGETunedJobTask):
                   "> prep.log 2>&1"%(self.study_settings['bt'], self.study_settings['d']))
         check_file_ready("box.pdb")
         sh.copy("topol.top","topol_solvated.top")
+        
+        
+        #Check input for sanity:
+            #number of protein chains
+        m_box = Model("box.pdb", bPDBTER=True)
+        n_prot_chains=0 #count number of protein chains. Assume that they are all the ones before the ligand.
+        for c in m_init.chains:
+            if("-MOL-" in c.get_sequence()):
+                break;
+            else:
+                n_prot_chains+=1
+        if(n_prot_chains<1):
+            raise(RuntimeError("There should be at least one protein chain before the ligand! Check if the ligand has the same chain id as the protein!"))
+        
 
         #solvate using old VdW radii (found in mutff). This needs pmx's mutff
         #to be the first entry in GMXLIB. It contains the old version of
