@@ -89,7 +89,7 @@ class Gather_Inputs_folder(SGETunedJobTask):
             sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_"+self.l+".pdb",
                     self.folder_path+"/init.pdb")
             #append crystalographic solvent, if any
-            if(os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/water.pdb")):
+            if(os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/water.pdb")):            
                 os.system("cat {} >> {}".format(
                     self.study_settings['top_path']+"/proteins/"+self.p+"/water.pdb",
                     self.folder_path+"/init.pdb")
@@ -104,22 +104,38 @@ class Gather_Inputs_folder(SGETunedJobTask):
                 sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot_apo.pdb", self.folder_path+"/init.pdb")
                 
                 #append crystalographic solvent, if any
-                if(os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/water_apo.pdb")):
-                    os.system("cat {} >> {}".format(
-                        self.study_settings['top_path']+"/proteins/"+self.p+"/water_apo.pdb",
-                        self.folder_path+"/init.pdb")
-                        )
+                water_pdb_fn=self.study_settings['top_path']+"/proteins/"+self.p+"/water_apo.pdb"
+                if(os.path.isfile(water_pdb_fn)):
+                    #sanity check: crystalographic water should start with water,
+                    #as ligand gets inserted right before first water molecule
+                    with open(water_pdb_fn, 'r') as f:
+                        firstLine = f.readline()
+                        s=firstLine.split()
+                        if(s[3]!="HOH" and s[3]!="SOL"):
+                            raise(RuntimeError("{} starts wither with a header or a molecule that is not water.\n"
+                                "Please remove the header and place any crystalographic ions into prot_apo.pdb "
+                                "or at the end of water_apo.pdb instead.".format(water_pdb_fn)))
+                                
+                    os.system("cat {} >> {}".format(water_pdb_fn, self.folder_path+"/init.pdb"))
                 
             else:  #use holo structure/itp for apo
                 sh.copy(self.study_settings['top_path']+"/proteins/"+self.p+"/prot.pdb",
                         self.folder_path+"/init.pdb")
                         
                 #append crystalographic solvent, if any
-                if(os.path.isfile(self.study_settings['top_path']+"/proteins/"+self.p+"/water.pdb")):
-                    os.system("cat {} >> {}".format(
-                        self.study_settings['top_path']+"/proteins/"+self.p+"/water.pdb",
-                        self.folder_path+"/init.pdb")
-                        )
+                water_pdb_fn=self.study_settings['top_path']+"/proteins/"+self.p+"/water.pdb"
+                if(os.path.isfile(water_pdb_fn)):
+                    #sanity check: crystalographic water should start with water,
+                    #as ligand gets inserted right before first water molecule
+                    with open(water_pdb_fn, 'r') as f:
+                        firstLine = f.readline()
+                        s=firstLine.split()
+                        if(s[3]!="HOH" and s[3]!="SOL"):
+                            raise(RuntimeError("{} starts wither with a header or a molecule that is not water.\n"
+                                "Please remove the header and place any crystalographic ions into prot.pdb "
+                                "or at the end of water.pdb instead.".format(water_pdb_fn)))
+                                
+                    os.system("cat {} >> {}".format(water_pdb_fn, self.folder_path+"/init.pdb"))
         elif(self.l): #L
             sh.copy(self.study_settings['top_path']+"/ligand/"+self.l+"/ligand.pdb",
                     self.folder_path+"/init.pdb")

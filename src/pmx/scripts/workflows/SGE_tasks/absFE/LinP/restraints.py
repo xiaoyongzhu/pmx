@@ -118,123 +118,11 @@ class Task_PL_gen_restraints(SGETunedJobTask):
         os.makedirs(self.folder_path, exist_ok=True)
         os.chdir(self.folder_path)
 
-        # srctpr=self.folder_path+"/state{2}/repeat{3}/npt{4}/tpr.tpr"
-        # srctraj=self.folder_path+"/state{2}/repeat{3}/npt{4}/traj.trr"
-
-        # # #create prot+MOL index group
-        # # os.system("echo \"1|13\nq\n\" | "
-        # #           "gmx make_ndx -f ions0_0.pdb "
-        # #           "-o index_prot_mol.ndx > /dev/null 2>&1")
-
-        # #make topology for prot+MOL
-        # os.system("sed 's/SOL/;SOL/g' topol.top > topol_prot_mol_{i}.top".format(i=self.i))
-
-        # #make topology for ApoP
-        # os.system("sed 's/SOL/;SOL/g' {base}/prot_{p}/apoP/topol.top "
-        #           "> topol_prot_{i}.top".format(base=self.base_path, p=self.p, i=self.i))
-
-        # for s in self.states:
-        #     #make tprs
-        #     if(s == "A" or s=="C"):   #align A/C to initial structure
-        #         ref="box.pdb"
-        #         ref_top="topol_prot_mol_{i}.top".format(i=self.i)
-        #         mdp = self.study_settings['mdp_path'] + "/protein/init.mdp"
-        #     else:           #align B to average of A
-        #         ref="averageA_{i}_prot_only.gro".format(i=self.i)
-        #         ref_top="topol_prot_{i}.top".format(i=self.i)
-        #         mdp = self.study_settings['mdp_path'] + "/apo_protein/init.mdp"
-
-
-        #     os.system("gmx grompp -p {ref_top} -c {ref} -f {mdp} "
-        #               "-o tpr{s}_{i}.tpr -maxwarn 2 > grompp{s}_{i}.log 2>&1".format(
-        #                   ref_top=ref_top, ref=ref, mdp=mdp, s=s, i=self.i) )
-        #     check_file_ready("tpr{s}_{i}.tpr".format(s=s, i=self.i))
-
-        #     #collect trjs
-        #     # print("\tCollecting trajectories for state%s"%s)
-
-        #     #remove previous log if it exists from a crashed attempt
-        #     if(os.path.isfile("trjconv_{i}.log".format(i=self.i))):
-        #         os.unlink("trjconv_{i}.log".format(i=self.i))
-
-        #     #independent repeats for error analysis
-        #     local_trjs=""
-
-        #     for m in range(self.study_settings['n_sampling_sims']):
-        #         if(s=="ApoProt"):
-        #             apoP_path=self.base_path+"/prot_{0}/apoP/repeat{3}/npt{4}/"
-        #             tpr=apoP_path.format(self.p,self.l,s,self.i,m)+"tpr.tpr"
-        #             trj=apoP_path.format(self.p,self.l,s,self.i,m)+"traj.trr"
-        #             sel="4 Protein"
-        #             ndx=self.base_path+"/prot_{0}/apoP/index.ndx".format(self.p)
-        #         if(s=="C"): #explisitly simulated stateC (self.restr_scheme=="Fitted")
-        #             frame_path=self.folder_path+"/state{2}/repeat{3}/{5}{4}/"
-        #             tpr=frame_path.format(self.p,self.l,"A",self.i,m,"npt")+"tpr.tpr"
-        #             trj=frame_path.format(self.p,self.l,s,self.i,m,"morphes")+"aligned.trr"
-        #             sel="4 Protein_MOL"
-        #             ndx="index_prot_mol.ndx"
-        #         else:
-        #             tpr=srctpr.format(self.p,self.l,s,self.i,m)
-        #             trj=srctraj.format(self.p,self.l,s,self.i,m)
-        #             sel="4 Protein_MOL"
-        #             ndx="index_prot_mol.ndx"
-
-        #         os.system("echo %s | "
-        #                   "gmx trjconv -s %s -f %s "
-        #                   "-o eq%s%d_%d.xtc "
-        #                   "-sep -ur compact -pbc mol -center "
-        #                   "-boxcenter zero -n %s "
-        #                   "-b %d >> trjconv.log 2>&1"%(
-        #                           sel,tpr,trj, s,self.i,m, ndx,
-        #                           self.study_settings['b']) )
-
-        #         check_file_ready("eq%s%d_%d.xtc"%(s,self.i,m))
-        #         local_trjs+="eq%s%d_%d.xtc "%(s,self.i,m)
-
-        #     #concatenate trajectories
-        #     os.system("gmx trjcat -f {trjs} -o all_eq{s}_{i}.xtc -sort "
-        #               "-cat >> trjconv_{i}.log 2>&1".format(
-        #                   trjs=local_trjs,s=s,i=self.i) )
-        #     check_file_ready("all_eq{s}_{i}.xtc".format(s=s,i=self.i))
-
-        #     #fit to reference structure in tpr files
-        #     os.system("echo 4 0 | gmx trjconv -s tpr{s}_{i}.tpr -f all_eq{s}_{i}.xtc "
-        #               "-o all_eq{s}_{i}_fit.xtc -fit rot+trans "
-        #               ">> trjconv_{i}.log 2>&1".format(s=s,i=self.i) )
-        #     check_file_ready("all_eq{s}_{i}_fit.xtc".format(s=s,i=self.i) )
-
-        #     #dump first frame
-        #     os.system("echo 0 | gmx trjconv -f all_eq{s}_{i}_fit.xtc "
-        #               "-s tpr{s}_{i}.tpr -o dump{s}_{i}.gro -dump 0 "
-        #               ">> trjconv_{i}.log 2>&1".format(s=s,i=self.i) )
-        #     check_file_ready("dump{s}_{i}.gro".format(s=s,i=self.i))
-
-        #     #find avg structure of A
-        #     if(s=="A"):
-        #         # print("\tFinding average structure")
-        #         find_avg_struct("dumpA_{}.gro".format(self.i), "all_eqA_{i}_fit.xtc".forat(self.i),
-        #                         "averageA_{}.gro".format(self.i))
-        #         check_file_ready("averageA_{}.gro".format(self.i))
-        #         # print("\tExtracting prot. only")
-
-        #         os.system("echo Protein | gmx trjconv -s tprA_{i}.tpr -f averageA_{i}.gro "
-        #                   "-o averageA_{i}_prot_only.gro >> trjconv.log 2>&1".format(i=self.i) )
-        #         check_file_ready("averageA_{i}_prot_only.gro".format(i=self.i))
-
 
         if(self.debug):
             print("debug: restr_scheme={}".format(self.restr_scheme))
         #generate the restraints
-        # print("\tGenerating the restraints")
-        if(self.restr_scheme=="Aligned"):
-            # find_restraints_align2crystal(struct= 'dumpC_{i}.gro'.format(i=self.i),
-            #             traj = "all_eqC_{i}_fit.xtc".format(i=self.i),
-            #             out="ii_{i}.itp".format(i=self.i),
-            #             an_cor_file="out_dg_{i}.dat".format(i=self.i),
-            #             plotfile="restraint_coord_distrib_{i}.png".format(i=self.i),
-            #             log=False)
-
-            
+        if(self.restr_scheme=="Aligned"):            
             #make index files for TI
             #A->C
             base_ndx_A=ndx.IndexFile("index_prot_mol.ndx", verbose=False)
@@ -343,31 +231,30 @@ class Task_PL_gen_restraints(SGETunedJobTask):
                 sys.stdin = oldstdin
                 sys.stdout = oldstdout
                 sys.stderr = oldstderr
-            
+            check_file_ready("ii_C_{i}.itp".format(i=self.i))
             
             #create ii_A_#.itp by remaping the indeces from ii_C_#.itp
-            A_ndx=ndx.IndexFile(fn_ndx_A, verbose=False)
-            C_ndx=ndx.IndexFile(fn_ndx_C, verbose=False)
-            common_A_ids=A_ndx["C-alpha_common"].ids
-            common_C_ids=C_ndx["C-alpha_common"].ids
-            mol_A_ids=A_ndx["MOL_&_!H*_&_!?H*_&_!vsites"].ids
-            mol_C_ids=C_ndx["MOL_&_!H*_&_!?H*_&_!vsites"].ids
-            relevant_A_ids=common_A_ids+mol_A_ids
-            relevant_C_ids=common_C_ids+mol_C_ids
-            C_to_A_dict = {relevant_C_ids[a]: relevant_A_ids[a] for a in range(len(relevant_C_ids))}
-            
-            lig_C_ids, pro_C_ids, means, ks=readii_util("ii_C_{i}.itp".format(i=self.i))
-            lig_A_ids=[C_to_A_dict[a] for a in lig_C_ids]
-            pro_A_ids=[C_to_A_dict[a] for a in pro_C_ids]
-            
-            writeii_util("ii_A_{i}.itp".format(i=self.i), lig_A_ids, pro_A_ids, means, ks)
+            if(not os.path.isfile("ii_A_{i}.itp".format(i=self.i))):
+                A_ndx=ndx.IndexFile(fn_ndx_A, verbose=False)
+                C_ndx=ndx.IndexFile(fn_ndx_C, verbose=False)
+                common_A_ids=A_ndx["C-alpha_common"].ids
+                common_C_ids=C_ndx["C-alpha_common"].ids
+                mol_A_ids=A_ndx["MOL_&_!H*_&_!?H*_&_!vsites"].ids
+                mol_C_ids=C_ndx["MOL_&_!H*_&_!?H*_&_!vsites"].ids
+                relevant_A_ids=common_A_ids+mol_A_ids
+                relevant_C_ids=common_C_ids+mol_C_ids
+                C_to_A_dict = {relevant_C_ids[a]: relevant_A_ids[a] for a in range(len(relevant_C_ids))}
+                
+                lig_C_ids, pro_C_ids, means, ks=readii_util("ii_C_{i}.itp".format(i=self.i))
+                lig_A_ids=[C_to_A_dict[a] for a in lig_C_ids]
+                pro_A_ids=[C_to_A_dict[a] for a in pro_C_ids]
+                
+                writeii_util("ii_A_{i}.itp".format(i=self.i), lig_A_ids, pro_A_ids, means, ks)
             check_file_ready("ii_A_{i}.itp".format(i=self.i))
         
 
         elif(self.restr_scheme=="Fitted"):
             raise(RuntimeError("restr_scheme = Fitted is no longer supported."))
-
-        check_file_ready(os.path.join("ii_C_{i}.itp".format(i=self.i)))
        
 
         #create a C state topology that holds ligand in place
@@ -381,12 +268,16 @@ class Task_PL_gen_restraints(SGETunedJobTask):
 
                 check_file_ready(top_ions)
                 topAC_ions="topolTI_ions%s%d_%d.top"%(s,self.i,m)
+                already_inserted=False
                 with open(topAC_ions, 'w') as top:
                     with open(top_ions, 'r') as reftop:
                         for l in reftop:
-                            
-                            if (s=="C" and "SOL " in l):
+                            #ligand goes before the first water molecule, even when xray water is present.
+                            #xray ions, if present, should come in the same chain as protein inside protein.pdb/protein_apo.pdb
+                            #or after the xray water in water.pdb/water_apo.pdb
+                            if (s=="C" and "SOL " in l and not already_inserted):
                                 top.write("MOL    1\n") #add ligand into the apo topology
+                                already_inserted=True
                                 top.write(l)
                                 
                             elif (s=="C" and ("#include \"prot_apo.itp\"" in l or "#include \"prot.itp\"" in l)):
