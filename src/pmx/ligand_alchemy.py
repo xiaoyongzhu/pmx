@@ -2800,7 +2800,7 @@ class _FFfile:
         toSkip = "atomtypes"
         for line in l:
             if toSkip not in line:
-                if line.split():
+                if line.split(): # avoid empty lines
                     self.atoms.append(_FFatom(line.split()))
 
 def _get_FF_atoms( ffs ):
