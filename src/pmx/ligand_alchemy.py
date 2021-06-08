@@ -2823,7 +2823,7 @@ def _write_FF_file(atoms,file):
     fp.write('[ atomtypes ]\n')
     for atype in atoms.keys():
         at = atoms[atype]
-        fp.write('      %s      %s      %s      %s      %s      %s\n' % (at.type,at.sigmaA,at.epsA,at.A,at.sigmaB,at.epsB) )
+        fp.write('%s      %s      %s      %s      %s      %s\n' % (at.type,at.sigmaA,at.epsA,at.A,at.sigmaB,at.epsB) )
         
 def _merge_FF_files( fnameOut, ffsIn=[] ):
     atoms = _get_FF_atoms( ffsIn )
